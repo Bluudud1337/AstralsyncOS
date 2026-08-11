@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Khan Academy</title>
+<link rel="icon" href="https://academic-mathwork.vercel.app/icon-512.png">
+
+<style>
+:root {
+  --accent: #320ff0;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #000;
+  color: white;
+  text-align: center;
+}
+
+/* HEADER */
+header {
+  padding: 20px 30px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+header button {
+  background: var(--accent);
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+header button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+/* MAIN */
+.container {
+  margin-top: 80px;
+}
+
+h1 {
+  font-size: 48px;
+  text-shadow: 0 0 20px var(--accent);
+}
+
+.subtitle {
+  max-width: 800px;
+  margin: 20px auto 40px;
+  opacity: 0.85;
+}
+
+/* INPUT */
+#url {
+  width: 420px;
+  max-width: 90%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid var(--accent);
+  background: #000;
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  box-shadow: 0 0 15px var(--accent);
+}
+
+/* GO BUTTON */
+#goBtn {
+  margin-top: 25px;
+  background: linear-gradient(135deg, #320ff0, var(--accent));
+  border: none;
+  padding: 14px 40px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 0 20px var(--accent);
+  transition: transform .2s, box-shadow .2s;
+}
+
+#goBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 35px var(--accent);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <button onclick="location.href='apps.html'">Apps</button>
+  <button onclick="location.href='ProxyLinks.html'">Proxy Links</button>
+  <button onclick="location.href='index.html'">Games</button>
+  <button onclick="location.href='chat.html'">Chatroom</button>
+</header>
+
+<div class="container">
+  <h1>Astral Blank Launcher</h1>
+
+  <p class="subtitle">
+    Opens sites inside an <b>about:blank</b> tab.  
+    Only works for sites that allow embedding.
+  </p>
+
+  <input id="url" placeholder="https://idkyoupickthesite.com">
+  <br>
+  <button id="goBtn" onclick="openSite()">Launch</button>
+</div>
+<h1>fun sites to visit:</h1>
+<p>
+  https://allsonicgames.net (sonic games)<br>
+  https://kbhgames.com (games)<br>
+  https://flixer.sh (movies)<br>
+  https://totallyscience.app (games)<br>
+  https://maddox.page (cloud gaming)<br>
+</p>
+
+<script>
+function openSite() {
+  let url = document.getElementById("url").value.trim();
+  if (!url) return;
+
+  if (!url.startsWith("http")) {
+    url = "https://" + url;
+  }
+
+  const tab = window.open("", "_blank");
+  if (!tab) return;
+
+  tab.document.open();
+  tab.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>about:blank</title>
+      <style>
+        html, body {
+          margin: 0;
+          padding: 0;
+          background: black;
+          height: 100%;
+          overflow: hidden;
+        }
+        iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+      </style>
+    </head>
+    <body>
+      <iframe src="${url}" allowfullscreen></iframe>
+    </body>
+    </html>
+  `);
+  tab.document.close();
+}
+</script>
+
+</body>
+</html>
