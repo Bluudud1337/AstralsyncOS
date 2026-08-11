@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AstralSync OS</title>
+<link rel="icon" type="image/png" href="https://academic-mathwork.vercel.app/icon-512.png">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6507880772375833" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700&family=Playfair+Display:wght@400;700&family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* BOOT SCREEN */
+#boot-screen{
+  position:fixed;inset:0;z-index:99999;
+  background:#000;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:32px;
+  transition:opacity 0.7s ease;
+}
+#boot-logo{
+  font-size:52px;font-weight:700;letter-spacing:-1px;
+  color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  text-shadow:0 0 40px rgba(255,255,255,0.3);
+  animation:bootPulse 1.5s ease-in-out infinite alternate;
+}
+@keyframes bootPulse{from{opacity:0.7}to{opacity:1}}
+#boot-bar-wrap{
+  width:180px;height:4px;background:rgba(255,255,255,0.15);
+  border-radius:2px;overflow:hidden;
+}
+#boot-bar{
+  height:100%;width:0;background:#fff;border-radius:2px;
+  transition:width 0.05s linear;
+  box-shadow:0 0 8px rgba(255,255,255,0.6);
+}
+#boot-sub{font-size:13px;color:rgba(255,255,255,0.4);letter-spacing:0.5px;margin-top:-16px;}
+@keyframes bootFadeOut{0%,70%{opacity:1;pointer-events:all;}100%{opacity:0;pointer-events:none;}}
+#boot-screen{animation:bootFadeOut 5s forwards;}
+
+/* OOBE — first-run welcome screen */
+#oobe{
+  position:fixed;inset:0;z-index:99998;
+  background:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.6s ease;
+}
+#oobe.visible{opacity:1;pointer-events:all;}
+.oobe-card{
+  background:rgba(255,255,255,0.07);
+  backdrop-filter:blur(40px) saturate(1.5);
+  -webkit-backdrop-filter:blur(40px) saturate(1.5);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:28px;padding:48px 44px;width:460px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5);
+  text-align:center;color:#fff;
+}
+.oobe-logo{font-size:52px;margin-bottom:12px;}
+.oobe-title{font-size:28px;font-weight:800;margin-bottom:6px;}
+.oobe-sub{font-size:14px;opacity:0.6;margin-bottom:32px;}
+.oobe-avatar-wrap{position:relative;display:inline-block;margin-bottom:24px;}
+.oobe-avatar{
+  width:100px;height:100px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;background:var(--accent);
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);cursor:pointer;
+  border:3px solid rgba(255,255,255,0.3);overflow:hidden;
+  transition:transform 0.15s;
+}
+.oobe-avatar:hover{transform:scale(1.06);}
+.oobe-avatar img{width:100%;height:100%;object-fit:cover;}
+.oobe-avatar-hint{font-size:11px;opacity:0.5;margin-top:6px;}
+.oobe-input{
+  width:100%;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.1);color:#fff;font-size:16px;
+  outline:none;font-family:var(--font);margin-bottom:12px;
+  -webkit-user-select:text;user-select:text;
+}
+.oobe-input::placeholder{color:rgba(255,255,255,0.35);}
+.oobe-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,0.3);}
+.oobe-color-row{display:flex;gap:10px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
+.oobe-swatch{
+  width:32px;height:32px;border-radius:50%;cursor:pointer;
+  border:3px solid transparent;transition:transform 0.15s,border 0.15s;
+}
+.oobe-swatch:hover{transform:scale(1.2);}
+.oobe-swatch.active{border-color:#fff;}
+.oobe-btn{
+  width:100%;padding:14px;border-radius:14px;border:none;
+  background:var(--accent);color:#fff;font-size:16px;font-weight:700;
+  cursor:pointer;font-family:var(--font);
+  transition:filter 0.15s,transform 0.1s;
+}
+.oobe-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.oobe-skip{margin-top:14px;font-size:12px;opacity:0.45;cursor:pointer;text-decoration:underline;}
+.oobe-skip:hover{opacity:0.75;}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;user-select:none;}
+:root{
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter',sans-serif;
+  --accent:#007AFF;
+  --accent2:#5E5CE6;
+  --bg-glass:rgba(255,255,255,0.72);
+  --bg-glass-dark:rgba(30,30,30,0.75);
+  --text:#1c1c1e;
+  --text-secondary:#6e6e73;
+  --separator:rgba(0,0,0,0.1);
+  --window-bg:#f5f5f7;
+  --window-bg-dark:#1e1e1e;
+  --sidebar-bg:rgba(245,245,247,0.9);
+  --sidebar-bg-dark:rgba(28,28,30,0.9);
+  --dock-bg:rgba(255,255,255,0.25);
+  --menubar-bg:rgba(255,255,255,0.72);
+  --hover:rgba(0,0,0,0.06);
+  --radius:12px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+}
+.dark-mode{
+  --text:#f5f5f7;
+  --text-secondary:#98989d;
+  --separator:rgba(255,255,255,0.1);
+  --window-bg:#1e1e1e;
+  --sidebar-bg:rgba(28,28,30,0.9);
+  --dock-bg:rgba(40,40,40,0.35);
+  --menubar-bg:rgba(28,28,30,0.72);
+  --bg-glass:rgba(30,30,30,0.72);
+  --hover:rgba(255,255,255,0.08);
+}
+
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
+
+/* DESKTOP */
+#desktop{
+  width:100vw;height:100vh;
+  background:url('https://512pixels.net/downloads/macos-wallpapers-6k/14-0-Dark.jpg') center/cover no-repeat;
+  position:relative;overflow:hidden;
+  transition:background 0.4s;
+}
+#desktop::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 78% 18%,rgba(99,102,241,.2),transparent 30%),
+    radial-gradient(circle at 14% 78%,rgba(14,165,233,.14),transparent 28%),
+    linear-gradient(180deg,rgba(5,10,25,.08),rgba(5,8,18,.42));
+}
+#desktop::after{
+  content:"";position:absolute;inset:28px 0 0;z-index:0;pointer-events:none;opacity:.12;
+  background-image:linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);
+  background-size:72px 72px;mask-image:linear-gradient(to bottom,transparent,black 35%,transparent 100%);
+}
+
+/* MENU BAR */
+#menubar{
+  position:fixed;top:0;left:0;right:0;height:28px;z-index:9000;
+  background:var(--menubar-bg);
+  backdrop-filter:blur(20px) saturate(1.8);
+  -webkit-backdrop-filter:blur(20px) saturate(1.8);
+  border-bottom:1px solid var(--separator);
+  display:flex;align-items:center;
+  padding:0 10px;gap:2px;
+  color:var(--text);font-size:13px;
+}
+.menu-apple{font-size:16px;padding:0 10px;cursor:pointer;border-radius:6px;height:100%;display:flex;align-items:center;}
+.menu-apple:hover{background:var(--hover);}
+.menu-item{padding:0 10px;height:100%;display:flex;align-items:center;cursor:pointer;border-radius:6px;font-weight:500;white-space:nowrap;}
+.menu-item:hover{background:var(--hover);}
+.menu-item.bold{font-weight:700;}
+.menu-right{margin-left:auto;display:flex;align-items:center;gap:2px;}
+.menu-right .menu-item{font-size:12px;}
+#clock{padding:0 8px;font-size:12px;font-weight:500;}
+.status-glyph{font-size:13px!important;opacity:.78;}
+.menu-status{display:flex;align-items:center;gap:5px;padding:0 9px!important;}
+.menu-status::after{content:"";width:5px;height:5px;border-radius:50%;background:#34c759;box-shadow:0 0 7px #34c759;}
+
+/* DESKTOP ICONS */
+#desktop-icons{
+  position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;
+}
+.desk-icon{
+  position:absolute;width:80px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:grab;padding:6px;border-radius:8px;
+  transition:background 0.15s;pointer-events:all;
+  user-select:none;-webkit-user-select:none;
+}
+.desk-icon.dragging{cursor:grabbing!important;z-index:500;opacity:0.82;transition:none;}
+.desk-icon:hover{background:rgba(255,255,255,0.2);}
+.desk-icon.selected{background:rgba(0,122,255,0.3);}
+.desk-icon img,.desk-icon .icon-emoji{width:56px;height:56px;object-fit:cover;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.desk-icon span{font-size:11px;color:#fff;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.7);line-height:1.3;word-break:break-word;max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* WINDOWS — Win11 + macOS hybrid Mica style */
+.window{
+  position:fixed;z-index:1000;min-width:520px;min-height:360px;
+  background:rgba(245,245,247,0.78);
+  backdrop-filter:blur(48px) saturate(1.8);
+  -webkit-backdrop-filter:blur(48px) saturate(1.8);
+  border-radius:14px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.35),0 0 0 1px rgba(255,255,255,0.35),inset 0 1px 0 rgba(255,255,255,0.6);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:box-shadow 0.2s,opacity 0.15s;
+}
+.dark-mode .window{
+  background:rgba(22,22,26,0.82);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.08),inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.window.minimized{display:none;}
+.window.focused{z-index:2000;box-shadow:0 28px 80px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.4),inset 0 1px 0 rgba(255,255,255,0.7);}
+.dark-mode .window.focused{box-shadow:0 28px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.12),inset 0 1px 0 rgba(255,255,255,0.08);}
+
+.win-titlebar{
+  height:40px;
+  background:transparent;
+  display:flex;align-items:center;padding:0 12px;gap:8px;
+  cursor:default;flex-shrink:0;
+  border-bottom:1px solid rgba(0,0,0,0.07);
+}
+.dark-mode .win-titlebar{border-bottom-color:rgba(255,255,255,0.06);}
+.win-titlebar.dragging{cursor:grabbing;}
+
+.traffic{width:12px;height:12px;border-radius:50%;cursor:pointer;flex-shrink:0;border:0.5px solid rgba(0,0,0,0.15);}
+.traffic.close{background:#ff5f57;}
+.traffic.min{background:#febc2e;}
+.traffic.max{background:#28c840;}
+.traffic:hover{filter:brightness(0.85);}
+
+.win-title{flex:1;text-align:center;font-size:13px;font-weight:600;color:var(--text);pointer-events:none;}
+.win-title::after{content:"";display:block;font-size:9px;font-weight:400;color:var(--text-secondary);letter-spacing:.2px;opacity:.65;}
+.win-titlebar-actions{display:flex;gap:6px;width:52px;justify-content:flex-end;}
+
+.win-body{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.win-toolbar{
+  padding:8px 12px;background:rgba(245,245,247,0.95);
+  border-bottom:1px solid var(--separator);display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.dark-mode .win-toolbar{background:rgba(40,40,40,0.95);}
+.win-content{flex:1;overflow-y:auto;overflow-x:hidden;}
+.win-content::-webkit-scrollbar{width:8px;}
+.win-content::-webkit-scrollbar-track{background:transparent;}
+.win-content::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.2);border-radius:4px;}
+
+/* FINDER */
+.finder-layout{display:flex;height:100%;overflow:hidden;}
+.finder-sidebar{
+  width:180px;flex-shrink:0;background:var(--sidebar-bg);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-right:1px solid var(--separator);padding:8px 0;overflow-y:auto;
+}
+.sidebar-section{padding:4px 8px 2px;font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-top:8px;}
+.sidebar-item{
+  display:flex;align-items:center;gap:8px;padding:5px 12px;
+  font-size:13px;color:var(--text);cursor:pointer;border-radius:6px;margin:0 4px;
+  transition:background 0.1s;
+}
+.sidebar-item:hover{background:var(--hover);}
+.sidebar-item.active{background:var(--accent);color:#fff;}
+.sidebar-item .si-icon{font-size:15px;width:20px;text-align:center;}
+.finder-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ICON GRID */
+.icon-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+  gap:4px;padding:16px;
+}
+.app-icon{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:8px 4px;border-radius:8px;cursor:pointer;
+  transition:background 0.12s;
+}
+.app-icon:hover{background:var(--hover);}
+.app-icon.selected{background:rgba(0,122,255,0.15);}
+.app-icon img{width:64px;height:64px;border-radius:14px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+.app-icon span{font-size:11px;color:var(--text);text-align:center;line-height:1.3;word-break:break-word;max-width:82px;}
+
+/* SEARCH */
+.search-field{
+  flex:1;height:28px;background:rgba(0,0,0,0.08);
+  border:none;border-radius:8px;padding:0 10px 0 28px;
+  font-size:13px;outline:none;font-family:var(--font);color:var(--text);
+  position:relative;
+}
+.dark-mode .search-field{background:rgba(255,255,255,0.1);}
+.search-field::placeholder{color:var(--text-secondary);}
+.search-wrap{position:relative;flex:1;}
+.search-wrap::before{content:'🔍';position:absolute;left:7px;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none;}
+
+/* DOCK */
+#dock{
+  position:fixed;bottom:8px;left:50%;transform:translateX(-50%);
+  z-index:8000;
+  background:var(--dock-bg);
+  backdrop-filter:blur(30px) saturate(1.8);
+  -webkit-backdrop-filter:blur(30px) saturate(1.8);
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:22px;
+  padding:7px 11px;
+  display:flex;align-items:flex-end;gap:6px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+#dock::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.3),transparent 48%);
+  opacity:.6;
+}
+.dock-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;position:relative;
+  transition:transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+}
+.dock-item:active{transform:scale(.94);}
+.dock-item:hover{transform:scale(1.35) translateY(-8px);}
+.dock-item .dock-img{
+  width:52px;height:52px;border-radius:14px;
+  font-size:32px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,rgba(255,255,255,.44),rgba(255,255,255,.12));
+  box-shadow:0 2px 8px rgba(0,0,0,0.25),inset 0 1px rgba(255,255,255,.35);
+  transition:inherit;
+}
+.dock-item .dock-label{
+  position:absolute;bottom:calc(100% + 6px);
+  background:rgba(0,0,0,0.75);color:#fff;
+  font-size:11px;padding:3px 8px;border-radius:6px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity 0.15s;
+}
+.dock-item:hover .dock-label{opacity:1;}
+.dock-dot{
+  width:4px;height:4px;border-radius:50%;
+  background:var(--text-secondary);
+  position:absolute;bottom:-6px;
+}
+.dock-item.running .dock-dot{display:block!important;background:var(--accent);box-shadow:0 0 7px var(--accent);}
+.dock-item.running .dock-img{box-shadow:0 0 0 1px rgba(255,255,255,.35),0 4px 16px rgba(0,0,0,.28);}
+.dock-sep{width:1px;height:44px;background:rgba(255,255,255,0.35);margin:0 2px;}
+@media (max-width:760px){
+  #menubar{padding:0 5px;}
+  .menu-item{padding:0 6px;}
+  #menubar .menu-item:not(.bold):not(#clock){display:none;}
+  #menubar .menu-right .menu-item{display:flex;}
+  #menubar .menu-right .status-glyph{display:none;}
+  #clock{font-size:11px;padding:0 4px;}
+  #desktop-widgets{right:12px;top:44px;width:180px;}
+  .desktop-widget{padding:11px 12px;border-radius:15px;}
+  .widget-date{font-size:19px;}
+  .window{min-width:calc(100vw - 24px);min-height:300px;left:12px!important;top:44px!important;width:calc(100vw - 24px)!important;height:calc(100vh - 130px)!important;}
+  .win-titlebar-actions{display:none;}
+  .dock-item .dock-img{width:44px;height:44px;font-size:26px;}
+  #dock{max-width:calc(100vw - 20px);overflow-x:auto;bottom:8px;}
+  #online-counter{display:none;}
+}
+
+/* ONLINE COUNTER */
+#online-counter{
+  position:fixed;bottom:8px;left:16px;z-index:8000;
+  background:var(--dock-bg);
+  backdrop-filter:blur(30px) saturate(1.8);
+  -webkit-backdrop-filter:blur(30px) saturate(1.8);
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:16px;
+  padding:8px 14px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  min-width:72px;
+  user-select:none;
+}
+.oc-row{display:flex;align-items:center;gap:6px;}
+.oc-dot{
+  width:8px;height:8px;border-radius:50%;background:#34C759;flex-shrink:0;
+  box-shadow:0 0 6px #34C759;
+  animation:ocPulse 2s ease-in-out infinite;
+}
+@keyframes ocPulse{
+  0%,100%{opacity:1;box-shadow:0 0 6px #34C759;}
+  50%{opacity:0.5;box-shadow:0 0 14px #34C759;}
+}
+.oc-count{font-size:18px;font-weight:700;color:#fff;line-height:1;font-variant-numeric:tabular-nums;}
+.oc-label{font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:0.3px;text-align:center;}
+.oc-visits{font-size:10px;color:rgba(255,255,255,0.4);text-align:center;margin-top:1px;}
+
+/* SPOTLIGHT */
+#spotlight{
+  position:fixed;inset:0;z-index:9500;
+  background:rgba(0,0,0,0.4);
+  display:none;align-items:flex-start;justify-content:center;
+  padding-top:120px;
+}
+#spotlight.visible{display:flex;}
+.spotlight-box{
+  width:640px;
+  background:var(--bg-glass);
+  backdrop-filter:blur(40px) saturate(1.8);
+  -webkit-backdrop-filter:blur(40px) saturate(1.8);
+  border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  overflow:hidden;
+}
+
+/* DESKTOP WIDGETS */
+#desktop-widgets{
+  position:absolute;right:22px;top:54px;z-index:2;width:220px;
+  display:flex;flex-direction:column;gap:10px;pointer-events:none;
+}
+.desktop-widget{
+  padding:14px 16px;border-radius:18px;color:#fff;
+  background:rgba(17,24,39,.28);border:1px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);
+  box-shadow:0 12px 30px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.14);
+}
+.widget-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.3px;opacity:.62;font-weight:700;}
+.widget-date{font-size:24px;font-weight:700;letter-spacing:-.8px;margin-top:5px;}
+.widget-meta{font-size:11px;opacity:.68;margin-top:4px;}
+.widget-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.widget-row strong{font-size:14px;}
+.widget-meter{height:4px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:10px;}
+.widget-meter span{display:block;width:68%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#60a5fa,#a78bfa);}
+
+/* CONTROL CENTER */
+#control-center{
+  position:fixed;right:12px;top:34px;z-index:9300;width:326px;padding:14px;
+  display:none;color:var(--text);background:var(--bg-glass);
+  border:1px solid rgba(255,255,255,.35);border-radius:20px;
+  box-shadow:0 18px 55px rgba(0,0,0,.3);
+  backdrop-filter:blur(30px) saturate(1.7);-webkit-backdrop-filter:blur(30px) saturate(1.7);
+}
+.dark-mode #control-center{background:var(--bg-glass-dark);border-color:rgba(255,255,255,.12);}
+#control-center.visible{display:block;animation:panelIn .18s ease-out;}
+@keyframes panelIn{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
+.cc-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cc-heading strong{font-size:14px;}
+.cc-heading span{font-size:11px;color:var(--text-secondary);}
+.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cc-tile{border:0;border-radius:14px;background:var(--hover);color:var(--text);padding:11px;text-align:left;cursor:pointer;min-height:62px;transition:transform .15s,background .15s;}
+.cc-tile:hover{background:rgba(0,122,255,.14);transform:translateY(-1px);}
+.cc-tile.active{background:var(--accent);color:#fff;}
+.cc-tile-icon{font-size:17px;display:block;margin-bottom:7px;}
+.cc-tile-label{font-size:11px;font-weight:600;}
+.cc-slider{margin-top:12px;padding:10px 4px 2px;}
+.cc-slider label{display:flex;justify-content:space-between;font-size:11px;color:var(--text-secondary);margin-bottom:7px;}
+.cc-slider input{width:100%;accent-color:var(--accent);}
+#spotlight-input{
+  width:100%;padding:16px 20px;font-size:20px;
+  background:transparent;border:none;outline:none;
+  font-family:var(--font);color:var(--text);border-bottom:1px solid var(--separator);
+}
+.spotlight-results{max-height:360px;overflow-y:auto;padding:8px;}
+.spotlight-result{
+  display:flex;align-items:center;gap:12px;padding:8px 12px;
+  border-radius:8px;cursor:pointer;transition:background 0.1s;
+}
+.spotlight-result:hover,.spotlight-result.active{background:var(--accent);color:#fff;}
+.spotlight-result img{width:36px;height:36px;border-radius:8px;object-fit:cover;}
+.spotlight-result-info{flex:1;}
+.spotlight-result-title{font-size:14px;font-weight:500;}
+.spotlight-result-sub{font-size:11px;opacity:0.7;}
+
+/* CONTEXT MENU */
+#ctx-menu{
+  position:fixed;z-index:9900;
+  background:var(--bg-glass);
+  backdrop-filter:blur(30px) saturate(1.8);
+  -webkit-backdrop-filter:blur(30px) saturate(1.8);
+  border-radius:10px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.25),0 0 0 1px rgba(0,0,0,0.08);
+  padding:4px;min-width:200px;display:none;
+}
+.ctx-item{
+  padding:6px 14px;font-size:13px;color:var(--text);
+  border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:10px;
+}
+.ctx-item:hover{background:var(--accent);color:#fff;}
+.ctx-sep{height:1px;background:var(--separator);margin:4px 0;}
+
+/* NOTIFICATION */
+#notif-area{position:fixed;top:36px;right:12px;z-index:9800;display:flex;flex-direction:column;gap:6px;}
+.notif{
+  background:var(--bg-glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-radius:14px;padding:14px 16px;width:320px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  display:flex;gap:12px;align-items:flex-start;
+  animation:notif-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  border:1px solid var(--separator);
+}
+@keyframes notif-in{from{transform:translateX(120%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.notif-icon{font-size:28px;}
+.notif-body{flex:1;}
+.notif-title{font-size:13px;font-weight:700;color:var(--text);}
+.notif-msg{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+
+/* APP STORE */
+.store-hero{
+  background:linear-gradient(135deg,#007AFF,#5E5CE6);
+  color:#fff;padding:32px 24px;text-align:center;
+}
+.store-hero h2{font-size:28px;font-weight:800;margin-bottom:6px;}
+.store-hero p{font-size:14px;opacity:0.85;}
+.store-category{padding:20px 20px 0;font-size:17px;font-weight:700;color:var(--text);}
+.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;padding:12px 20px;}
+.store-card{
+  background:var(--hover);border-radius:14px;overflow:hidden;cursor:pointer;
+  transition:transform 0.15s,box-shadow 0.15s;
+  border:1px solid var(--separator);
+}
+.store-card:hover{transform:scale(1.03);box-shadow:0 6px 20px rgba(0,0,0,0.15);}
+.store-card img{width:100%;height:90px;object-fit:cover;}
+.store-card-info{padding:8px 10px 10px;}
+.store-card-title{font-size:12px;font-weight:600;color:var(--text);}
+.store-card-sub{font-size:11px;color:var(--text-secondary);margin-top:2px;}
+.store-card-btn{
+  margin-top:6px;background:var(--accent);color:#fff;
+  border:1.5px solid var(--accent);border-radius:20px;padding:3px 14px;font-size:11px;font-weight:600;
+  cursor:pointer;font-family:var(--font);transition:opacity 0.15s;
+}
+.store-card-btn:hover{opacity:0.85;}
+.store-btn-open{background:transparent!important;color:var(--accent)!important;}
+.store-dl-label{font-size:10px;color:var(--text-secondary);margin-bottom:3px;}
+.store-btn-progress{width:100%;height:6px;background:var(--separator);border-radius:3px;overflow:hidden;}
+.store-btn-progress-fill{height:100%;background:var(--accent);border-radius:3px;width:0%;transition:width 0.06s linear;}
+.store-card-row{padding:14px 16px;display:flex;gap:14px;align-items:flex-start;}
+
+/* SETTINGS */
+.settings-layout{display:flex;height:100%;}
+.settings-sidebar{
+  width:220px;background:var(--sidebar-bg);border-right:1px solid var(--separator);
+  padding:16px 8px;overflow-y:auto;
+}
+.settings-section{font-size:11px;font-weight:700;color:var(--text-secondary);padding:4px 10px;text-transform:uppercase;letter-spacing:0.05em;margin-top:12px;}
+.settings-item{
+  display:flex;align-items:center;gap:10px;padding:7px 10px;
+  border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);
+  transition:background 0.1s;
+}
+.settings-item:hover{background:var(--hover);}
+.settings-item.active{background:var(--accent);color:#fff;}
+.settings-item .s-icon{font-size:18px;width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+.settings-content{flex:1;overflow-y:auto;padding:24px;}
+.setting-group{background:var(--hover);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:1px solid var(--separator);font-size:13px;color:var(--text);
+}
+.setting-row:last-child{border-bottom:none;}
+.setting-row label{font-weight:400;}
+.setting-row-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px;}
+
+/* TOGGLE */
+.toggle{position:relative;width:44px;height:26px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-track{
+  width:44px;height:26px;border-radius:13px;background:#ccc;
+  transition:background 0.2s;display:flex;align-items:center;padding:0 3px;
+}
+.toggle input:checked + .toggle-track{background:var(--accent);}
+.toggle-thumb{
+  width:20px;height:20px;background:#fff;border-radius:50%;
+  box-shadow:0 1px 4px rgba(0,0,0,0.3);
+  transition:transform 0.2s;
+}
+.toggle input:checked + .toggle-track .toggle-thumb{transform:translateX(18px);}
+
+/* WALLPAPER GRID */
+.wallpaper-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;padding:4px;}
+.wallpaper-item{
+  height:80px;border-radius:10px;cursor:pointer;
+  border:3px solid transparent;transition:border 0.15s,transform 0.15s;
+  background-size:cover;background-position:center;
+  position:relative;overflow:hidden;
+}
+.wallpaper-item:hover{transform:scale(1.04);}
+.wallpaper-item.active{border-color:var(--accent);}
+.wallpaper-item.active::after{content:'✓';position:absolute;top:4px;right:6px;font-size:12px;color:#fff;text-shadow:0 1px 3px #000;}
+
+/* WIN11 SNAP — right-side window controls */
+.win-titlebar-actions{display:flex;gap:0;width:auto;justify-content:flex-end;}
+.win11-btn{
+  width:46px;height:32px;border:none;background:transparent;
+  color:var(--text);font-size:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.12s;
+}
+.win11-btn:hover{background:rgba(0,0,0,0.08);}
+.dark-mode .win11-btn:hover{background:rgba(255,255,255,0.08);}
+.win11-btn.win11-close:hover{background:#c42b1c;color:#fff;}
+.win11-btn svg{width:10px;height:10px;fill:currentColor;}
+
+/* PROFILE AVATAR IMAGE */
+.profile-avatar{position:relative;overflow:hidden;}
+.profile-avatar img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:50%;}
+.profile-avatar-upload{
+  position:absolute;inset:0;border-radius:50%;
+  background:rgba(0,0,0,0.4);color:#fff;font-size:11px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.15s;cursor:pointer;
+}
+.profile-avatar:hover .profile-avatar-upload{opacity:1;}
+.mini-avatar{position:relative;overflow:hidden;flex-shrink:0;}
+.mini-avatar img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:50%;}
+
+/* PROFILE FIELDS */
+.profile-field{margin-bottom:12px;}
+.profile-field label{display:block;font-size:12px;color:var(--text-secondary);margin-bottom:5px;font-weight:500;}
+
+/* THEME SECTION LABEL */
+.theme-section{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:13px;font-weight:600;color:var(--text);}
+.theme-section-line{flex:1;height:1px;background:var(--separator);}
+
+/* CONTEXT MENU WIN11 STYLE */
+#ctx-menu{border-radius:12px;min-width:220px;}
+.ctx-item{border-radius:8px;gap:12px;font-size:13px;}
+.ctx-kbd{margin-left:auto;font-size:10px;opacity:0.45;font-family:monospace;}
+
+/* ACCENT COLORS */
+.accent-row{display:flex;gap:10px;flex-wrap:wrap;padding:4px;}
+.accent-swatch{
+  width:28px;height:28px;border-radius:50%;cursor:pointer;
+  border:3px solid transparent;transition:border 0.15s,transform 0.15s;
+}
+.accent-swatch:hover{transform:scale(1.15);}
+.accent-swatch.active{border-color:var(--text);}
+
+/* PROFILE */
+.profile-card{
+  background:var(--hover);border-radius:16px;padding:24px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:20px;
+}
+.profile-avatar{
+  width:80px;height:80px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;background:var(--accent);color:#fff;
+  font-weight:700;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,0.2);
+}
+.profile-name{font-size:20px;font-weight:700;color:var(--text);}
+.profile-sub{font-size:13px;color:var(--text-secondary);}
+.profile-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.profile-list-item{
+  display:flex;align-items:center;gap:12px;background:var(--hover);
+  border-radius:12px;padding:12px 14px;cursor:pointer;
+  border:2px solid transparent;transition:border 0.15s;
+}
+.profile-list-item:hover{border-color:var(--accent);}
+.profile-list-item.active-profile{border-color:var(--accent);}
+.mini-avatar{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:700;color:#fff;
+}
+.profile-list-name{font-size:14px;font-weight:600;color:var(--text);}
+.profile-list-sub{font-size:12px;color:var(--text-secondary);}
+
+/* INPUT */
+.os-input{
+  background:var(--hover);border:1px solid var(--separator);
+  border-radius:8px;padding:8px 12px;font-size:14px;
+  font-family:var(--font);color:var(--text);outline:none;width:100%;
+  -webkit-user-select:text;user-select:text;
+}
+.os-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,122,255,0.2);}
+
+/* BUTTONS */
+.os-btn{
+  background:var(--hover);border:1px solid var(--separator);
+  border-radius:8px;padding:8px 18px;font-size:13px;
+  font-family:var(--font);color:var(--text);cursor:pointer;font-weight:500;
+  transition:background 0.15s;
+}
+.os-btn:hover{background:var(--separator);}
+.os-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.os-btn.primary:hover{filter:brightness(0.9);}
+.os-btn.danger{background:#ff3b30;border-color:#ff3b30;color:#fff;}
+
+/* GAME WINDOW */
+.game-iframe{width:100%;height:100%;border:none;}
+.game-win-body{flex:1;position:relative;overflow:hidden;}
+
+/* ABOUT */
+.about-body{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;padding:32px;}
+.about-logo{font-size:64px;}
+.about-title{font-size:24px;font-weight:800;color:var(--text);}
+.about-ver{font-size:13px;color:var(--text-secondary);}
+.about-info{font-size:12px;color:var(--text-secondary);text-align:center;max-width:300px;line-height:1.6;}
+.about-sep{width:60%;height:1px;background:var(--separator);}
+
+/* APPLE MENU */
+#apple-menu{
+  position:fixed;top:28px;left:0;z-index:9100;
+  background:var(--bg-glass);
+  backdrop-filter:blur(30px) saturate(1.8);
+  -webkit-backdrop-filter:blur(30px) saturate(1.8);
+  border-radius:0 0 10px 10px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.2);
+  padding:4px;min-width:220px;display:none;
+  border:1px solid var(--separator);border-top:none;
+}
+.apple-menu-item{
+  padding:6px 14px;font-size:13px;color:var(--text);
+  border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+}
+.apple-menu-item:hover{background:var(--accent);color:#fff;}
+.apple-menu-sep{height:1px;background:var(--separator);margin:4px 0;}
+
+/* TAG */
+.tag{display:inline-block;background:var(--accent);color:#fff;font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:10px;margin-left:6px;}
+
+/* EMPTY STATE */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;color:var(--text-secondary);}
+.empty-state .es-icon{font-size:48px;}
+.empty-state p{font-size:14px;}
+
+/* RESIZE HANDLE */
+.resize-handle{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:se-resize;z-index:10;}
+
+/* SCROLLBAR */
+.win-content::-webkit-scrollbar{width:6px;}
+.win-content::-webkit-scrollbar-thumb{background:rgba(128,128,128,0.3);border-radius:3px;}
+
+/* ANIMATIONS */
+@keyframes win-open{from{transform:scale(0.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+.win-opening{animation:win-open 0.2s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes dock-bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-18px);}}
+.bouncing{animation:dock-bounce 0.5s ease 2;}
+
+/* MODAL */
+.modal-backdrop{
+  position:fixed;inset:0;z-index:9400;background:rgba(0,0,0,0.4);
+  display:none;align-items:center;justify-content:center;
+}
+.modal-backdrop.visible{display:flex;}
+.modal{
+  background:var(--window-bg);border-radius:16px;padding:28px;width:340px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+}
+.modal h3{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.modal p{font-size:13px;color:var(--text-secondary);margin-bottom:16px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
+</style>
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div id="boot-screen">
+  <div id="boot-logo">✦ AstralSync</div>
+  <div id="boot-bar-wrap"><div id="boot-bar"></div></div>
+  <div id="boot-sub">AstralSync OS</div>
+</div>
+
+<!-- OOBE — first-run profile setup -->
+<div id="oobe">
+  <div class="oobe-card">
+    <div class="oobe-logo">✦</div>
+    <div class="oobe-title">Welcome to AstralSync OS</div>
+    <div class="oobe-sub">Set up your profile to get started</div>
+    <div class="oobe-avatar-wrap">
+      <div class="oobe-avatar" id="oobe-avatar" onclick="document.getElementById('oobe-img-upload').click()">
+        <span id="oobe-avatar-emoji">👾</span>
+      </div>
+      <div class="oobe-avatar-hint">Tap to upload a photo</div>
+    </div>
+    <input type="file" id="oobe-img-upload" accept="image/*" style="display:none" onchange="oobeAvatarUpload(event)">
+    <input class="oobe-input" id="oobe-name" placeholder="Your name…" maxlength="24">
+    <div class="oobe-color-row" id="oobe-colors"></div>
+    <button class="oobe-btn" onclick="oobeFinish()">Get Started →</button>
+    <div class="oobe-skip" onclick="oobeSkip()">Skip setup</div>
+  </div>
+</div>
+
+<!-- MENU BAR -->
+<div id="menubar">
+  <div class="menu-apple" onclick="toggleAppleMenu()">&#63743;</div>
+  <div class="menu-item bold" id="active-app-name">Finder</div>
+  <div class="menu-item" onclick="openWindow('finder')">File</div>
+  <div class="menu-item" onclick="openWindow('finder')">Edit</div>
+  <div class="menu-item">View</div>
+  <div class="menu-item" onclick="toggleSpotlight()">Go</div>
+  <div class="menu-right">
+    <div class="menu-item" onclick="toggleSpotlight()">&#9906;</div>
+    <div class="menu-item status-glyph" title="Wi-Fi">⌁</div>
+    <div class="menu-item status-glyph" title="Sound">◖</div>
+    <div class="menu-item menu-status" onclick="toggleControlCenter()" title="Control Center">◉</div>
+    <div id="clock" class="menu-item"></div>
+  </div>
+</div>
+
+<!-- APPLE MENU -->
+<div id="apple-menu">
+  <div class="apple-menu-item" onclick="openWindow('about')">About AstralSync OS</div>
+  <div class="apple-menu-sep"></div>
+  <div class="apple-menu-item" onclick="openWindow('settings');hideAppleMenu()">System Settings&hellip;</div>
+  <div class="apple-menu-sep"></div>
+  <div class="apple-menu-item" onclick="openWindow('finder');hideAppleMenu()">Finder</div>
+  <div class="apple-menu-item" onclick="openWindow('store');hideAppleMenu()">App Store</div>
+  <div class="apple-menu-sep"></div>
+  <div class="apple-menu-item" onclick="toggleDarkMode();hideAppleMenu()">Toggle Dark Mode</div>
+  <div class="apple-menu-sep"></div>
+  <div class="apple-menu-item" style="color:#ff3b30;">Restart&hellip;</div>
+</div>
+
+<!-- DESKTOP -->
+<div id="desktop" oncontextmenu="showCtxMenu(event,'desktop')" onclick="hideAll()">
+  <video id="wp-video" autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;pointer-events:none;"></video>
+  <input type="file" id="wp-upload" accept="image/*,video/*,.gif" style="display:none;" onchange="handleWallpaperUpload(event)">
+  <div id="desktop-widgets">
+    <div class="desktop-widget">
+      <div class="widget-eyebrow">AstraOS</div>
+      <div class="widget-date" id="widget-date">Tuesday, Aug 11</div>
+      <div class="widget-meta" id="widget-time">11:53 PM · All systems online</div>
+    </div>
+    <div class="desktop-widget">
+      <div class="widget-row"><span class="widget-eyebrow">System status</span><strong>98%</strong></div>
+      <div class="widget-meter"><span></span></div>
+      <div class="widget-meta">Everything is running smoothly</div>
+    </div>
+  </div>
+  <div id="desktop-icons"></div>
+</div>
+
+<!-- DOCK -->
+<!-- ONLINE COUNTER -->
+<div id="online-counter" title="Live visitor count">
+  <div class="oc-row">
+    <div class="oc-dot"></div>
+    <div class="oc-count" id="oc-num">—</div>
+  </div>
+  <div class="oc-label">online now</div>
+  <div class="oc-visits" id="oc-visits"></div>
+</div>
+
+<div id="dock">
+  <div class="dock-item" onclick="toggleAppleMenu()" title="Start">
+    <div class="dock-img" style="background:linear-gradient(135deg,#0078d4,#106ebe);color:#fff;font-size:26px;">⊞</div>
+    <div class="dock-label">Start</div>
+  </div>
+  <div class="dock-sep"></div>
+  <div class="dock-item" onclick="openWindow('finder')" id="dock-finder">
+    <div class="dock-img">📁</div>
+    <div class="dock-label">Finder</div>
+    <div class="dock-dot" id="dot-finder"></div>
+  </div>
+  <div class="dock-item" onclick="openWindow('store')" id="dock-store">
+    <div class="dock-img">🛍️</div>
+    <div class="dock-label">App Store</div>
+    <div class="dock-dot" id="dot-store" style="display:none"></div>
+  </div>
+  <div class="dock-item" onclick="openWindow('settings')" id="dock-settings">
+    <div class="dock-img">⚙️</div>
+    <div class="dock-label">Settings</div>
+    <div class="dock-dot" id="dot-settings" style="display:none"></div>
+  </div>
+  <div class="dock-item" onclick="openWindow('profiles')" id="dock-profiles">
+    <div class="dock-img" id="dock-profile-img" style="font-size:28px;">👤</div>
+    <div class="dock-label">Profile</div>
+    <div class="dock-dot" id="dot-profiles" style="display:none"></div>
+  </div>
+  <div class="dock-item" onclick="toggleSpotlight()">
+    <div class="dock-img">🔍</div>
+    <div class="dock-label">Search</div>
+  </div>
+  <div class="dock-sep"></div>
+  <div class="dock-item" onclick="openWindow('about')">
+    <div class="dock-img">ℹ️</div>
+    <div class="dock-label">About</div>
+  </div>
+</div>
+
+<!-- CONTROL CENTER -->
+<div id="control-center" onclick="event.stopPropagation()">
+  <div class="cc-heading"><strong>Control Center</strong><span id="cc-profile-label">AstraOS</span></div>
+  <div class="cc-grid">
+    <button class="cc-tile active" id="cc-wifi" onclick="toggleControlTile('wifi')">
+      <span class="cc-tile-icon">⌁</span><span class="cc-tile-label">Wi-Fi · Connected</span>
+    </button>
+    <button class="cc-tile active" id="cc-focus" onclick="toggleControlTile('focus')">
+      <span class="cc-tile-icon">◐</span><span class="cc-tile-label">Focus</span>
+    </button>
+    <button class="cc-tile" id="cc-dark" onclick="toggleDarkMode();syncControlCenter()">
+      <span class="cc-tile-icon">◑</span><span class="cc-tile-label">Appearance</span>
+    </button>
+    <button class="cc-tile" onclick="openWindow('settings');hideControlCenter()">
+      <span class="cc-tile-icon">⚙</span><span class="cc-tile-label">System Settings</span>
+    </button>
+  </div>
+  <div class="cc-slider">
+    <label><span>Display brightness</span><span>72%</span></label>
+    <input type="range" min="0" max="100" value="72" aria-label="Display brightness">
+  </div>
+  <div class="cc-slider">
+    <label><span>Volume</span><span>48%</span></label>
+    <input type="range" min="0" max="100" value="48" aria-label="Volume">
+  </div>
+</div>
+
+<!-- SPOTLIGHT -->
+<div id="spotlight" onclick="hideSpotlight(event)">
+  <div class="spotlight-box" onclick="event.stopPropagation()">
+    <input id="spotlight-input" placeholder="Spotlight Search" oninput="spotlightSearch()" onkeydown="spotlightKey(event)">
+    <div id="spotlight-results" class="spotlight-results"></div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div id="ctx-menu">
+  <div class="ctx-item" onclick="openWindow('finder');hideCtx()">🎮 Games <span class="ctx-kbd">⌘F</span></div>
+  <div class="ctx-item" onclick="openWindow('store');hideCtx()">🛍️ App Store</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="openWindow('settings');hideCtx()">⚙️ Settings <span class="ctx-kbd">⌘,</span></div>
+  <div class="ctx-item" onclick="openWindow('profiles');hideCtx()">👤 Profiles</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="toggleDarkMode();hideCtx()">🌙 Toggle Dark Mode</div>
+  <div class="ctx-item" onclick="openWindow('settings');switchSettingsTab('wallpaper');hideCtx()">🖼️ Change Wallpaper</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="toggleSpotlight();hideCtx()">🔍 Search <span class="ctx-kbd">⌘Space</span></div>
+</div>
+
+<!-- NOTIFICATION AREA -->
+<div id="notif-area"></div>
+
+<!-- WINDOWS will be injected here -->
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">Create Profile</h3>
+    <p id="modal-desc">Enter a name for the new profile.</p>
+    <input class="os-input" id="modal-input" placeholder="Display name…" style="margin-bottom:10px;" -webkit-user-select:text;>
+    <input class="os-input" id="modal-email" placeholder="Email (optional)" type="email" style="margin-bottom:10px;" -webkit-user-select:text;>
+    <input class="os-input" id="modal-pass" placeholder="Password (optional)" type="password" style="margin-bottom:16px;" autocomplete="new-password" -webkit-user-select:text;>
+    <div class="modal-actions">
+      <button class="os-btn" onclick="closeModal()">Cancel</button>
+      <button class="os-btn primary" id="modal-confirm" onclick="confirmModal()">Create</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const GAMES = [
+  {title:"Krunker.io",img:"https://krunker-io.io/krunker-io-icon.jpg",url:"https://krunker.io/",cat:"Shooter"},
+  {title:"Agar.io",img:"https://paperiogame.io/data/image/game/agario.png",url:"https://agar.io/",cat:"IO"},
+  {title:"Slither.io",img:"https://media.pocketgamer.com/artwork/na-kcwl/image_jpeg_820.jpg",url:"https://slither.io/",cat:"IO"},
+  {title:"Shell Shockers",img:"https://slopegame.io/upload/imgs/shell-shockers-logo.jpg",url:"https://shellshock.io/",cat:"Shooter"},
+  {title:"Diep.io",img:"https://tse2.mm.bing.net/th/id/OIP.SoA7WalxosSMghPoFU8xUQAAAA",url:"https://diep.io/",cat:"IO"},
+  {title:"Tag",img:"https://cdn-1.webcatalog.io/catalog/poki-tag/poki-tag-icon-filled-256.png",url:"https://htmlxm.github.io/h3/tag/",cat:"Action"},
+  {title:"Sonic 2 Heroes",img:"https://i.ytimg.com/vi/6l0yZTA_W84/maxresdefault.jpg",url:"https://playsonicgames.com/embed/sonic-2-heroes.html",cat:"Sonic"},
+  {title:"Sonic Rush",img:"https://tse3.mm.bing.net/th/id/OIP.7bzWQQqYtOXGFyuxhFHgiwHaEK?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://c930n.github.io/seraph/games/sonicrush/index.html",cat:"Sonic"},
+  {title:"Sonic Maxidrive",img:"https://kbhgames.com/wp-content/uploads/2023/12/Sonic-Maxidrive.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-maxidrive.bin",cat:"Sonic"},
+  {title:"Sonic Scorched Quest",img:"https://i.ytimg.com/vi/ah9gyZhkU_8/maxresdefault.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-scorched-quest.gen",cat:"Sonic"},
+  {title:"Sonic 2",img:"https://th.bing.com/th/id/R.7d0aa2470f4f090efd76d71f590b1f95?rik=zSXD2%2ffCn0Bzyg&pid=ImgRaw&r=0",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=Sonic%20The%20Hedgehog%202.gen",cat:"Sonic"},
+  {title:"Sonic 3",img:"https://cdn2.steamgriddb.com/file/sgdb-cdn/icon_thumb/9b38965364330406f2af50c5bac6b5cf.png",url:"https://c930n.github.io/seraph/games/sonicthehedgehog3/index.html",cat:"Sonic"},
+  {title:"Sonic CD",img:"https://tse3.mm.bing.net/th/id/OIP.nEHHzXyQDMSLuTBjEtCUdQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://www.play-games.com/iframe/28919.html",cat:"Sonic"},
+  {title:"Sonic Mania",img:"https://image.api.playstation.com/cdn/UP0177/CUSA07023_00/pvfMACRlDW27Agp9HjDxL8CcmqxZL1V5.png",url:"https://math.leaning.cfd/g/assets/gn-games/590.html",cat:"Sonic"},
+  {title:"Sonic Advance",img:"https://cdn.mobygames.com/covers/4089338-sonic-advance-game-boy-advance-front-cover.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=gba&f=sonic-advance.gba",cat:"Sonic"},
+  {title:"Sonic Advance 2",img:"https://e.snmc.io/lk/lv/x/f10daace6aa56d5e48288417068f28b2/5277738",url:"https://f.kbhgames.com/emujs/play.php?c=gba&f=sonic-advance-2.gba",cat:"Sonic"},
+  {title:"Sonic Advance 3",img:"https://cdn.mobygames.com/covers/5596618-sonic-advance-3-game-boy-advance-front-cover.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=gba&f=sonic-advance-3.gba",cat:"Sonic"},
+  {title:"Metal Sonic Hyperdrive",img:"https://i.ytimg.com/vi/G0llD0Zz9ZA/maxresdefault.jpg",url:"https://playsonicgames.com/embed/metal-sonic-hyperdrive.html",cat:"Sonic"},
+  {title:"Metal Sonic Rebooted",img:"https://i.ytimg.com/vi/k19ujv5L-UQ/maxresdefault.jpg",url:"https://playsonicgames.com/embed/metal-sonic-rebooted.html",cat:"Sonic"},
+  {title:"Sonic HellFire Saga",img:"https://i.ytimg.com/vi/0_MqWt8PH5c/maxresdefault.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=HellfireSaga_Final_30_01_23.gen",cat:"Sonic"},
+  {title:"Sonic Classic Heroes",img:"https://www.jogosonlinewx.com.br/wp-content/uploads/2024/07/hq720-1.webp",url:"https://playsonicgames.com/embed/sonic-classic-heroes.html",cat:"Sonic"},
+  {title:"Sonic Hex Adventure",img:"https://www.y9freegames.com/wp-content/uploads/thumbs/custom/S/Sonic-Hex-Adventure.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=SHA_FINAL_BUILD.bin",cat:"Sonic"},
+  {title:"Sonic VR",img:"https://cdn.thegamesdb.net/images/original/boxart/front/130171-1.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=SonicVR.gen",cat:"Sonic"},
+  {title:"Sonic Robo Blast",img:"https://1.bp.blogspot.com/-rufQX4uCgas/XwZNbaYMS2I/AAAAAAAAEmI/Jgi1KraZn4gg0Ln67rPJBRvVCeb7y2kngCLcBGAsYHQ/s1600/Sonic%2BRobo%2BBlast%2B2.jpg",url:"https://theregoestokyo0.github.io/srb2web/",cat:"Sonic"},
+  {title:"Sonic Zeta Overdrive",img:"https://i.ytimg.com/vi/mPduuNj4SU8/maxresdefault.jpg",url:"https://playsonicgames.com/embed/sonic-zeta-overdrive.html",cat:"Sonic"},
+  {title:"Sonic Renovation",img:"https://tse4.mm.bing.net/th/id/OIP.YVqMm5vPGyQSneAOVbhe_QHaGX?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-renovation.bin",cat:"Sonic"},
+  {title:"Sonic Battle Race",img:"https://www.y9freegames.com/wp-content/uploads/2025/12/Sonic-2-Battle-Race-150x150.jpg",url:"https://playsonicgames.com/embed/sonic-2-battle-race.html",cat:"Sonic"},
+  {title:"Sonic Acceleration",img:"https://i.ytimg.com/vi/vcpB1OZr1GY/maxresdefault.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-acceleration.bin",cat:"Sonic"},
+  {title:"Sonic HackAble",img:"https://www.y9freegames.com/wp-content/uploads/thumbs/custom/S/Sonic-the-Hackable.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-the-hackable2021.bin",cat:"Sonic"},
+  {title:"Sonic EraZor",img:"https://i.ytimg.com/vi/d8RCeawts5A/maxresdefault.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-erazor7.bin",cat:"Sonic"},
+  {title:"Sonic Agx",img:"https://i.ytimg.com/vi/8PM15gqzUZA/maxresdefault.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=Sonic%20The%20Hedgehog%20AGX%20First%20Public%20Release.bin",cat:"Sonic"},
+  {title:"Sonic Rocket",img:"https://th.bing.com/th/id/OIP.5NSlOO3DE--oiRPL-mpY_wEsCo?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=Sonic_The_Hedgehog_Rocket.gen",cat:"Sonic"},
+  {title:"Sonic Dragon Edition",img:"https://i.ytimg.com/vi/Dp7I6OUrTfA/maxresdefault.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-dragon.gen",cat:"Sonic"},
+  {title:"Sonic Robotnik Returns 2",img:"https://tse3.mm.bing.net/th/id/OIP.8SsqVXaOJN1LsALriJbABwHaEK?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=Robotnik_Returns_2.gen",cat:"Sonic"},
+  {title:"Sonic SMD",img:"https://tse2.mm.bing.net/th/id/OIP.MgwojY4Xq7cuT8grd271dAAAAA?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://www.retrogames.cc/embed/46697-shc2024-sonic-smd.html",cat:"Sonic"},
+  {title:"Sonic 3 & Knuckles Battle Race",img:"https://i.ytimg.com/vi/U2aa8pXuu9Q/hqdefault.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-3-knuckles-battle-race.gen",cat:"Sonic"},
+  {title:"Sonic 4 CNOB",img:"https://tse2.mm.bing.net/th/id/OIP.NZO0IFJ0e03_fQdl9bYtJQAAAA?w=420&h=280&rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://sonicgames.org/embed/sonic-4-cybernetic-outbreak",cat:"Sonic"},
+  {title:"Sonic 2 Return of Shadow",img:"https://images.launchbox-app.com/29d5f6df-6a94-409d-a454-96e4563adaae.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-2-return-of-shadow.bin",cat:"Sonic"},
+  {title:"Sonic 1 Tag Team",img:"https://th.bing.com/th/id/OIP.S4fA7yOowqsYLKyahRGB_gAAAA?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-1-tag-team-adventure.bin",cat:"Sonic"},
+  {title:"Sonic Megadriven",img:"https://tse1.mm.bing.net/th/id/OIP.0YWhHnE8apAv3gtGEI2z4AHaEK?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=sonic-the-hedgehog-megadriven-demo3.bin",cat:"Sonic"},
+  {title:"Moto X3M",img:"https://rideable.org/wp-content/uploads/2023/11/moto-x3m-unblocked.jpg",url:"https://motox3munblocked.github.io/",cat:"Racing"},
+  {title:"Slope",img:"https://play.frogiee.one/stuff/games/slope.jpg",url:"https://sciencemathedu.github.io/slope/",cat:"Arcade"},
+  {title:"G-Switch",img:"https://img.poki.com/cdn-cgi/image/quality=78,width=600,height=600,fit=cover,g=0.5x0.5,f=auto/7f53593c-4090-4cc5-a934-6a5e599d8eaa.png",url:"https://unblockedgamesfree.github.io/g-switch-3/",cat:"Arcade"},
+  {title:"Tunnel Rush",img:"https://unblocked-game66.com/wp-content/uploads/2024/03/tunnel-rush.png",url:"https://unblocked-games-67.org/iframes/tunnel-rush-main/",cat:"Arcade"},
+  {title:"Hyper Tunnel",img:"https://ozgames.io/cache/data/image/game/Hyper-Tunnel-m160x96.JPG",url:"https://gamea.azgame.io/hyper-tunnel/",cat:"Arcade"},
+  {title:"Slope Tunnel",img:"https://tunnelrush3d.com/cache/data/image/game/slope-tunnel1-m300x300.jpg",url:"https://unblocked-games-67.org/iframes/slope-tunnel-main/",cat:"Arcade"},
+  {title:"Escape Road",img:"https://traffic-rider.io/data/image/game/escaperoad.jpg",url:"https://azgames.io/game/escape-road/",cat:"Racing"},
+  {title:"SpeedStars",img:"https://oss.speedstars.im/game-img/speed-stars-1.webp",url:"https://thepercentcalculator.com/playgame/speedstars/",cat:"Racing"},
+  {title:"1v1.lol",img:"https://1v1lolunblocked.org/files/images/1v1lol-350x350.jpg",url:"https://1v1lol-unblocked-free.github.io/",cat:"Shooter"},
+  {title:"Subway Surfers",img:"https://play-lh.googleusercontent.com/q3fXz4jcMPIjLh2bICiRFRHHZTL3iSrA6jqynI6JNcCGnN7uA7l1-QepJjd63bm3k0Y",url:"https://c930n.github.io/seraph/games/subwaysurfers/index.html",cat:"Arcade"},
+  {title:"Retro Bowl",img:"https://r2.fizzerz.com/game-source/retro-bowl/icon.webp",url:"https://retro-bowl-unblocked.com/game",cat:"Sports"},
+  {title:"Basketball Stars",img:"https://r2.fizzerz.com/game-source/basketball-stars/icon.webp",url:"https://unblockedgamesfree.github.io/basketball-stars/",cat:"Sports"},
+  {title:"Basketball Random",img:"https://unblockedrush.com/wp-content/uploads/2025/09/basket-random.webp",url:"https://ubg67.gitlab.io/basket-random/",cat:"Sports"},
+  {title:"Soccer Random",img:"https://ubg67.gitlab.io/assets/upload/ubg67org/soccer-random.png",url:"https://ubg67.gitlab.io/soccer-random/",cat:"Sports"},
+  {title:"Boxing Random",img:"https://images.sftcdn.net/images/t_app-cover-l,f_auto/p/21f6d42f-18ce-450e-9626-0a283cdd45c3/3487339502/boxing-random-screenshot.png",url:"https://ubg67.gitlab.io/boxing-random/",cat:"Sports"},
+  {title:"Volley Random",img:"https://tse4.mm.bing.net/th/id/OIP.MA3NsAVZ-mCVcOvwVsv9aQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://rycellgames.github.io/raw/games/volleyrandom/index.html",cat:"Sports"},
+  {title:"Basket Bros",img:"https://tse2.mm.bing.net/th/id/OIP.hKZHbFV9hitcpsUbWoNJAwHaFj?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://iframe.unblocked-76-games.org/basket-bros-main/",cat:"Sports"},
+  {title:"Pac-Man",img:"https://brutalgamer.com/wp-content/uploads/2015/05/PAC-MAN_Icon.jpg",url:"https://pacman.gamestores.fun/",cat:"Classic"},
+  {title:"Cookie Clicker",img:"https://cdn2.steamgriddb.com/icon/806c0bf65a5cc8e89564ac7391bb3f76/32/256x256.png",url:"https://jasongamesdev.github.io/cookie-clicker/",cat:"Casual"},
+  {title:"Infinite Craft",img:"https://tse1.mm.bing.net/th/id/OIP.KoctmhK3esztcugH73hmnQHaEK?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://infinitecraftnew.com/infinite-craft/",cat:"Casual"},
+  {title:"BitLife",img:"https://www.gamenora.com/upload/games/thumbnails/BitLife%20Real%20Life%20Simulator.webp",url:"https://gameinclassroom.github.io/bitlife/",cat:"Casual"},
+  {title:"Poly Track",img:"https://poki.us.org/wp-content/uploads/2025/07/Poly-Track.jpg",url:"https://www.kodub.com/apps/polytrack",cat:"Racing"},
+  {title:"Minecraft",img:"https://assets2.ignimgs.com/2014/06/18/minecraft-buttonjpg-b689ca.jpg",url:"about:blank",cat:"Adventure",blank:"https://eaglercraft-minecraft.com/eaglercraft-unblocked.embed"},
+  {title:"Roblox",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Roblox_%282025%29_%28App_Icon%29.svg/1200px-Roblox_%282025%29_%28App_Icon%29.svg.png",url:"https://198.ip.nowgg.lol/apps/a/19900/b.html",cat:"Adventure"},
+  {title:"People Playground",img:"https://images.gog-statics.com/5ffaf8774afa96332c101594d9046271d002b90bc1e2ba1fd1ed3d4da2f8d8df.jpg",url:"https://map-l.github.io/play/people-playground/",cat:"Sandbox"},
+  {title:"Solar Smash",img:"https://gogamego.io/wp-content/uploads/2025/08/solar-smash.webp",url:"https://solarsmashonline.com/play/solar-smash/",cat:"Sandbox"},
+  {title:"Pixel Speedrun",img:"https://tse2.mm.bing.net/th/id/OIP.gP6ysHWWmM74-Y4FwqqfwQHaEP?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://files.rocketgames.io/uploads/games/p/pixel-speedrun/files/85bc97/index.html",cat:"Arcade"},
+  {title:"Death Run 3D",img:"https://unblockedrush.com/wp-content/uploads/2025/08/death-run-3d-cleaned.webp",url:"https://23azostore.github.io/s7/death-run-3d/",cat:"Arcade"},
+  {title:"Cluster Rush",img:"https://doodle-jump.co/data/image/game/cluster-rush.png",url:"https://jasongamesdev.github.io/cluster-rush/",cat:"Arcade"},
+  {title:"Tap Road",img:"https://snow-rider3d.io/data/image/game/tap-road.jpg",url:"https://jasongamesdev.github.io/tap-road/",cat:"Arcade"},
+  {title:"Snow Rider 3D",img:"https://snow-rider3d.io/data/image/game/snow-rider-3d-unblocked/snow-rider-3d-unblocked.jpg",url:"https://snowriderx.github.io/snowrider3d/index.html",cat:"Sports"},
+  {title:"Geometry Dash Lite",img:"https://tse1.mm.bing.net/th/id/OIP.Xn_URdu2VFU43Hl9grWhugAAAA?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://ubg76.gitlab.io/geometry-dash-lite/",cat:"Arcade"},
+  {title:"Geometry Dash Remastered",img:"https://geometrydashbreeze.com/upload/cache/upload/imgs/geometry-dash-remastered-m240x240.jpg",url:"https://ubgwtf.gitlab.io/geometry-dash-remastered/",cat:"Arcade"},
+  {title:"Level Devil",img:"https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3242750/a78a03f1047a590e6b9b0360ec361924d7f98959/capsule_616x353.jpg?t=1743000677",url:"https://www.leveldevilfull.com/play/level-devil/",cat:"Platformer"},
+  {title:"Pizza Tower",img:"https://img.gg.deals/91/bc/8d13bc0d02ba4006283cfc6206fd23e267b4_912cr485.jpg",url:"https://math.leaning.cfd/g/assets/gn-games/267.html",cat:"Platformer"},
+  {title:"Fancy Pants",img:"https://th.bing.com/th/id/OIP.NmIPDnCJRQazLP46jY8FEQHaHa?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://23azostore.github.io/s4/fancy-pants/",cat:"Platformer"},
+  {title:"Red Ball 4",img:"https://th.bing.com/th/id/R.a43b23686213c36ed4e704e71dc7cb33?rik=64OLEqYIQ%2fELFA&pid=ImgRaw&r=0",url:"https://iframe.unblocked-76-games.org/red-ball-4-main/",cat:"Platformer"},
+  {title:"FireBoy & WaterGirl",img:"https://play-lh.googleusercontent.com/6N_ON50BZiEAe-ll2lM92NrVrgp5I5Ha6VI0a4Usw7uPmgEjL6tgJR6jWYUkkYgx2LM",url:"https://iframe.unblocked-76-games.org/fireboy-and-watergirl-1-forest-temple-main/",cat:"Platformer"},
+  {title:"Stickman Hook",img:"https://tse1.mm.bing.net/th/id/OIP.UEKMsdk-eU43lfHA0j9naQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://map-l.github.io/play/stickmanhook/",cat:"Platformer"},
+  {title:"Tanuki Sunset",img:"https://boygames.io/wp-content/uploads/2025/09/Tanuki-sunset-UNBLOCKED.png",url:"https://class6x.gitlab.io/tanuki-sunset/",cat:"Casual"},
+  {title:"Crossy Road",img:"https://cdn.jim-nielsen.com/ios/1024/crossy-road-2022-05-13.png",url:"https://classroom8.github.io/crossy-road/",cat:"Arcade"},
+  {title:"Temple Run",img:"https://www.coolmathgameskids.com/wp-content/uploads/2021/01/temple-run-2.jpg",url:"https://nf00008.ourcrazysites.com/gg/temple-run/",cat:"Arcade"},
+  {title:"Google Snake",img:"https://googlesnakemods.com/img/snake_logo.png",url:"https://googlesnakemods.com/v/current/",cat:"Classic"},
+  {title:"Google Baseball",img:"https://google-doodlebaseball.github.io/data/image/game/googlebaseball.png",url:"https://jasongamesdev.github.io/doodle-baseball/",cat:"Sports"},
+  {title:"Google Champion Island",img:"https://www.unblockedgame.io/wp-content/uploads/2023/06/gci.jpg",url:"https://sudoku-online.github.io/a7/doodle-champion-island/",cat:"Adventure"},
+  {title:"Uno",img:"https://th.bing.com/th/id/R.52f881f709924f58c801dc9dde7da9c0?rik=3lyQUpIZ%2bOS3Eg&pid=ImgRaw&r=0",url:"https://db.quackprep.org/html/uno/",cat:"Card"},
+  {title:"Stickman Duelist",img:"https://th.bing.com/th/id/R.5b7c93faa5129b6fb26eead553d4e23e?rik=19Y3PgOvVMJaLg&pid=ImgRaw&r=0",url:"https://g2.igroutka.ru/lib/crazy/games/stickman-clash/",cat:"Fighting"},
+  {title:"Stick Fighter",img:"https://th.bing.com/th/id/OIP.K5trUixMfBrO_9SAeNhWugHaHa?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://unblocked-games-67.org/iframes/stick-fighter-main/",cat:"Fighting"},
+  {title:"UltraKill",img:"https://gamerjournalist.com/wp-content/uploads/2023/01/ultrakill-feature-1.jpg?resize=1024",url:"https://map-l.github.io/play/ultrakill/",cat:"Shooter"},
+  {title:"DeadShot",img:"https://static.wixstatic.com/media/a66f14_326c2e5c3a3b4a19be93963e7e2a443e~mv2.webp",url:"https://deadshot.io",cat:"Shooter"},
+  {title:"Killstreak",img:"https://trampoline.turbowarp.org/thumbnails/915122508",url:"https://math.demon.in.net/game/killstreak.html",cat:"Shooter"},
+  {title:"FnF",img:"https://tse4.mm.bing.net/th/id/OIP.NKqfrjuDg1GNk3IZvY_biAAAAA?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://fnf.kdata1.com/2024/fnf/5000/",cat:"FnF"},
+  {title:"FnF Tricky",img:"https://tse1.mm.bing.net/th/id/OIP.d2iEQ2jo3-RYTg9hRnBX_gHaFh?cb=defcache2defcache=1&rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://fnf.run3.io/tricky/1/",cat:"FnF"},
+  {title:"FnF Kapi",img:"https://i.pinimg.com/originals/3a/b4/6b/3ab46b3cb789406d2d5fe4241fcd7f7e.gif",url:"https://fnf.kdata1.com/kapi-arcade-showdown/2/",cat:"FnF"},
+  {title:"FnF Whitty",img:"https://images.gamebanana.com/img/ss/mods/602ad2dd9c20e.jpg",url:"https://mod.fnfhub.net/24905/",cat:"FnF"},
+  {title:"FnF Mario Madness v2",img:"https://www.fnfgo.com/wp-content/uploads/2024/05/fnf-mario-madness.jpg",url:"https://mod.fnfhub.net/27062/",cat:"FnF"},
+  {title:"FnF Shucks",img:"https://i.ytimg.com/vi/d5Gp0EsktNI/maxresdefault.jpg",url:"https://mod.fnfhub.net/27472/",cat:"FnF"},
+  {title:"FnF Mid Fight",img:"https://i1.sndcdn.com/artworks-UfzAwNw2wehZw0g0-zx7tQQ-t500x500.png",url:"https://fnf.run3.io/midfight/2/",cat:"FnF"},
+  {title:"FnF Rivals",img:"https://fnf-games.io/data/image/game/fnf-rivals/fnf-rivals.jpeg",url:"https://static.fnfgaming.com/file/h5games/onlinegames/games/2025/q2/friday-night-funkin-rivals/index.html",cat:"FnF"},
+  {title:"FnF Spirits of Hell V2",img:"https://i1.sndcdn.com/artworks-cIgWJkCA9Ers2F6l-S6d4AQ-t1080x1080.jpg",url:"https://static.fnfgaming.com/file/h5games/onlinegames/games/2023/q3/friday-night-funkin-spirits-of-hell-v2-sonic/index.html",cat:"FnF"},
+  {title:"FnF Rodentrap",img:"https://kbhgames.com/wp-content/uploads/2024/03/FNF-Sonic-Legacy-RodentRap.png",url:"https://static.fnfgaming.com/file/h5games/onlinegames/games/2025/q2/friday-night-funkin-rodentrap-sonic-legacy/index.html",cat:"FnF"},
+  {title:"FnF Accelerant Hank",img:"https://th.bing.com/th/id/OIP.m5Hij_4ub8XFaQJRKy5inwHaG6?w=162&h=180&c=7&r=0&o=7&pid=1.7&rm=3",url:"https://static.fnfgaming.com/file/h5games/onlinegames/games/2025/q2/friday-night-funkin-accelerant-hank/index.html",cat:"FnF"},
+  {title:"FNAF",img:"https://fnaf1.io/cache/data/image/game/fnaf-1-f185x115.jpg",url:"https://fnaf1.io/fnaf-1.embed",cat:"Horror"},
+  {title:"FNAF 2",img:"https://th.bing.com/th/id/R.36d219819fa9df37a0e415e9873ebea4?rik=GRxp7sWHDLYEgA&pid=ImgRaw&r=0",url:"https://run3.io/popgame/fnaf/fnaf2.html",cat:"Horror"},
+  {title:"FNAF 3",img:"https://th.bing.com/th/id/R.a70c4d0e845b2de77dc85a45cea0a4ab?rik=XQ%2f%2fZRS06SnuzA&pid=ImgRaw&r=0",url:"https://run3.io/popgame/fnaf/fnaf3.html",cat:"Horror"},
+  {title:"FNAF 4",img:"https://tse3.mm.bing.net/th/id/OIP.WwpqmzOebGsUs6AXt1P9kQHaHd?cb=defcache2defcache=1&rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://run3.io/popgame/fnaf/fnaf4.html",cat:"Horror"},
+  {title:"Granny",img:"https://nargames.com/storage/uploads/thumbs/granny.webp",url:"https://facade.myaddr.dev/!!/https://cdn.jsdelivr.net/gh/gn-math/html@main/90.htmlv",cat:"Horror"},
+  {title:"Baldi's Basics",img:"https://geometrydash.io/data/image/baldis-basics.jpg",url:"https://baldisbasics.gitlab.io/file/",cat:"Horror"},
+  {title:"Bendy & Ink Machine",img:"https://image.api.playstation.com/vulcan/ap/rnd/202505/0123/d1f5b1636c6c3ecf8f75eba464dfbc74b7598e82a9ce8a6e.png",url:"https://facade.myaddr.dev/!!/https://cdn.jsdelivr.net/gh/gn-math/html@main/215.html",cat:"Horror"},
+  {title:"Happy Wheels",img:"https://tse4.mm.bing.net/th/id/OIP.XoXLWqfQ3huF31UGCRxXpgHaEK?cb=defcache2defcache=1&rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://facade.myaddr.dev/!!/https://cdn.jsdelivr.net/gh/gn-math/html@main/624.html",cat:"Action"},
+  {title:"Ragdoll Hit",img:"https://class6x.gitlab.io/assets/upload/classroom6x/jpg/ragdoll-hit.jpg",url:"https://class6x.gitlab.io/ragdoll-hit/",cat:"Action"},
+  {title:"Pokemon Emerald",img:"https://archives.bulbagarden.net/media/upload/thumb/6/65/Emerald_EN_boxart.jpg/1200px-Emerald_EN_boxart.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=gba&f=pokemon-emerald.gba",cat:"RPG"},
+  {title:"Pokemon FireRed",img:"https://assets.altarofgaming.com/wp-content/uploads/2021/12/pokemon-fire-red-version-game-cover-altar-of-gaming.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=gba&f=pokemonredfire.gba",cat:"RPG"},
+  {title:"Pokemon Unbound",img:"https://tse2.mm.bing.net/th/id/OIP.8MB91Im9wS3sIvymCFZhawHaEK?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://retrogames.games/embed/pokemon-unbound-v2-1-1-1",cat:"RPG"},
+  {title:"DBZ Supersonic Warriors",img:"https://tse3.mm.bing.net/th/id/OIP.jEPmg0KGu06Nbke7thM6HAHaEK?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://www.dbzgames.org/emu/dragon-ball-z-supersonic-warriors_g/",cat:"Fighting"},
+  {title:"Bleach vs Naruto",img:"https://th.bing.com/th/id/OIP.K1hJZkNxCT3HGg3lOYpuaAHaEo?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://www.rocketgames.io/gameframe/bleach-vs-naruto",cat:"Fighting"},
+  {title:"Stick Duel",img:"https://tse4.mm.bing.net/th/id/OIP.OCIBdMDaeUCn5ahQzdYQzgHaFj?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://files.twoplayergames.org/files/games/o1/Stick_Duel_The_War/index.html",cat:"Fighting"},
+  {title:"Out_Paced",img:"https://out-paced.vercel.app/Logo.png",url:"https://out-paced.vercel.app/",cat:"Racing"},
+  {title:"Survival Race",img:"https://unblockedrush.com/wp-content/uploads/2025/09/survival-race.webp",url:"https://survival-race.io/game/survival-race/",cat:"Racing"},
+  {title:"Highway Rider",img:"https://new66ez.github.io/img/highwayriderextreme/highway-rider-extreme.png",url:"https://unblocked-games-67.org/iframes/highway-rider-extreme-main/",cat:"Racing"},
+  {title:"Battle Wheels",img:"https://tse4.mm.bing.net/th/id/OIP.tYbEsfqZkxloTipNAF34eAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://iframe.unblocked-76-games.org/battle-wheels-main/",cat:"Racing"},
+  {title:"Tomb of the Mask",img:"https://api.web.gamepix.com/assets/img/600/340/banner/tomb-of-the-mask.png",url:"https://class6x.gitlab.io/tomb-of-the-mask/",cat:"Arcade"},
+  {title:"Among Us Sandbox",img:"https://tse4.mm.bing.net/th/id/OIP.Id5vBbqOKzKUZmhlbLkYpgHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://iframe.unblocked-76-games.org/among-us-main/",cat:"Casual"},
+  {title:"Binding of Isaac",img:"https://external-preview.redd.it/b9jmDJXxvCIeGxGZ-c7CyZlnU0wYzEo5kfZkpVopP6g.jpg?auto=webp&s=91dc39a367a877caa7697d305a89d1f0ecd263af",url:"https://db.quackprep.org/html/thebindingofisaac/",cat:"Roguelike"},
+  {title:"BoneTale",img:"https://play-lh.googleusercontent.com/fBLGre4csvQQZ6QAOlj7FU3psT9FNXK9JERdjey1sYQePwzvVBwM0v9CMQNy_LUdaCrF",url:"https://app-371277.games.s3.yandex.net/371277/ab6m47paqoskshjkrm7xc8q6oq5u3kjp_brotli/index.html?is-united-page=1&skip-guard=1&header=no",cat:"RPG"},
+  {title:"Evil Glitch",img:"https://facade.myaddr.dev/!!/https://cdn.jsdelivr.net/gh/genizy/assets@main/evil-glitch/icon.jpeg",url:"https://facade.myaddr.dev/!!/https://cdn.jsdelivr.net/gh/gn-math/html@main/277.html",cat:"Action"},
+  {title:"Lands of Blight",img:"https://disasterarena.github.io/images/lands-of-blight.png",url:"https://class6x.gitlab.io/lands-of-blight/",cat:"Strategy"},
+];
+
+const CATEGORIES = [...new Set(GAMES.map(g=>g.cat))].sort();
+
+const WALLPAPERS = [
+  {name:"Sonoma Dark",   type:"image", css:"url('https://512pixels.net/downloads/macos-wallpapers-6k/14-0-Dark.jpg') center/cover no-repeat"},
+  {name:"Sonoma Light",  type:"image", css:"url('https://512pixels.net/downloads/macos-wallpapers-6k/14-0.jpg') center/cover no-repeat"},
+  {name:"Ventura",       type:"image", css:"url('https://512pixels.net/downloads/macos-wallpapers-6k/13-0.jpg') center/cover no-repeat"},
+  {name:"Monterey",      type:"image", css:"url('https://512pixels.net/downloads/macos-wallpapers-6k/12-0-dark.jpg') center/cover no-repeat"},
+  {name:"Win11 Bloom",   type:"image", css:"url('https://raw.githubusercontent.com/niivu/Windows-11-Wallpapers/main/11%20defaulttheme%20wallpaper.jpg') center/cover no-repeat"},
+  {name:"Space",         type:"css",   css:"radial-gradient(ellipse at 30% 50%,#1a0533,#000814 60%,#0d1b2a)"},
+  {name:"Nebula",        type:"css",   css:"radial-gradient(ellipse at 70% 30%,#2d1b69,#11001c 50%,#001219)"},
+  {name:"Deep Ocean",    type:"css",   css:"linear-gradient(160deg,#001f3f 0%,#0074D9 50%,#7FDBFF 100%)"},
+  {name:"Sunset",        type:"css",   css:"linear-gradient(135deg,#f7971e,#ffd200,#ff6b6b,#c471ed)"},
+  {name:"Emerald",       type:"css",   css:"linear-gradient(135deg,#0f3443,#34e89e)"},
+  {name:"Midnight",      type:"css",   css:"#0a0a0f"},
+  {name:"Aqua",          type:"css",   css:"linear-gradient(135deg,#0f2027,#203a43,#2c5364)"},
+  {name:"Rose",          type:"css",   css:"linear-gradient(135deg,#f953c6,#b91d73,#200122)"},
+  {name:"Sierra",        type:"css",   css:"linear-gradient(135deg,#1a1a2e,#16213e,#0f3460,#e94560)"},
+  {name:"Aurora",        type:"css",   css:"linear-gradient(160deg,#0093E9,#80D0C7)"},
+  {name:"Lava",          type:"css",   css:"linear-gradient(135deg,#200122,#6f0000,#ff4500)"},
+  {name:"Violet Storm",  type:"css",   css:"linear-gradient(135deg,#4a0e8f,#8b00ff,#c77dff)"},
+  {name:"Mint",          type:"css",   css:"linear-gradient(135deg,#00b09b,#96c93d)"},
+  {name:"Cherry",        type:"css",   css:"linear-gradient(135deg,#eb3349,#f45c43)"},
+  {name:"Deep Space",    type:"css",   css:"linear-gradient(180deg,#000000 0%,#0a0028 40%,#1a0040 70%,#000010 100%)"},
+  {name:"Win11 Dark",    type:"css",   css:"linear-gradient(135deg,#0a0010,#1a0033,#0a001a)"},
+  {name:"Neon City",     type:"css",   css:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)"},
+  {name:"Gold",          type:"css",   css:"linear-gradient(135deg,#0f0c00,#3d2b00,#b8860b)"},
+  {name:"Ice",           type:"css",   css:"linear-gradient(135deg,#c9d6ff,#e2e2e2)"},
+  {name:"Win95",         type:"css",   css:"#008080"},
+];
+
+const ACCENT_COLORS = [
+  {name:"Blue",val:"#007AFF"},
+  {name:"Purple",val:"#5E5CE6"},
+  {name:"Pink",val:"#FF2D55"},
+  {name:"Red",val:"#FF3B30"},
+  {name:"Orange",val:"#FF9500"},
+  {name:"Yellow",val:"#FFCC00"},
+  {name:"Green",val:"#34C759"},
+  {name:"Teal",val:"#5AC8FA"},
+  {name:"Graphite",val:"#8E8E93"},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state;
+try {
+  state = JSON.parse(localStorage.getItem('astralOS') || '{}');
+  if(typeof state !== 'object' || !state) state = {};
+} catch(e) { state = {}; }
+state.profiles = state.profiles || [{id:1,name:"Player 1",color:"#007AFF",emoji:"👾",email:"",password:""}];
+// Ensure existing profiles have new fields
+state.profiles.forEach(p=>{ if(!p.email) p.email=''; if(!p.password) p.password=''; });
+state.activeProfile = state.activeProfile || 0;
+state.wallpaper = (typeof state.wallpaper === 'number' && state.wallpaper >= 0) ? state.wallpaper : 0;
+state.accent = state.accent || "#007AFF";
+state.dark = state.dark ?? false;
+state.finderCategory = state.finderCategory || "All";
+state.font = state.font || 'system';
+state.oobe_done = state.oobe_done || false;
+state.installedApps = state.installedApps || [];
+state.iconPositions = state.iconPositions || {};
+// Custom wallpaper stored separately to avoid localStorage quota issues
+state.customWP = null;
+try {
+  const cwp = localStorage.getItem('astralCustomWP');
+  if(cwp) state.customWP = JSON.parse(cwp);
+} catch(e) {}
+
+// Profile avatars stored separately
+let profileAvatars = {};
+try {
+  const pa = localStorage.getItem('astralAvatars');
+  if(pa) profileAvatars = JSON.parse(pa);
+} catch(e) {}
+function saveProfileAvatars(){
+  try { localStorage.setItem('astralAvatars', JSON.stringify(profileAvatars)); } catch(e) {}
+}
+function getProfileAvatar(pid){ return profileAvatars[pid] || null; }
+function setProfileAvatar(pid, dataURL){
+  profileAvatars[pid] = dataURL;
+  saveProfileAvatars();
+  updateDockAvatar();
+}
+function updateDockAvatar(){
+  const p = state.profiles[state.activeProfile];
+  const img = getProfileAvatar(p.id);
+  const el = document.getElementById('dock-profile-img');
+  if(!el) return;
+  if(img){
+    el.innerHTML = `<img src="${img}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">`;
+  } else {
+    el.textContent = p.emoji||'👤';
+    el.style.fontSize='28px';
+  }
+}
+
+function saveState(){
+  try {
+    const s = Object.assign({},state, {customWP:null});
+    localStorage.setItem('astralOS', JSON.stringify(s));
+  } catch(e) {}
+}
+function saveCustomWP(){
+  try {
+    if(state.customWP) localStorage.setItem('astralCustomWP', JSON.stringify(state.customWP));
+    else localStorage.removeItem('astralCustomWP');
+  } catch(e) {
+    localStorage.removeItem('astralCustomWP');
+    state.customWP=null;
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+try{applyState();}catch(e){console.warn('applyState error',e);}
+try{startClock();}catch(e){}
+setTimeout(()=>{try{updateDockAvatar();}catch(e){}},100);
+setTimeout(()=>{try{openWindow('finder');}catch(e){}},400);
+setTimeout(()=>{try{showNotif('🎮','AstralSync OS','Welcome! Double-click icons or use the Dock.');}catch(e){}},800);
+
+function applyState(){
+  document.body.classList.toggle('dark-mode', state.dark);
+  applyFont(state.font);
+  document.documentElement.style.setProperty('--accent', state.accent);
+  applyWallpaper();
+}
+
+function applyFont(f){
+  const fonts={
+    system:"-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter',sans-serif",
+    inter:"'Inter',sans-serif",
+    orbitron:"'Orbitron',sans-serif",
+    playfair:"'Playfair Display',serif",
+    spacemono:"'Space Mono',monospace",
+    nunito:"'Nunito',sans-serif",
+  };
+  document.documentElement.style.setProperty('--font', fonts[f]||fonts.system);
+}
+
+function applyWallpaper(){
+  const desktop=document.getElementById('desktop');
+  const video=document.getElementById('wp-video');
+  video.style.display='none';
+
+  if(state.customWP){
+    const c=state.customWP;
+    if(c.type==='video'){
+      desktop.style.background='#000';
+      video.src=c.src;
+      video.style.display='block';
+    } else {
+      desktop.style.background=`url('${c.src}') center/cover no-repeat`;
+    }
+    return;
+  }
+
+  const idx=(typeof state.wallpaper==='number'&&state.wallpaper>=0&&state.wallpaper<WALLPAPERS.length)?state.wallpaper:0;
+  const w=WALLPAPERS[idx]||WALLPAPERS[0];
+  desktop.style.background=w.css;
+}
+
+// ============================================================
+// CLOCK
+// ============================================================
+function startClock(){
+  function tick(){
+    const now=new Date();
+    const d=now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    const t=now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    const clock=document.getElementById('clock');
+    const widgetDate=document.getElementById('widget-date');
+    const widgetTime=document.getElementById('widget-time');
+    if(clock) clock.textContent=d+' '+t;
+    if(widgetDate) widgetDate.textContent=now.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+    if(widgetTime) widgetTime.textContent=t+' · All systems online';
+  }
+  tick();setInterval(tick,10000);
+}
+
+// ============================================================
+// WINDOWS
+// ============================================================
+let winZ=1000;
+const openWindows={};
+
+const WIN_CONFIGS={
+  finder:{title:'Finder',w:820,h:520,icon:'📁'},
+  store:{title:'App Store',w:750,h:560,icon:'🛍️'},
+  settings:{title:'System Settings',w:700,h:520,icon:'⚙️'},
+  profiles:{title:'Profiles',w:500,h:560,icon:'👤'},
+  about:{title:'About AstralSync OS',w:380,h:340,icon:'ℹ️'},
+};
+
+function openWindow(id, extra){
+  if(openWindows[id]){
+    focusWindow(id);
+    openWindows[id].style.display='flex';
+    openWindows[id].classList.remove('minimized');
+    return;
+  }
+  const cfg = WIN_CONFIGS[id]||{title:extra?.title||id,w:1000,h:660,icon:extra?.icon||'🎮'};
+  const el = document.createElement('div');
+  el.className='window win-opening focused';
+  el.id='win-'+id;
+  el.dataset.title=cfg.title;
+  const cx=Math.random()*200+60, cy=Math.random()*80+60;
+  el.style.cssText=`left:${cx}px;top:${cy}px;width:${cfg.w}px;height:${cfg.h}px;`;
+  el.innerHTML=buildWinHTML(id,cfg,extra);
+  document.getElementById('desktop').appendChild(el);
+  openWindows[id]=el;
+  makeDraggable(el,id);
+  setDot(id,true);
+  focusWindow(id);
+  document.getElementById('active-app-name').textContent=cfg.title;
+}
+
+function buildWinHTML(id,cfg,extra){
+  let body='';
+  if(id==='finder') body=buildFinder();
+  else if(id==='store') body=buildStore();
+  else if(id==='settings') body=buildSettings();
+  else if(id==='profiles') body=buildProfiles();
+  else if(id==='about') body=buildAbout();
+  else if(id.startsWith('game_')) body=buildGameWin(extra);
+  else if(id.startsWith('app_')) body=`<iframe src="${extra?.url||''}" style="width:100%;height:100%;border:none;display:block;"></iframe>`;
+
+  return `
+  <div class="win-titlebar" id="tb-${id}">
+    <div class="traffic close" onclick="closeWindow('${id}')"></div>
+    <div class="traffic min" onclick="minimizeWindow('${id}')"></div>
+    <div class="traffic max" onclick="maximizeWindow('${id}')"></div>
+    <div class="win-title">${cfg.icon} ${cfg.title}</div>
+    <div class="win-titlebar-actions">
+      <button class="win11-btn" onclick="minimizeWindow('${id}')" title="Minimize">&#x2012;</button>
+      <button class="win11-btn" onclick="maximizeWindow('${id}')" title="Maximize/Restore">&#x2610;</button>
+      <button class="win11-btn win11-close" onclick="closeWindow('${id}')" title="Close">&#x2715;</button>
+    </div>
+  </div>
+  <div class="win-body">${body}</div>
+  <div class="resize-handle" onmousedown="startResize(event,'win-${id}')"></div>`;
+}
+
+function closeWindow(id){
+  const el=openWindows[id];
+  if(el){
+    el.remove();delete openWindows[id];setDot(id,false);
+    updateActiveApp();
+  }
+}
+function minimizeWindow(id){
+  const el=openWindows[id];
+  if(el){
+    el.style.display='none';el.classList.add('minimized');
+    if(document.getElementById('active-app-name')?.textContent===el.dataset.title) updateActiveApp();
+  }
+}
+function maximizeWindow(id){
+  const el=openWindows[id];
+  if(!el)return;
+  if(el._max){
+    el.style.cssText=el._prevStyle;el._max=false;
+  } else {
+    el._prevStyle=el.style.cssText;
+    el.style.left='0';el.style.top='28px';
+    el.style.width='100vw';el.style.height='calc(100vh - 28px - 76px)';
+    el._max=true;
+  }
+}
+function focusWindow(id){
+  Object.values(openWindows).forEach(w=>w.classList.remove('focused'));
+  const el=openWindows[id];
+  if(el){
+    el.classList.add('focused');winZ++;el.style.zIndex=winZ;
+    document.getElementById('active-app-name').textContent=el.dataset.title||'AstralSync OS';
+    updateDockRunning();
+  }
+}
+function setDot(id,on){
+  const dot=document.getElementById('dot-'+id);
+  if(dot)dot.style.display=on?'block':'none';
+  const dock=document.getElementById('dock-'+id);
+  if(dock)dock.classList.toggle('running',on);
+}
+function updateDockRunning(){
+  ['finder','store','settings','profiles'].forEach(id=>{
+    const el=document.getElementById('dock-'+id);
+    if(el)el.classList.toggle('running',!!openWindows[id]);
+  });
+}
+function updateActiveApp(){
+  const visible=Object.values(openWindows)
+    .filter(el=>el.style.display!=='none')
+    .sort((a,b)=>(parseInt(b.style.zIndex)||0)-(parseInt(a.style.zIndex)||0))[0];
+  const active=document.getElementById('active-app-name');
+  if(active)active.textContent=visible?.dataset.title||'AstralSync OS';
+  updateDockRunning();
+}
+
+// DRAGGABLE
+function makeDraggable(el,id){
+  const tb=el.querySelector('.win-titlebar');
+  let sx,sy,ex,ey,drag=false;
+  tb.addEventListener('mousedown',e=>{
+    if(e.target.classList.contains('traffic'))return;
+    drag=true;sx=e.clientX;sy=e.clientY;
+    ex=parseInt(el.style.left)||0;ey=parseInt(el.style.top)||0;
+    tb.classList.add('dragging');
+    focusWindow(id);
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!drag)return;
+    el.style.left=(ex+e.clientX-sx)+'px';
+    el.style.top=Math.max(28,ey+e.clientY-sy)+'px';
+  });
+  document.addEventListener('mouseup',()=>{drag=false;tb.classList.remove('dragging');});
+  el.addEventListener('mousedown',()=>focusWindow(id));
+}
+
+// RESIZE
+let resizing=null;
+function startResize(e,winId){
+  const el=document.getElementById(winId);
+  resizing={el,sx:e.clientX,sy:e.clientY,w:el.offsetWidth,h:el.offsetHeight};
+  e.preventDefault();
+}
+document.addEventListener('mousemove',e=>{
+  if(!resizing)return;
+  resizing.el.style.width=Math.max(400,resizing.w+e.clientX-resizing.sx)+'px';
+  resizing.el.style.height=Math.max(300,resizing.h+e.clientY-resizing.sy)+'px';
+});
+document.addEventListener('mouseup',()=>resizing=null);
+
+// ============================================================
+// FINDER
+// ============================================================
+let finderFilter='';
+function buildFinder(){
+  const cats=['All',...CATEGORIES];
+  const sidebar=cats.map(c=>`<div class="sidebar-item${c===state.finderCategory?' active':''}" onclick="setFinderCat('${c}')">\
+<span class="si-icon">${getCatIcon(c)}</span>${c}</div>`).join('');
+  return `<div class="finder-layout" style="height:100%;overflow:hidden;">
+  <div class="finder-sidebar">
+    <div class="sidebar-section">Library</div>
+    ${sidebar}
+    <div class="sidebar-section">Links</div>
+    <div class="sidebar-item" onclick="openWindow('store')"><span class="si-icon">🛍️</span>App Store</div>
+    <div class="sidebar-item" onclick="openWindow('settings')"><span class="si-icon">⚙️</span>Settings</div>
+    <div class="sidebar-item" onclick="window.open('https://discord.gg/9CucEhZfYj','_blank')"><span class="si-icon">💬</span>Discord</div>
+    <div class="sidebar-item" onclick="window.open('https://forms.gle/zzE787SgJvLh1WYz6','_blank')"><span class="si-icon">✉️</span>Suggest Game</div>
+  </div>
+  <div class="finder-main">
+    <div class="win-toolbar">
+      <div class="search-wrap" style="flex:1">
+        <input class="search-field" placeholder="Search games…" oninput="finderSearch(this.value)" id="finder-search">
+      </div>
+      <span style="font-size:12px;color:var(--text-secondary)" id="finder-count">${GAMES.length} games</span>
+    </div>
+    <div class="win-content" id="finder-grid-wrap">
+      <div class="icon-grid" id="finder-grid">${buildGameIcons('All','')}</div>
+    </div>
+  </div>
+</div>`;
+}
+
+function buildGameIcons(cat,filter){
+  const f=filter.toLowerCase();
+  return GAMES.filter(g=>(cat==='All'||g.cat===cat)&&(g.title.toLowerCase().includes(f)||g.cat.toLowerCase().includes(f)))
+    .map(g=>`<div class="app-icon" ondblclick="launchGame('${esc(g.title)}')" title="${esc(g.title)}">
+  <img src="${g.img}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'64\\' height=\\'64\\' fill=\\'%23333\\'><\\/rect><\\/svg>'">
+  <span>${g.title}</span>
+</div>`).join('');
+}
+
+function esc(s){return s.replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+
+function setFinderCat(cat){
+  state.finderCategory=cat;saveState();
+  const grid=document.getElementById('finder-grid');
+  const search=document.getElementById('finder-search');
+  if(grid){grid.innerHTML=buildGameIcons(cat,search?search.value:'');}
+  document.querySelectorAll('.sidebar-item').forEach(el=>{
+    el.classList.toggle('active',el.textContent.trim()===cat);
+  });
+  updateFinderCount(cat,search?search.value:'');
+}
+
+function finderSearch(val){
+  const grid=document.getElementById('finder-grid');
+  if(grid){grid.innerHTML=buildGameIcons(state.finderCategory,val);}
+  updateFinderCount(state.finderCategory,val);
+}
+
+function updateFinderCount(cat,filter){
+  const f=filter.toLowerCase();
+  const count=GAMES.filter(g=>(cat==='All'||g.cat===cat)&&(g.title.toLowerCase().includes(f)||g.cat.toLowerCase().includes(f))).length;
+  const el=document.getElementById('finder-count');
+  if(el)el.textContent=count+' games';
+}
+
+function getCatIcon(c){
+  const m={All:'🎮',Sonic:'🦔',IO:'🌐',Shooter:'🔫',Racing:'🏎️',Sports:'⚽',Arcade:'🕹️',Platformer:'🏃',
+    FnF:'🎵',Horror:'👻',Fighting:'🥊',Casual:'🎲',Classic:'👾',RPG:'⚔️',Adventure:'🗺️',
+    Sandbox:'🧱',Card:'🃏',Strategy:'♟️',Roguelike:'🎯','Action':'💥'};
+  return m[c]||'📦';
+}
+
+function launchGame(title){
+  const g=GAMES.find(x=>x.title===title);
+  if(!g)return;
+  if(g.blank){openAboutBlank(g.blank);return;}
+  const gid='game_'+Date.now();
+  openWindow(gid,{title:g.title,url:g.url,img:g.img});
+}
+
+// ============================================================
+// GAME WINDOW
+// ============================================================
+function buildGameWin(extra){
+  return `<div class="game-win-body" style="display:flex;flex-direction:column;height:100%;">
+  <div style="padding:4px 12px;background:var(--hover);font-size:11px;color:var(--text-secondary);border-bottom:1px solid var(--separator);display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <img src="${extra?.img||''}" style="width:20px;height:20px;border-radius:5px;object-fit:cover;">
+    <span>${extra?.title||'Game'}</span>
+    <span style="margin-left:auto;opacity:0.6">${extra?.url||''}</span>
+  </div>
+  <iframe src="${extra?.url||''}" class="game-iframe" allowfullscreen allow="fullscreen *"></iframe>
+</div>`;
+}
+
+WIN_CONFIGS['game_template']={title:'Game',w:960,h:640,icon:'🎮'};
+
+// patch openWindow for game_
+const _openWindow=openWindow;
+window.openWindow=function(id,extra){
+  if(id.startsWith('game_')&&extra){
+    WIN_CONFIGS[id]={title:extra.title,w:960,h:640,icon:'🎮'};
+  }
+  _openWindow(id,extra);
+};
+
+// ============================================================
+// APP STORE
+// ============================================================
+const APPS = [
+  {id:'movies',  title:'AstralMovies',  icon:'🎬', url:'movies.html',       sub:'Movies & TV',      desc:'Stream movies and shows, search titles, and watch free.',        color:'#c0392b'},
+  {id:'chat',    title:'AstralChat',    icon:'💬', url:'chat.html',         sub:'Messaging',        desc:'Chat app built right into your desktop.',                        color:'#2980b9'},
+  {id:'apps',    title:'AstralApps',   icon:'📱', url:'apps.html',         sub:'App Launcher',     desc:'Browse and launch a curated collection of web apps.',            color:'#8e44ad'},
+  {id:'code',    title:'AstralCode',   icon:'💻', url:'astralcode.html',   sub:'Developer Tools',  desc:'A full code editor in your browser. Build and run code.',        color:'#27ae60'},
+  {id:'tools',   title:'Tools',         icon:'🔧', url:'Tools.html',        sub:'Utilities',        desc:'Handy utilities and productivity tools all in one place.',        color:'#e67e22'},
+  {id:'proxy',   title:'Proxy Links',  icon:'🔗', url:'ProxyLinks.html',   sub:'Network',          desc:'Access unblocked proxy links and bypass restrictions.',          color:'#16a085'},
+  {id:'ai',      title:'AstralAI',     icon:'🤖', url:'ai.html',           sub:'Artificial Intelligence', desc:'AI-powered assistant built into your OS.',               color:'#2c3e50'},
+];
+
+function buildStore(){
+  const cards = APPS.map(app=>`
+<div class="store-card" onclick="launchApp('${app.id}','${app.title}','${app.icon}','${app.url}')" style="cursor:pointer;">
+  <div style="width:60px;height:60px;border-radius:14px;background:${app.color};display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">${app.icon}</div>
+  <div class="store-card-info">
+    <div class="store-card-title">${app.title}</div>
+    <div class="store-card-sub">${app.sub}</div>
+    <div style="font-size:11px;color:var(--text-secondary);margin:4px 0 6px;line-height:1.4;">${app.desc}</div>
+    <button class="store-card-btn" onclick="event.stopPropagation();launchApp('${app.id}','${app.title}','${app.icon}','${app.url}')">Open</button>
+  </div>
+</div>`).join('');
+
+  return`<div class="win-content">
+  <div class="store-hero">
+    <div style="font-size:32px;margin-bottom:8px;">🛍️</div>
+    <h2>AstralSync App Store</h2>
+    <p>${APPS.length} apps • Free • Always available</p>
+  </div>
+  <div class="store-category">📦 All Apps</div>
+  <div class="store-grid" style="grid-template-columns:1fr;">${cards}</div>
+  <div style="height:24px;"></div>
+</div>`;
+}
+
+function launchApp(id, title, icon, url){
+  const winId = 'app_' + id;
+  openWindow(winId, {title, icon, url});
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+let settingsTab='appearance';
+function buildSettings(){
+  return`<div class="settings-layout" style="height:100%;overflow:hidden;">
+  <div class="settings-sidebar">
+    <div class="settings-section">General</div>
+    <div class="settings-item${settingsTab==='appearance'?' active':''}" onclick="switchSettingsTab('appearance')"><span class="s-icon">🎨</span>Appearance</div>
+    <div class="settings-item${settingsTab==='wallpaper'?' active':''}" onclick="switchSettingsTab('wallpaper')"><span class="s-icon">🖼️</span>Wallpaper</div>
+    <div class="settings-item${settingsTab==='accent'?' active':''}" onclick="switchSettingsTab('accent')"><span class="s-icon">🎡</span>Accent Color</div>
+    <div class="settings-section">Account</div>
+    <div class="settings-item${settingsTab==='profile'?' active':''}" onclick="switchSettingsTab('profile')"><span class="s-icon">👤</span>Profile</div>
+    <div class="settings-section">Info</div>
+    <div class="settings-item" onclick="openWindow('about')"><span class="s-icon">ℹ️</span>About</div>
+  </div>
+  <div class="settings-content" id="settings-content">${buildSettingsTab(settingsTab)}</div>
+</div>`;
+}
+
+function switchSettingsTab(tab){
+  settingsTab=tab;
+  const c=document.getElementById('settings-content');
+  if(c)c.innerHTML=buildSettingsTab(tab);
+  document.querySelectorAll('.settings-item').forEach(el=>{
+    el.classList.toggle('active',el.textContent.includes(
+      tab==='appearance'?'Appearance':tab==='wallpaper'?'Wallpaper':tab==='accent'?'Accent':tab==='profile'?'Profile':'__'
+    ));
+  });
+}
+
+function buildSettingsTab(tab){
+  if(tab==='appearance') return`
+<div class="setting-row-title">Appearance</div>
+<div class="setting-group">
+  <div class="setting-row">
+    <label>Dark Mode</label>
+    <label class="toggle"><input type="checkbox" ${state.dark?'checked':''} onchange="toggleDarkMode()"><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+  </div>
+</div>
+<div class="setting-row-title" style="margin-top:20px;">Font</div>
+<div class="setting-group">
+  <div class="setting-row">
+    <label>System Font</label>
+    <select onchange="setFont(this.value)" style="background:var(--hover);border:1px solid var(--separator);border-radius:6px;padding:4px 8px;color:var(--text);font-family:var(--font);max-width:160px;">
+      <option value="system" ${state.font==='system'?'selected':''}>System Default</option>
+      <option value="inter" ${state.font==='inter'?'selected':''}>Inter</option>
+      <option value="nunito" ${state.font==='nunito'?'selected':''}>Nunito (Rounded)</option>
+      <option value="playfair" ${state.font==='playfair'?'selected':''}>Playfair (Serif)</option>
+      <option value="spacemono" ${state.font==='spacemono'?'selected':''}>Space Mono</option>
+      <option value="orbitron" ${state.font==='orbitron'?'selected':''}>Orbitron (Futuristic)</option>
+    </select>
+  </div>
+</div>
+<div class="setting-row-title" style="margin-top:20px;">Interface Scale</div>
+<div class="setting-group">
+  <div class="setting-row">
+    <label>Font Size</label>
+    <select onchange="document.documentElement.style.fontSize=this.value" style="background:var(--hover);border:1px solid var(--separator);border-radius:6px;padding:4px 8px;color:var(--text);font-family:var(--font);">
+      <option>14px</option><option>15px</option><option selected>16px</option><option>17px</option>
+    </select>
+  </div>
+</div>`;
+
+  if(tab==='wallpaper') return`
+<div class="setting-row-title">Wallpaper</div>
+<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+  <button class="os-btn primary" onclick="document.getElementById('wp-upload').click()">📁 Upload Image / GIF / Video</button>
+  <button class="os-btn danger" id="custom-wp-remove" style="${state.customWP?'':'display:none'}" onclick="clearCustomWallpaper()">✕ Remove Custom</button>
+</div>
+${state.customWP?`<div style="font-size:11px;color:var(--accent);margin-bottom:12px;padding:8px 12px;background:rgba(0,122,255,0.1);border-radius:8px;">✓ Custom wallpaper active — ${state.customWP.type}</div>`:''}
+<div class="theme-section"><span>🖼️ Wallpaper Themes</span><div class="theme-section-line"></div></div>
+<div class="wallpaper-grid">${WALLPAPERS.map((w,ri)=>{
+  const isActive=!state.customWP&&ri===state.wallpaper;
+  const bgStyle=w.type==='image'?w.css:`background:${w.css}`;
+  const textColor=(w.name==='Ice')?'rgba(0,0,0,0.7)':'rgba(255,255,255,0.9)';
+  return`<div class="wallpaper-item${isActive?' active':''}" data-wp="${ri}" style="${w.type==='image'?'background:'+w.css:'background:'+w.css};" title="${w.name}" onclick="setWallpaper(${ri})">
+  <div style="position:absolute;bottom:0;left:0;right:0;padding:4px 6px;background:linear-gradient(transparent,rgba(0,0,0,0.55));border-radius:0 0 7px 7px;">
+    <div style="font-size:10px;color:${textColor};font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,0.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${w.name}</div>
+  </div>
+</div>`;}).join('')}</div>`;
+
+  if(tab==='accent') return`
+<div class="setting-row-title">Accent Color</div>
+<div class="accent-row">${ACCENT_COLORS.map(a=>`
+<div class="accent-swatch${a.val===state.accent?' active':''}" style="background:${a.val};" title="${a.name}" onclick="setAccent('${a.val}')"></div>`).join('')}</div>
+<p style="font-size:12px;color:var(--text-secondary);margin-top:12px;">Selected: <strong>${ACCENT_COLORS.find(a=>a.val===state.accent)?.name||'Custom'}</strong></p>`;
+
+  if(tab==='profile') return buildProfileSettings();
+
+  return'<div class="empty-state"><div class="es-icon">🔧</div><p>Coming soon</p></div>';
+}
+
+function renderAvatarHTML(p, size=80, fontSize=40, editable=true){
+  const img = getProfileAvatar(p.id);
+  return `<div class="profile-avatar" style="width:${size}px;height:${size}px;background:${p.color};font-size:${fontSize}px;" ${editable?`onclick="uploadProfileAvatar(${p.id})"`:''}>
+    ${img?`<img src="${img}" style="width:100%;height:100%;object-fit:cover;">`:`<span>${p.emoji}</span>`}
+    ${editable?`<div class="profile-avatar-upload">📷 Edit</div>`:''}
+  </div>`;
+}
+
+function buildProfileSettings(){
+  const p=state.profiles[state.activeProfile];
+  const img = getProfileAvatar(p.id);
+  return`
+<input type="file" id="profile-img-upload" accept="image/*" style="display:none" onchange="handleProfileAvatarUpload(event)">
+<div class="profile-card">
+  ${renderAvatarHTML(p)}
+  <div class="profile-name">${p.name}</div>
+  <div class="profile-sub">${p.email||'Active Profile'}</div>
+  <div style="display:flex;gap:8px;margin-top:4px;">
+    <button class="os-btn primary" onclick="showRenameModal()">✏️ Edit Profile</button>
+    ${img?`<button class="os-btn danger" style="padding:8px 12px;" onclick="removeProfileAvatar()">✕ Photo</button>`:''}
+  </div>
+</div>
+<div class="theme-section"><span>⚙️ Profile Details</span><div class="theme-section-line"></div></div>
+<div class="setting-group">
+  <div class="setting-row"><label>Display Name</label><span style="font-weight:600;color:var(--text)">${p.name}</span></div>
+  <div class="setting-row"><label>Email (optional)</label><input class="os-input" style="max-width:200px;" placeholder="your@email.com" value="${p.email||''}" oninput="updateProfileField('email',this.value)" onchange="saveState()"></div>
+  <div class="setting-row"><label>Password (optional)</label><input class="os-input" type="password" style="max-width:200px;" placeholder="••••••••" value="${p.password||''}" oninput="updateProfileField('password',this.value)" onchange="saveState()" autocomplete="new-password"></div>
+</div>
+<div class="theme-section"><span>🎨 Avatar Color</span><div class="theme-section-line"></div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 12px;">
+  ${['#007AFF','#5E5CE6','#FF2D55','#FF9500','#34C759','#FF3B30','#30D158','#BF5AF2','#FF6B6B','#0AC8B9'].map(c=>`<div onclick="setProfileColor('${c}')" style="width:28px;height:28px;border-radius:50%;background:${c};cursor:pointer;border:3px solid ${c===p.color?'var(--text)':'transparent'};transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>`).join('')}
+</div>
+<div class="theme-section"><span>👥 All Profiles</span><div class="theme-section-line"></div></div>
+<div class="profile-list">${state.profiles.map((pr,i)=>{
+  const pimg=getProfileAvatar(pr.id);
+  return`<div class="profile-list-item${i===state.activeProfile?' active-profile':''}" onclick="switchProfile(${i})">
+  <div class="mini-avatar" style="background:${pr.color};">
+    ${pimg?`<img src="${pimg}">`:`<span>${pr.emoji}</span>`}
+  </div>
+  <div style="flex:1">
+    <div class="profile-list-name">${pr.name}</div>
+    <div class="profile-list-sub">${pr.email||('Profile '+(i+1))}</div>
+  </div>
+  ${i===state.activeProfile?'<span class="tag">Active</span>':''}
+  ${state.profiles.length>1&&i!==state.activeProfile?`<button class="os-btn danger" style="margin-left:4px;padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();deleteProfile(${i})">Remove</button>`:''}
+</div>`;}).join('')}</div>
+<button class="os-btn" style="margin-top:8px;" onclick="showCreateProfileModal()">+ Add Profile</button>`;
+}
+
+function setWallpaper(i){
+  state.wallpaper=i;
+  state.customWP=null;
+  saveState();saveCustomWP();applyWallpaper();
+  document.querySelectorAll('#settings-content .wallpaper-item').forEach(el=>{
+    el.classList.toggle('active', parseInt(el.dataset.wp)===i);
+  });
+}
+function setFont(f){
+  state.font=f;saveState();applyFont(f);
+}
+function clearCustomWallpaper(){
+  state.customWP=null;saveState();saveCustomWP();applyWallpaper();
+  switchSettingsTab('wallpaper');
+}
+function handleWallpaperUpload(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const isVideo=file.type.startsWith('video/');
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    state.customWP={type:isVideo?'video':(file.type==='image/gif'?'gif':'image'),src:ev.target.result};
+    saveCustomWP();applyWallpaper();
+    switchSettingsTab('wallpaper');
+    showNotif('🖼️','Wallpaper','Custom wallpaper applied!');
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+function setAccent(v){
+  state.accent=v;saveState();applyState();
+  switchSettingsTab('accent');
+}
+function toggleDarkMode(){
+  state.dark=!state.dark;saveState();applyState();
+}
+function setProfileColor(c){
+  const p=state.profiles[state.activeProfile];
+  p.color=c;saveState();switchSettingsTab('profile');
+}
+function updateProfileField(field,val){
+  const p=state.profiles[state.activeProfile];
+  p[field]=val;
+}
+function uploadProfileAvatar(pid){
+  const inp=document.getElementById('profile-img-upload');
+  if(inp){inp._targetPid=pid;inp.value='';inp.click();}
+}
+function handleProfileAvatarUpload(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const pid=e.target._targetPid||state.profiles[state.activeProfile].id;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    setProfileAvatar(pid,ev.target.result);
+    switchSettingsTab('profile');
+    showNotif('👤','Profile','Profile photo updated!');
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+function removeProfileAvatar(){
+  const p=state.profiles[state.activeProfile];
+  delete profileAvatars[p.id];
+  saveProfileAvatars();
+  updateDockAvatar();
+  switchSettingsTab('profile');
+}
+function switchProfile(i){
+  state.activeProfile=i;saveState();
+  switchSettingsTab('profile');
+  updateDockAvatar();
+  showNotif('👤','Profile','Switched to '+state.profiles[i].name);
+}
+function deleteProfile(i){
+  const pid=state.profiles[i].id;
+  state.profiles.splice(i,1);
+  delete profileAvatars[pid];
+  saveProfileAvatars();
+  if(state.activeProfile>=state.profiles.length)state.activeProfile=0;
+  saveState();updateDockAvatar();switchSettingsTab('profile');
+}
+
+// PROFILE MODAL — supports name, email, password
+let modalAction=null;
+function showCreateProfileModal(){
+  document.getElementById('modal-title').textContent='New Profile';
+  document.getElementById('modal-desc').textContent='Fill in details for your new profile. Email and password are optional.';
+  document.getElementById('modal-input').value='';
+  const ef=document.getElementById('modal-email');
+  const pf=document.getElementById('modal-pass');
+  if(ef)ef.value='';if(pf)pf.value='';
+  document.getElementById('modal-confirm').textContent='Create';
+  modalAction='create';
+  document.getElementById('modal').classList.add('visible');
+}
+function showRenameModal(){
+  const p=state.profiles[state.activeProfile];
+  document.getElementById('modal-title').textContent='Edit Profile';
+  document.getElementById('modal-desc').textContent='Update your profile details. Email and password are optional.';
+  document.getElementById('modal-input').value=p.name;
+  const ef=document.getElementById('modal-email');
+  const pf=document.getElementById('modal-pass');
+  if(ef)ef.value=p.email||'';if(pf)pf.value=p.password||'';
+  document.getElementById('modal-confirm').textContent='Save';
+  modalAction='rename';
+  document.getElementById('modal').classList.add('visible');
+}
+function closeModal(){document.getElementById('modal').classList.remove('visible');}
+function confirmModal(){
+  const name=document.getElementById('modal-input').value.trim()||'Player';
+  const email=(document.getElementById('modal-email')?.value||'').trim();
+  const password=document.getElementById('modal-pass')?.value||'';
+  const EMOJIS=['👾','🚀','🎮','🦊','🐉','⚡','🌟','🔥'];
+  if(modalAction==='create'){
+    const colors=['#007AFF','#5E5CE6','#FF2D55','#FF9500','#34C759'];
+    state.profiles.push({id:Date.now(),name,color:colors[state.profiles.length%colors.length],emoji:EMOJIS[state.profiles.length%EMOJIS.length],email,password});
+    state.activeProfile=state.profiles.length-1;
+  } else if(modalAction==='rename'){
+    const p=state.profiles[state.activeProfile];
+    p.name=name;p.email=email;p.password=password;
+  }
+  saveState();closeModal();updateDockAvatar();
+  switchSettingsTab('profile');
+  showNotif('👤','Profile',modalAction==='create'?`Created profile: ${name}`:`Profile updated!`);
+}
+
+// ============================================================
+// PROFILES WINDOW
+// ============================================================
+function buildProfiles(){
+  return`<div class="win-content" style="padding:24px;">
+<div class="setting-row-title">Profiles</div>
+${buildProfileSettings()}
+</div>`;
+}
+
+// ============================================================
+// ABOUT WINDOW
+// ============================================================
+function buildAbout(){
+  const p=state.profiles[state.activeProfile];
+  return`<div class="about-body">
+  <div class="about-logo">🚀</div>
+  <div class="about-title">AstralSync OS</div>
+  <div class="about-ver">Version 2.0 &mdash; macOS Edition</div>
+  <div class="about-sep"></div>
+  <div class="about-info">
+    <strong>${GAMES.length} games</strong> across ${CATEGORIES.length} categories.<br>
+    Logged in as <strong>${p.name}</strong> ${p.emoji}.<br><br>
+    <a href="https://discord.gg/9CucEhZfYj" target="_blank" style="color:var(--accent)">Join Discord</a> &nbsp;|&nbsp;
+    <a href="https://forms.gle/zzE787SgJvLh1WYz6" target="_blank" style="color:var(--accent)">Suggest a Game</a>
+  </div>
+</div>`;
+}
+
+// ============================================================
+// SPOTLIGHT
+// ============================================================
+function toggleSpotlight(){
+  const s=document.getElementById('spotlight');
+  s.classList.toggle('visible');
+  if(s.classList.contains('visible')){
+    document.getElementById('spotlight-input').value='';
+    document.getElementById('spotlight-results').innerHTML='';
+    setTimeout(()=>document.getElementById('spotlight-input').focus(),50);
+  }
+}
+function hideSpotlight(e){if(e.target===document.getElementById('spotlight'))document.getElementById('spotlight').classList.remove('visible');}
+
+let spotlightActive=0;
+function spotlightSearch(){
+  const val=document.getElementById('spotlight-input').value.toLowerCase();
+  const res=document.getElementById('spotlight-results');
+  if(!val){res.innerHTML='';return;}
+  const matches=GAMES.filter(g=>g.title.toLowerCase().includes(val)||g.cat.toLowerCase().includes(val)).slice(0,8);
+  const extras=[
+    {title:'Open Finder',sub:'Browse all games',icon:'📁',action:"openWindow('finder')"},
+    {title:'App Store',sub:'Discover games',icon:'🛍️',action:"openWindow('store')"},
+    {title:'Settings',sub:'Customize AstralSync OS',icon:'⚙️',action:"openWindow('settings')"},
+  ].filter(e=>e.title.toLowerCase().includes(val)||e.sub.toLowerCase().includes(val));
+
+  res.innerHTML=[
+    ...matches.map((g,i)=>`<div class="spotlight-result" tabindex="-1" onclick="launchGame('${esc(g.title)}');document.getElementById('spotlight').classList.remove('visible');">
+  <img src="${g.img}" onerror="this.style.display='none'">
+  <div class="spotlight-result-info"><div class="spotlight-result-title">${g.title}</div><div class="spotlight-result-sub">${g.cat}</div></div>
+</div>`),
+    ...extras.map(e=>`<div class="spotlight-result" onclick="${e.action};document.getElementById('spotlight').classList.remove('visible');">
+  <div style="width:36px;height:36px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:20px;">${e.icon}</div>
+  <div class="spotlight-result-info"><div class="spotlight-result-title">${e.title}</div><div class="spotlight-result-sub">${e.sub}</div></div>
+</div>`)
+  ].join('');
+  spotlightActive=0;
+}
+function spotlightKey(e){
+  if(e.key==='Escape'){document.getElementById('spotlight').classList.remove('visible');}
+  if(e.key==='Enter'){
+    const first=document.querySelector('.spotlight-result');
+    if(first)first.click();
+  }
+}
+
+// ============================================================
+// CONTEXT MENU
+// ============================================================
+function showCtxMenu(e,type){
+  e.preventDefault();
+  const m=document.getElementById('ctx-menu');
+  m.style.display='block';
+  m.style.left=Math.min(e.clientX,window.innerWidth-220)+'px';
+  m.style.top=Math.min(e.clientY,window.innerHeight-200)+'px';
+}
+function hideCtx(){document.getElementById('ctx-menu').style.display='none';}
+
+// ============================================================
+// APPLE MENU
+// ============================================================
+function toggleAppleMenu(){
+  const m=document.getElementById('apple-menu');
+  m.style.display=m.style.display==='block'?'none':'block';
+}
+function hideAppleMenu(){document.getElementById('apple-menu').style.display='none';}
+
+// ============================================================
+// CONTROL CENTER
+// ============================================================
+function toggleControlCenter(){
+  const panel=document.getElementById('control-center');
+  if(!panel)return;
+  panel.classList.toggle('visible');
+  if(panel.classList.contains('visible'))syncControlCenter();
+}
+function hideControlCenter(){
+  document.getElementById('control-center')?.classList.remove('visible');
+}
+function syncControlCenter(){
+  const panel=document.getElementById('control-center');
+  if(!panel)return;
+  document.getElementById('cc-dark')?.classList.toggle('active',state.dark);
+  const p=state.profiles[state.activeProfile];
+  const label=document.getElementById('cc-profile-label');
+  if(label)label.textContent=p?.name||'AstraOS';
+}
+function toggleControlTile(id){
+  const tile=document.getElementById('cc-'+id);
+  if(tile)tile.classList.toggle('active');
+  if(id==='focus')showNotif('◐','Focus mode',tile?.classList.contains('active')?'Focus mode is on':'Focus mode is off',2200);
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+function showNotif(icon,title,msg,dur=4000){
+  const area=document.getElementById('notif-area');
+  const n=document.createElement('div');
+  n.className='notif';
+  n.innerHTML=`<div class="notif-icon">${icon}</div><div class="notif-body"><div class="notif-title">${title}</div><div class="notif-msg">${msg}</div></div>`;
+  n.onclick=()=>n.remove();
+  area.appendChild(n);
+  setTimeout(()=>{n.style.transition='opacity 0.4s';n.style.opacity='0';setTimeout(()=>n.remove(),400);},dur);
+}
+
+// ============================================================
+// ABOUT:BLANK LAUNCHER
+// ============================================================
+function openAboutBlank(url){
+  const win=window.open('about:blank','_blank');
+  if(!win)return;
+  win.document.write(`<!DOCTYPE html><html><head><title>Game</title><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#000}iframe{width:100%;height:100%;border:none}</style></head><body><iframe src="${url}" allowfullscreen></iframe></body></html>`);
+  win.document.close();
+}
+
+// ============================================================
+// GLOBAL HIDE
+// ============================================================
+function hideAll(){
+  hideCtx();
+  hideAppleMenu();
+  hideControlCenter();
+  document.querySelectorAll('.desk-icon').forEach(el=>el.classList.remove('selected'));
+}
+function selectIcon(el){
+  document.querySelectorAll('.desk-icon').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  event.stopPropagation();
+}
+
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key===' ')toggleSpotlight();
+  if(e.key==='Escape'){
+    document.getElementById('spotlight').classList.remove('visible');
+    hideCtx();hideAppleMenu();hideControlCenter();
+  }
+});
+
+// ============================================================
+// OOBE — first-run profile setup
+// ============================================================
+let _oobePendingAvatar = null;
+let _oobeColor = '#007AFF';
+
+function showOOBE(){
+  const el = document.getElementById('oobe');
+  if(!el) return;
+  const p = state.profiles[state.activeProfile];
+  document.getElementById('oobe-name').value = p.name !== 'Player 1' ? p.name : '';
+  _oobeColor = p.color || '#007AFF';
+  _oobePendingAvatar = null;
+  // Build color swatches
+  const row = document.getElementById('oobe-colors');
+  if(row){
+    row.innerHTML = ['#007AFF','#5E5CE6','#FF2D55','#FF9500','#34C759','#FF3B30','#BF5AF2','#0AC8B9','#FF6B6B','#FFD60A']
+      .map(c=>`<div class="oobe-swatch${c===_oobeColor?' active':''}" style="background:${c}" onclick="oobeSelectColor('${c}',this)"></div>`).join('');
+  }
+  document.getElementById('oobe-avatar-emoji').textContent = p.emoji || '👾';
+  el.classList.add('visible');
+}
+
+function oobeSelectColor(c, el){
+  _oobeColor = c;
+  document.querySelectorAll('.oobe-swatch').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  document.documentElement.style.setProperty('--accent', c);
+}
+
+function oobeAvatarUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    _oobePendingAvatar = ev.target.result;
+    const av = document.getElementById('oobe-avatar');
+    if(av) av.innerHTML = `<img src="${_oobePendingAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function oobeFinish(){
+  const name = (document.getElementById('oobe-name')?.value||'').trim() || 'Player 1';
+  const p = state.profiles[state.activeProfile];
+  p.name = name;
+  p.color = _oobeColor;
+  state.accent = _oobeColor;
+  state.oobe_done = true;
+  saveState();
+  if(_oobePendingAvatar){
+    setProfileAvatar(p.id, _oobePendingAvatar);
+  }
+  applyState();
+  document.documentElement.style.setProperty('--accent', _oobeColor);
+  const el = document.getElementById('oobe');
+  if(el){ el.style.transition='opacity 0.5s'; el.style.opacity='0'; setTimeout(()=>{el.style.display='none';},500); }
+  showNotif('👋','Welcome!','Hi '+name+'! Your AstralSync OS is ready.');
+}
+
+function oobeSkip(){
+  state.oobe_done = true;
+  saveState();
+  const el = document.getElementById('oobe');
+  if(el){ el.style.transition='opacity 0.5s'; el.style.opacity='0'; setTimeout(()=>{el.style.display='none';},500); }
+}
+
+// ============================================================
+// ONLINE COUNTER — real presence via server heartbeat
+// ============================================================
+(function(){
+  // Unique ID for this tab/device session
+  let sid = sessionStorage.getItem('astralSID');
+  if(!sid){ sid = Math.random().toString(36).slice(2)+Date.now().toString(36); sessionStorage.setItem('astralSID',sid); }
+
+  // Total visits counter (local, cosmetic)
+  let visits = parseInt(localStorage.getItem('astralVisits')||'0') + 1;
+  localStorage.setItem('astralVisits', visits);
+
+  function fmt(n){ return n.toLocaleString(); }
+
+  function sendHeartbeat(){
+    fetch('/api/heartbeat?id='+encodeURIComponent(sid)).catch(()=>{});
+  }
+
+  function fetchOnline(){
+    fetch('/api/online')
+      .then(r=>r.json())
+      .then(d=>{
+        const el=document.getElementById('oc-num');
+        if(el) el.textContent = fmt(d.online||1);
+      })
+      .catch(()=>{});
+  }
+
+  function init(){
+    const vis=document.getElementById('oc-visits');
+    if(vis) vis.textContent = fmt(visits)+' visits';
+    sendHeartbeat();
+    fetchOnline();
+    setInterval(sendHeartbeat, 20000);   // keep alive every 20s
+    setInterval(fetchOnline,  15000);    // refresh display every 15s
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+
+// ============================================================
+// BOOT SEQUENCE
+// ============================================================
+(function(){
+  try{
+    const bs=document.getElementById('boot-screen');
+    if(!bs)return;
+    bs.style.animation='none';
+    if(sessionStorage.getItem('astralBooted')){
+      bs.style.display='none';return;
+    }
+    let p=0;
+    const bar=document.getElementById('boot-bar');
+    const iv=setInterval(()=>{
+      try{
+        p+=Math.random()*2.5+0.8;
+        if(p>=100){
+          p=100;if(bar)bar.style.width='100%';clearInterval(iv);
+          setTimeout(()=>{
+            bs.style.transition='opacity 0.7s';
+            bs.style.opacity='0';
+            setTimeout(()=>{
+              bs.style.display='none';
+              // Show OOBE if first run
+              if(!state.oobe_done){
+                try{ showOOBE(); }catch(e){}
+              }
+            },700);
+            sessionStorage.setItem('astralBooted','1');
+          },350);
+          return;
+        }
+        if(bar)bar.style.width=p+'%';
+      }catch(e){clearInterval(iv);bs.style.display='none';}
+    },40);
+  }catch(e){
+    const bs=document.getElementById('boot-screen');
+    if(bs)bs.style.display='none';
+  }
+})();
+</script>
+</body>
+</html>
