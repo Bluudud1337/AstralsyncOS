@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AstralMovies</title>
+
+<style>
+body{
+  margin:0;
+  font-family:"Segoe UI", sans-serif;
+  background: linear-gradient(to bottom, #04070d, #07121f 40%, #081522);
+  color:white;
+  overflow-x:hidden;
+}
+/* NAVIGATION BAR */
+.nav-bar{
+  display:flex;
+  gap:20px;
+  padding:10px 0 25px 0;
+  border-bottom:1px solid rgba(0,200,255,.15);
+  margin-bottom:25px;
+}
+
+.nav-bar a{
+  text-decoration:none;
+  color:#9befff;
+  padding:8px 18px;
+  border-radius:20px;
+  font-size:14px;
+  background:rgba(8,21,34,.4);
+  border:1px solid rgba(0,200,255,.15);
+  transition:.25s ease;
+  backdrop-filter:blur(6px);
+}
+
+.nav-bar a:hover{
+  background:rgba(0,200,255,.15);
+  border-color:rgba(0,200,255,.4);
+  box-shadow:0 0 12px rgba(0,200,255,.4);
+  transform:translateY(-2px);
+}
+/* Subtle floating glow */
+.particles{
+  position:fixed;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(0,200,255,0.12) 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgba(0,180,255,0.08) 2px, transparent 3px);
+  background-size:250px 250px;
+  animation: float 80s linear infinite;
+}
+@keyframes float{
+  from { transform: translateY(0); }
+  to { transform: translateY(-300px); }
+}
+
+.content{
+  position:relative;
+  z-index:1;
+  padding:40px;
+}
+
+/* HEADER */
+.header{
+  margin-bottom:30px;
+}
+.header h1{
+  margin:0;
+  font-size:36px;
+  color:#7fe9ff;
+  text-shadow:0 0 12px rgba(0,200,255,.6);
+}
+
+/* SEARCH + FILTER BAR */
+.top-controls{
+  display:flex;
+  gap:15px;
+  margin-top:20px;
+}
+
+.top-controls input,
+.top-controls select{
+  padding:10px 15px;
+  border-radius:20px;
+  border:1px solid rgba(0,200,255,.25);
+  background:rgba(8,21,34,.6);
+  color:white;
+  backdrop-filter:blur(10px);
+  outline:none;
+  transition:.2s;
+}
+
+.top-controls input:focus,
+.top-controls select:focus{
+  border-color:rgba(0,200,255,.6);
+  box-shadow:0 0 10px rgba(0,200,255,.4);
+}
+
+/* GRID */
+.movie-grid{
+  margin-top:40px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:25px;
+}
+
+/* CARD */
+.movie-card{
+  background:rgba(10,20,35,.75);
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid rgba(0,200,255,.15);
+  transition:.25s ease;
+  cursor:pointer;
+}
+
+.movie-card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(0,200,255,.4);
+  box-shadow:0 8px 20px rgba(0,200,255,.25);
+}
+
+.movie-card img{
+  width:100%;
+  height:280px;
+  object-fit:cover;
+}
+
+.movie-info{
+  padding:12px;
+}
+
+.movie-info h3{
+  margin:0;
+  font-size:16px;
+  color:#d6faff;
+}
+
+/* MODAL PLAYER */
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.85);
+  z-index:10;
+}
+
+.modal-content{
+  width:95%;
+  max-width:1100px;
+  background:linear-gradient(to bottom,#081522,#0c1b2a);
+  border-radius:15px;
+  padding:20px;
+  border:1px solid rgba(0,200,255,.25);
+  box-shadow:0 0 30px rgba(0,200,255,.3);
+}
+
+.video-container{
+  width:100%;
+  height:520px;
+  background:black;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.video-container iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+.player-controls{
+  margin-top:15px;
+}
+
+.player-controls select{
+  margin-right:10px;
+}
+
+.close-btn{
+  float:right;
+  cursor:pointer;
+  font-size:18px;
+  opacity:.7;
+}
+.close-btn:hover{
+  opacity:1;
+}
+</style>
+</head>
+<body>
+
+<div class="particles"></div>
+
+<div class="content">
+<div class="nav-bar">
+  <a href="index.html">Home</a>
+  <a href="apps.html">Apps</a>
+  <a href="ProxyLinks.html">Proxy Links</a>
+  <a href="BlankLauncher.html">Blank Launcher</a>
+</div>
+  <div class="header">
+    <h1>🌊 AstralWatch</h1>
+    <p>more stuff coming soon! credits to wmath.pages.dev for streaming!!</P>
+    <div class="top-controls">
+      <input type="text" id="searchInput" placeholder="Search movies or shows...">
+      <select id="genreFilter">
+        <option value="all">All</option>
+        <option value="movie">Movies</option>
+        <option value="series">Series</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="movie-grid" id="movieGrid"></div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">✖ Close</span>
+
+    <div class="video-container">
+      <iframe id="videoFrame" allowfullscreen></iframe>
+    </div>
+
+    <div class="player-controls" id="seriesControls" style="display:none;">
+      <select id="seasonSelect"></select>
+      <select id="episodeSelect"></select>
+    </div>
+  </div>
+</div>
+
+<script>
+
+const media = [
+{
+  type:"movie",
+  title:"Sonic The Hedgehog",
+  image:"https://th.bing.com/th/id/R.9c6fabe99cde96a22d14a24b7b73eaa2?rik=RdBtJzNBhJ%2fiOA&riu=http%3a%2f%2fwww.impawards.com%2f2020%2fposters%2fsonic_the_hedgehog_ver12_xlg.jpg&ehk=%2bXnpTKsiwTdERy1vsv5Pmv0mx1857Nn1EE2sl6C%2frHw%3d&risl=&pid=ImgRaw&r=0",
+  embed:"https://wmath.pages.dev/misc/customsource/index3?id=454626&type=movie"
+},
+
+{
+  type:"movie",
+  title:"Sonic The Hedgehog 2",
+  image:"https://tse4.mm.bing.net/th/id/OIP.masulhA3AGB3lnJa96VTZgHaK-?rs=1&pid=ImgDetMain&o=7&rm=3",
+  embed:"https://wmath.pages.dev/misc/customsource/index3?id=675353&type=movie"
+},
+
+{
+  type:"movie",
+  title:"Sonic The Hedgehog 3",
+  image:"https://th.bing.com/th/id/OIP.QRur_WQfTttsyWW9bi55xQHaK-?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
+  embed:"https://wmath.pages.dev/misc/customsource/index3?id=939243&type=movie"
+},
+
+{
+  type:"series",
+  title:"Smiling Friends",
+  image:"https://image.tmdb.org/t/p/original/fFwOhXnKmSlAWAuR6O4sVzQW0em.jpg",
+  seasons:{
+    1:[
+      {title:"Episode 1", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=1"},
+      {title:"Episode 2", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=2"},
+      {title:"Episode 3", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=3"},
+      {title:"Episode 4", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=4"},
+      {title:"Episode 5", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=5"},
+    ]
+  }
+},
+
+{
+  type:"series",
+  title:"Sonic Prime",
+  image:"https://tse1.mm.bing.net/th/id/OIP.QJoL7Joh2_zE-KNNl9I0zwHaJ4?rs=1&pid=ImgDetMain&o=7&rm=3",
+  seasons:{
+    1:[
+      {title:"Episode 1", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=1"},
+      {title:"Episode 2", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=2"},
+      {title:"Episode 3", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=3"},
+      {title:"Episode 4", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=4"},
+      {title:"Episode 5", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=5"},
+      {title:"Episode 6", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=6"},
+      {title:"Episode 7", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=7"},
+      {title:"Episode 8", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=8"}
+
+    ]
+  }
+},
+
+{
+  type:"movie",
+  title:"The SpongeBob Movie: Search for SquarePants",
+  image:"https://image.tmdb.org/t/p/original/mwoQShS32Xgspr9nHQRYo7n9uwk.jpg",
+  embed:"https://wmath.pages.dev/misc/customsource/index3?id=991494&type=movie"
+},
+{
+  type:"series",
+  title:"Jujitsu Kaisen",
+  image:"https://i.pinimg.com/736x/4e/02/b5/4e02b51e578c4f6a71b7da187a3ed7ad.jpg",
+  seasons:{
+    1:[
+      {title:"Episode 1", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=1"},
+{title:"Episode 2", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=2"},
+{title:"Episode 3", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=3"},
+{title:"Episode 4", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=4"},
+{title:"Episode 5", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=5"},
+{title:"Episode 6", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=6"},
+{title:"Episode 7", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=7"},
+{title:"Episode 8", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=8"},
+{title:"Episode 9", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=9"},
+{title:"Episode 10", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=10"},
+{title:"Episode 11", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=11"},
+{title:"Episode 12", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=12"},
+{title:"Episode 13", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=13"},
+{title:"Episode 14", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=14"},
+{title:"Episode 15", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=15"},
+{title:"Episode 16", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=16"},
+{title:"Episode 17", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=17"},
+{title:"Episode 18", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=18"},
+{title:"Episode 19", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=19"},
+{title:"Episode 20", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=20"},
+{title:"Episode 21", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=21"},
+{title:"Episode 22", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=22"},
+{title:"Episode 23", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=23"},
+{title:"Episode 24", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=24"},
+{title:"Episode 25", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=25"},
+{title:"Episode 26", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=26"},
+{title:"Episode 27", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=27"},
+{title:"Episode 28", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=28"},
+{title:"Episode 29", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=29"},
+{title:"Episode 30", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=30"},
+{title:"Episode 31", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=31"},
+{title:"Episode 32", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=32"},
+{title:"Episode 33", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=33"},
+{title:"Episode 34", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=34"},
+{title:"Episode 35", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=35"},
+{title:"Episode 36", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=36"},
+{title:"Episode 37", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=37"},
+{title:"Episode 38", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=38"},
+{title:"Episode 39", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=39"},
+{title:"Episode 40", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=40"},
+{title:"Episode 41", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=41"},
+{title:"Episode 42", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=42"},
+{title:"Episode 43", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=43"},
+{title:"Episode 44", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=44"},
+{title:"Episode 45", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=45"},
+{title:"Episode 46", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=46"},
+{title:"Episode 47", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=47"},
+{title:"Episode 48", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=48"},
+{title:"Episode 49", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=49"},
+{title:"Episode 50", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=50"},
+{title:"Episode 51", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=51"},
+{title:"Episode 52", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=52"},
+{title:"Episode 53", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=53"},
+{title:"Episode 54", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=54"},
+{title:"Episode 55", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=55"},
+{title:"Episode 56", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=56"},
+{title:"Episode 57", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=57"},
+{title:"Episode 58", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=58"},
+{title:"Episode 59", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=59"},
+
+    ]
+  }
+},
+];
+
+const grid=document.getElementById("movieGrid");
+const searchInput=document.getElementById("searchInput");
+const genreFilter=document.getElementById("genreFilter");
+const modal=document.getElementById("modal");
+const frame=document.getElementById("videoFrame");
+const seriesControls=document.getElementById("seriesControls");
+const seasonSelect=document.getElementById("seasonSelect");
+const episodeSelect=document.getElementById("episodeSelect");
+
+function render(){
+  grid.innerHTML="";
+  const search=searchInput.value.toLowerCase();
+  const filter=genreFilter.value;
+
+  media.forEach((item,index)=>{
+    if(
+      item.title.toLowerCase().includes(search) &&
+      (filter==="all" || item.type===filter)
+    ){
+      const card=document.createElement("div");
+      card.className="movie-card";
+      card.innerHTML=`
+        <img src="${item.image}">
+        <div class="movie-info">
+          <h3>${item.title}</h3>
+        </div>
+      `;
+      card.onclick=()=>openMedia(index);
+      grid.appendChild(card);
+    }
+  });
+}
+
+function openMedia(index){
+  const item=media[index];
+  modal.style.display="flex";
+
+  if(item.type==="movie"){
+    seriesControls.style.display="none";
+    frame.src=item.embed;
+  }
+
+  if(item.type==="series"){
+    seriesControls.style.display="block";
+    loadSeasons(item);
+  }
+}
+
+function loadSeasons(series){
+  seasonSelect.innerHTML="";
+  episodeSelect.innerHTML="";
+
+  Object.keys(series.seasons).forEach(season=>{
+    const opt=document.createElement("option");
+    opt.value=season;
+    opt.textContent="Season "+season;
+    seasonSelect.appendChild(opt);
+  });
+
+  seasonSelect.onchange=()=>loadEpisodes(series,seasonSelect.value);
+  loadEpisodes(series,Object.keys(series.seasons)[0]);
+}
+
+function loadEpisodes(series,season){
+  episodeSelect.innerHTML="";
+  series.seasons[season].forEach((ep,i)=>{
+    const opt=document.createElement("option");
+    opt.value=i;
+    opt.textContent=ep.title;
+    episodeSelect.appendChild(opt);
+  });
+
+  episodeSelect.onchange=()=>{
+    frame.src=series.seasons[season][episodeSelect.value].embed;
+  };
+
+  frame.src=series.seasons[season][0].embed;
+}
+
+function closeModal(){
+  modal.style.display="none";
+  frame.src="";
+}
+
+searchInput.addEventListener("input",render);
+genreFilter.addEventListener("change",render);
+
+render();
+
+</script>
+
+</body>
+</html>
