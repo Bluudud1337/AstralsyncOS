@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astral Apps</title>
+<link rel="icon" href="https://academic-mathwork.vercel.app/icon-192.png">
+
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: white;
+}
+
+/* ================= FULLSCREEN POPUP MESSAGE ================= */
+#popup-message {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    opacity: 0; /* start invisible, JS will set to 1 */
+    pointer-events: none;
+    transition: opacity 1s ease; /* fade out smoothly */
+    z-index: 9999;
+    -webkit-text-stroke: 2px #320ff0; 
+    color: #000;
+    text-shadow:
+        0 0 5px #320ff0,
+        0 0 10px #320ff0,
+        0 0 20px #320ff0,
+        0 0 40px #320ff0;
+}
+
+/* ================= HEADER ================= */
+header {
+    background-color: #000;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+header button {
+    background-color: #320ff0;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 20px;
+}
+
+header button:hover {
+    background-color: #000;
+}
+
+/* ================= SECTION ================= */
+.section-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.section {
+    background-color: #320ff0;
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+}
+
+/* PARTICLES */
+.particle-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("https://media.giphy.com/media/RopTs3DIHoDfi/giphy.gif");
+    background-repeat: repeat;
+    background-size: 400px 400px;
+    opacity: 1;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* CONTENT */
+.section-content {
+    position: relative;
+    z-index: 10;
+
+}
+
+.section-content h2 {
+    margin-bottom: 10px;
+}
+
+/* SEARCH BAR */
+.search-bar {
+    display: block;
+    width: 260px;
+    padding: 12px 15px;
+    margin: 15px auto 35px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    background-color: #000;
+    color: white;
+    text-align: center;
+}
+.search-bar:focus{
+    box-shadow: 0 0 10px #320ff0;
+}
+
+.search-bar::placeholder {
+    color: blue;
+    opacity: 0.50;
+}
+
+/* APP GRID (FIXES STACKING) */
+.apps-container{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap:20px;
+    justify-items:center;
+}
+
+/* APP CARD */
+.app-card {
+    width: 100%;
+    max-width: 200px;
+    height: 250px;
+    background-color: #000;
+    border-radius: 12px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: 0.25s ease;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.app-card:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 15px #320ff0;
+}
+
+.app-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.app-card h3 {
+    margin: 10px;
+    font-size: 15px;
+}
+
+/* FOOTER */
+footer {
+    background-color: #000;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* FULLSCREEN IFRAME */
+iframe.fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 1000;
+}
+
+/* CLOSE BUTTON */
+#close-btn {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    font-size: 24px;
+    color: white;
+    background-color: blue;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: none; /* hidden by default */
+    z-index: 1001; /* above iframe */
+}
+</style>
+
+<script>
+/* ================= RANDOM FULLSCREEN POPUP MESSAGE ================= */
+const popupMessages = [
+    "HA,HA, ONE!",
+    "Check out the apps below!",
+    "GPT Common W🥹✌️❤️‍🩹",
+    "Do stuff pal.",
+    "Ready or not, here i COME!",
+    "You'll never be a GOD!",
+    "Something's missing...",
+    "Im outta here!",
+    "😳sohck wow",
+    "*Ohio impressed*",
+    "R3bloxian and ALT were here...",
+    "Hooba Dooba...",
+    "Merry Christmas!",
+    "nerf Tripwire",
+    "Tails is so annoying in the sonic 2 special stage..",
+    "Trust ALT with your life 'v",
+    "Does your Sol, still burn bright?",
+    "2017x and Lord X are the best exes change my mind (hm:faker)",
+    "your text here",
+    "essential hoodies are kinda mid lowkey..",
+    "This site is a new years gift btw...🎆",
+    "I SWEAR I'M BOUTTA CATCH A MF CASE AGAIN...... ",
+    "I degloved liam...",
+    "r.i.p outcome memories..",
+];
+
+const fonts = ["Arial", "Verdana", "Georgia"];
+
+window.addEventListener("DOMContentLoaded", () => {
+  const popup = document.getElementById("popup-message");
+  popup.textContent = popupMessages[Math.floor(Math.random() * popupMessages.length)];
+  popup.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+  popup.style.opacity = 1;
+  setTimeout(() => popup.style.opacity = 0, 3000);
+});
+
+let currentFrame = null;
+
+function openFullscreen(url) {
+  if (currentFrame) currentFrame.remove();
+
+  const iframe = document.createElement("iframe");
+  iframe.src = url;
+  iframe.className = "fullscreen";
+
+  iframe.setAttribute(
+    "sandbox",
+    "allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-downloads allow-pointer-lock"
+  );
+
+  iframe.allowFullscreen = true;
+  document.body.appendChild(iframe);
+
+  currentFrame = iframe;
+
+  const closeBtn = document.getElementById("close-btn");
+  closeBtn.style.display = "block";
+
+  closeBtn.onclick = () => {
+    iframe.remove();
+    closeBtn.style.display = "none";
+    currentFrame = null;
+  };
+}
+
+function openBallSimulation() {
+  alert("⚠️ Heads up! Ball Simulation takes long to load. Please be patient.");
+  openFullscreen("https://abouris.github.io/bouncing_balls/");
+}
+
+function filterCards() {
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  const cards = document.querySelectorAll(".app-card");
+
+  cards.forEach(card => {
+    const text = card.querySelector("h3").innerText.toLowerCase();
+    card.style.display = text.includes(input) ? "flex" : "none";
+  });
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js").catch(() => {});
+}
+</script>
+</head>
+
+<body>
+
+<!-- POPUP MESSAGE -->
+<div id="popup-message"></div>
+
+<header>
+    <button onclick="location.href='index.html'">Games</button>
+    <button onclick="location.href='ProxyLinks.html'">Proxy Links</button>
+    <button onclick="location.href='BlankLauncher.html'">blank launcher</button>
+</header>
+
+<!-- CLOSE BUTTON FOR IFRAME -->
+<button id="close-btn">X</button>
+
+<div class="section-wrapper">
+    <div class="section">
+        <div class="particle-overlay"></div>
+        <div class="section-content">
+            <h2>Applications</h2>
+
+            <input
+                type="text"
+                id="searchInput"
+                class="search-bar"
+                placeholder="Search through apps..."
+                onkeyup="filterCards()"
+            >
+
+            <div class="apps-container">
+            <div class="app-card" onclick="openFullscreen('https://scramjet.mercurywork.shop/')">
+                <img src="https://scramjet.mercurywork.shop/favicon.webp">
+                <h3>Scramjet</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://edu-links12.vapor.my.cdn.cloudflare.net/')">
+                <img src="https://edu-links12.vapor.my.cdn.cloudflare.net/asset/logo-icon.png">
+                <h3>Vapor</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://z.axsetubal.pt/')">
+                <img src="https://z.axsetubal.pt/logo.webp">
+                <h3>Z-kit</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://infinite-stellar.b-cdn.net/')">
+                <img src="https://styles.redditmedia.com/t5_9vvnjt/styles/communityIcon_ypv1871zsvyb1.png">
+                <h3>Interstellar</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://198.ip.nowgg.lol/apps/a/4478/b.html')">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtsaMcDb_U_sIot7EgRgUpx3dtWyE8gr07dw&s">
+                <h3>Tiktok</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://glintapp.org/')">
+                <img src="https://glintapp.org/images/logo.png">
+                <h3>Glint</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://third-army.surge.sh/')">
+                <img src="https://third-army.surge.sh/icon.png">
+                <h3>HyperTabs</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://browser.rammerhead.org/')">
+                <img src="https://gitlab.com/uploads/-/system/project/avatar/45980936/images.png">
+                <h3>RammerHead</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://helios-browser.vercel.app/')">
+                <img src="https://helios-browser.vercel.app/favicon.ico">
+                <h3>Helios</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://gointospace.app')">
+                <img src="https://gointospace.app/assets/favicon.ico">
+                <h3>NewSpace</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://waves.lat/')">
+                <img src="https://za.mreasandiego.com/assets/images/icons/favicon.ico">
+                <h3>Waves</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://play.frogiee.one/')">
+                <img src="https://play.frogiee.one/stuff/jolly.png">
+                <h3>Froggie's Arcade</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://idk.thepresenttraveller.com/')">
+                <img src="https://idk.thepresenttraveller.com/png/logo.png">
+                <h3>Truffled</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://course.music.sbindy.com/main.html')">
+                <img src="https://course.music.sbindy.com/favicon.ico">
+                <h3>Utopia</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://philosophy.k12biography.com/')">
+                <img src="https://trigonometry.scientificsense.org/shuttle.png">
+                <h3>Shuttle</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://sunsetnetwork.org/')">
+                <img src="https://sunsetnetwork.org/ghost.webp">
+                <h3>Ghost</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://sq2.hkieca.com/')">
+                <img src="https://sq2.hkieca.com/res/logo.png">
+                <h3>DayDream X</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://prodigy-learning.v119.com/')">
+                <img src="https://prodigy-learning.v119.com/storage/images/christmas-logo-removebg-preview.png">
+                <h3>PeteZah</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://arnoldmiddleyk.totalcare.pk/onboarding')">
+                <img src="https://avatars.githubusercontent.com/u/193755495">
+                <h3>Bolt</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://edu.deparra.cl/')">
+                <img src="https://edu.deparra.cl/logo.svg">
+                <h3>DogeUb</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://flixer.sh')">
+                <img src="https://es.gridinsoft.com/img/scr/site/flixer-su.jpeg">
+                <h3>Flixer</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://thirtydollar.website/')">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrddS3kaFiDRe0jD6DhvFuuSRqruWIqzSe8w&s">
+                <h3>Thirty dollar</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://soundbuttonsworld.com/')">
+                <img src="https://play-lh.googleusercontent.com/H8M103xUfYigrhF8JWPE3YVeyripsEydkNFi3z7JpgxByj74kxnXaPI8DoYG5YTGhw">
+                <h3>Soundboard</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://www.worldguessr.com/')">
+                <img src="https://sm.ign.com/t/ign_de/photo/default/geoguessr-1729535819889_kgnb.600.jpg">
+                <h3>GeoGuesser</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://3kh0s.github.io/apps/weavesilk/index.html')">
+                <img src="https://tse2.mm.bing.net/th/id/OIP.nVh5I7w7x1Sidj5oAx8UUgHaF6?rs=1&pid=ImgDetMain&o=7&rm=3">
+                <h3>WeaveSilk</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://admin.internetspeedtest.world')">
+                <img src="https://admin.internetspeedtest.world/images/1.png">
+                <h3>Wilway</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://ye-games.web.app')">
+                <img src="https://ye-games.web.app/favicon.ico">
+                <h3>Ye Games</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://touching.diddy.men')">
+                <img src="https://avatars.githubusercontent.com/u/147996775">
+                <h3>Selenite</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://demo.emulatorjs.org/')">
+                <img src="https://demo.emulatorjs.org/img/logo-light.png">
+                <h3>Emulator JS</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://wildcard.collegeessayexamples.net')">
+                <img src="https://wildcard.collegeessayexamples.net/images/icons/logo.webp">
+                <h3>UniUB v4</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://galxy.autos/onboarding/')">
+                <img src="https://media0.giphy.com/media/s1P4kzgXdyZK8/giphy.gif">
+                <h3>Galaxy V6</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://readcomiconline.li')">
+                <img src="https://readcomiconline.li/Content/images/favicon.ico">
+                <h3>readcomiconline.li</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://endis.org/')">
+                <img src="https://endis.org/img/icons/web-app-manifest-192x192.png">
+                <h3>Endis</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://terbiumon.top')">
+                <img src="https://avatars.githubusercontent.com/u/111026938">
+                <h3>Terbium V2</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://86-48-29-169.plesk.page/')">
+                <img src="https://cdn.vectorstock.com/i/500p/05/65/letter-s-and-c-sc-logo-design-template-minimal-vector-51090565.jpg">
+                <h3>Solo Central V2</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://mrspechan.com/')">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ21DOwBFZjhy93_M8SYq4JyFcXKyI6PVc-hA&s">
+                <h3>Fern</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://t9os.vercel.app/class.html')">
+                <img src="https://t9os.vercel.app/newlogo.png">
+                <h3>T9 OS</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://lunaar.shxrk.dev/')">
+                <img src="https://lunaar.org/media/logo.svg">
+                <h3>Lunaar</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://brightenglish.flightbooker.co.za/')">
+                <img src="https://brightenglish.flightbooker.co.za/favicon.ico">
+                <h3>Shadow</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://vtx.chat/login')">
+                <img src="https://vtx.chat/img/vortex_transparent.png">
+                <h3>Vortex</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://question.sdao.me/')">
+                <img src="https://tse2.mm.bing.net/th/id/OIP.jsbzENgxMa3vkrmellMnrgAAAA?pid=ImgDet&w=167&h=167&c=7&o=7&rm=3">
+                <h3>Rosin</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://animekai.to/home')">
+                <img src="https://animekai.to/assets/uploads/37585a39fe8c8d8fafaa2c7bfbf5374ecac859ea6a0288a6da2c61f5.png">
+                <h3>AnimeKai</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://sflix.fi/')">
+                <img src="https://sflix.fi/assets/uploads/25505f3de3c98a8fc1ad2557f3e3714fc0c457.png">
+                <h3>Sflix</h3>
+           </div>
+
+            <div class="app-card" onclick="openFullscreen('https://nexuss.zapto.org/')">
+                <img src="https://nexuss.zapto.org/storage/images/profile.png">
+                <h3>Nexus</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://flamepass.com')">
+                <img src="https://flamepass.com/assets/logo.png">
+                <h3>FlamePass</h3>
+           </div>
+
+            <div class="app-card" onclick="openFullscreen('https://hideout-seven.vercel.app/')">
+                <img src="https://storage.googleapis.com/gpt-engineer-file-uploads/lHXsITcItNhYM8g6A4Ozb34wIf13/uploads/1760216970969-hideout.jpg">
+                <h3>Hideout</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://123movies.net.pk/home-official/')">
+                <img src="https://123movies.net.pk/wp-content/uploads/2025/02/cropped-logo123-180x180.png">
+                <h3>123Movies</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://gfpzkdtlzf.anjumanallana.in/')">
+                <img src="https://gfpzkdtlzf.anjumanallana.in/IMG_3367.jpeg">
+                <h3>Wreath</h3>
+           </div>
+
+            <div class="app-card" onclick="openFullscreen('https://suntree.network')">
+                <img src="https://sports.aubreyisd.org/images/blue%20girl.gif">
+                <h3>SunTree Network</h3>
+           </div>
+
+            <div class="app-card" onclick="openFullscreen('https://radiusproxy.app.cdn.cloudflare.net/')">
+                <img src="https://radiusproxy.app.cdn.cloudflare.net/favicon.png">
+                <h3>Radius</h3>
+           </div>
+
+            <div class="app-card" onclick="openFullscreen('https://fhfhgfh.vercel.app/')">
+                <img src="https://avatars.githubusercontent.com/u/240241840">
+                <h3>NautilusOS</h3>
+          </div>
+
+            <div class="app-card" onclick="openFullscreen('https://velara.cc/')">
+                <img src="icon.png">
+                <h3>Velara</h3>
+          </div>
+
+            <div class="app-card" onclick="openFullscreen('https://activitysforscience.space/')">
+                <img src="https://activitysforscience.space/files/aos/images/brand/ico.ico">
+                <h3>AfiliteOS</h3>
+           </div>
+
+            <div class="app-card" onclick="openFullscreen('https://sketchpad.io')">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-W3ysyxqIfQSP9mR33FEG0xJBbzn9dz9cpQ&s">
+                <h3>Sketchpad</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://doinmath.engalsaati.com/@')">
+                <img src="https://cdn.discordapp.com/icons/1430677266945409067/9d9c9307385f3eb06d003eb00568334c.webp?size=80&quality=lossless">
+                <h3>Platinum</h3>
+           </div>
+
+            <div class="app-card" onclick="openFullscreen('https://198.ip.nowgg.lol')">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq5Jt3fdnYDxAmloV4l7ughwQnOihmT8gpOQ&s">
+                <h3>Now.gg</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://pleasespeed.ulfschoeneberg.de/')">
+                <img src="https://lh3.googleusercontent.com/sitesv/AAzXCkc0Mi6N2gSNrCZkQOs4ylcozp6Lx8rGvLZmymCniwuoPmwgAvQSPnp7busEWxxqgXFq_9kWKatsBLAWlbGB_e5cuq1vWTyFKgqW2-IcyvY0K2Ij3WPqPvPLj5pWaZ-kizedozAQanWFlkNMAGjnjFMHBIQrzKtQ6joSrwO53Zbzn1ia8BwJOwpwVJ378ak84AS9Em4lK7-_mVHnPAEA_o8pH-qlFj0-XDvLNSE=w1280">
+                <h3>Lunar</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://when.casaye.com/')">
+                <img src="https://when.casaye.com/storage/images/512x512.png">
+                <h3>Us5</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://piped.private.coffee/')">
+                <img src="https://i.pinimg.com/736x/9a/25/a3/9a25a391d3e5a3e14f5dde1855a71fd9.jpg">
+                <h3>Youtube(piped)</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://clever-login.bangerade.us/p.html')">
+                <img src="https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/f6efd0bbf461431603c304393221d010~tplv-tiktokx-cropcenter:100:100.jpeg?dr=9640&refresh_token=41f23733&x-expires=1768003200&x-signature=mvozBs6PRnrK0SNjimo0A5JPFOc%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=useast5">
+                <h3>Imp</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://anura.pro/')">
+                <img src="https://anura.pro/pwa_icon.png">
+                <h3>AnuraOS</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://hours.newlifesanctuarychurch.com/')">
+                <img src="https://hours.newlifesanctuarychurch.com/assets/img/favicon.png">
+                <h3>Quasar</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://math.demon.in.net/')">
+                <img src="https://math.demon.in.net/image/logo.png">
+                <h3>Demon</h3>
+            </div>
+
+            <div class="app-card" onclick="openBallSimulation()">
+                <img src="https://yt3.googleusercontent.com/5MU8j5P5d073-qEu7MoxzLOADuzwCbr7eEZPKYYDODovyS_cQUVHzeE0W4sMtvwsbnITXMQo6iA=s900-c-k-c0x00ffffff-no-rj">
+                <h3>Ball Simulation</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://allthelove.bfcontrol.com.mx/main.html')">
+                <img src="https://cdn.discordapp.com/icons/1395121801516023891/9b16663422ed7a8068e5c528c8d5eeb6.webp">
+                <h3>Axiom Network</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://zeelix.xyz')">
+                <img src="https://zeelix.xyz/images/boredomlogo.png">
+                <h3>Boredom V2</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://twisted.surge.sh/')">
+                <img src="https://tse2.mm.bing.net/th/id/OIP.jc3EY1jw5z_cFfw-5RZCgAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3">
+                <h3>Nismo's Arcade</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://delursys32.github.io/sandboxelsunblocked/')">
+                <img src="https://delursys32.github.io/sandboxelsunblocked/icons/apple-touch-icon.png?v=2">
+                <h3>Sandbloxels</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://appetize.io/embed/xc1w6f1krd589zhp22a0mgftyw?autoplay=false&debug=true&device=pixel4&deviceColor=black&embed=true&launchUrl=exp%3A%2F%2Fexp.host%2F%40snack%2FO13J6Rrqz%2Bi4KzQAD6Zn&orientation=portrait&scale=80&screenOnly=false&xDocMsg=true&xdocMsg=true&params=%7B%22EXDevMenuDisableAutoLaunch%22%3Atrue%2C%22EXKernelLaunchUrlDefaultsKey%22%3A%22exp%3A%2F%2Fexp.host%2F%40snack%2FO13J6Rrqz%2Bi4KzQAD6Zn%22%2C%22EXKernelDisableNuxDefaultsKey%22%3Atrue%7D')">
+                <img src="https://static.vecteezy.com/system/resources/previews/011/911/511/original/smartphone-icon-with-transparent-background-free-png.png">
+                <h3>Virtual Machine</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://graphingmath.graphicon.ru/pages/home.html')">
+                <img src="https://graphingmath.graphicon.ru/images/sat4.png">
+                <h3>Saturn</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://blooket-botter.vercel.app/')">
+                <img src="https://tse4.mm.bing.net/th/id/OIP.gxZJzE8Q4KCLeqLzoj8cuwHaHa?rs=1&pid=ImgDetMain&o=7&rm=3">
+                <h3>Blooket Bot</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://infinite-gms.b-cdn.net/')">
+                <img src="https://i.ytimg.com/vi/jrHOo4XFBHs/maxresdefault.jpg">
+                <h3>Reds Exploit Corner</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://writing-workshop.zone.id/')">
+                <img src="https://cdn.jsdelivr.net/gh/NoahsAmazingTutoringHelp/Noahs-Calculus-Tutor/images/logo.png">
+                <h3>Noah's Tutoring</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://lets.just.lindhesidan.se/')">
+                <img src="https://lets.just.lindhesidan.se/favicon.ico">
+                <h3>Dreamy</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://ds.mages.io/')">
+                <img src="https://ds.mages.io/assets/images/transparentlogo.png">
+                <h3>Definitely Science</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://q7zdgi1i.acgcotton.com/')">
+                <img src="https://static.vecteezy.com/system/resources/previews/000/450/187/non_2x/information-vector-icon.jpg">
+                <h3>Infamous</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://proxy-ch4tgpt-hub.lovable.app/')">
+                <img src="https://th.bing.com/th/id/OIP.LcqvCrEEXCDTYPwyzy6ihQHaHa?w=156&h=180&c=7&r=0&o=7&pid=1.7&rm=3">
+                <h3>ChatGPT.prox</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://wmath.pages.dev')">
+                <img src="https://p16-sg.tiktokcdn.com/tos-maliva-avt-0068/ecb5396584f1538b6810c22f36a8f8ef~tplv-tiktokx-cropcenter:128:128.webp">
+                <h3>Some Stuff</h3>
+                </div>
+
+            <div class="app-card" onclick="openFullscreen('https://streamex.sh')">
+                <img src="https://tse2.mm.bing.net/th/id/OIP.tAhPOBzqWAuQw7y4MocYPQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3">
+                <h3>Streamex</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://maddox.page/')">
+                <img src="https://maddox.page/imgs/egg_cloud_logo.webp">
+                <h3>Maddox Cloud Gaming</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://math-556.b-cdn.net/')">
+                <img src="https://static.vecteezy.com/system/resources/previews/000/550/979/original/dynamic-atom-molecule-science-symbol-vector-icon.jpg">
+                <h3>Krypton</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://realeducation.surak.kz/')">
+                <img src="https://realeducation.surak.kz/assets/img/fav.png">
+                <h3>cherri</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://cine-os.b-cdn.net/')">
+                <img src="https://media.istockphoto.com/vectors/vector-double-line-alternative-logo-letter-c-vector-id1226386279?k=20&m=1226386279&s=612x612&w=0&h=yNtgeuoartaVw-TFsvXGK7TO0AtrTB5XpUtpJQoZEVA=">
+                <h3>Cine-Os</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://accelerationis-monkey.global.ssl.fastly.net/')">
+                <img src="https://accelerationis-monkey.global.ssl.fastly.net/images/favicon.webp">
+                <h3>Acceleration</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://ihateovercloaked.zinko.uk/')">
+                <img src="">
+                <h3>Overcloaked</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://codingcourse-web-dev.html-5.me/')">
+                <img src="https://s3.amazonaws.com/static.graphemica.com/glyphs/i300s/000/009/474/original/25C8-300x300.png?1275323735">
+                <h3>GhostLink</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('n-o-iota.vercel.app')">
+                <img src="https://images.unsplash.com/photo-1697215786004-682b1684c65e?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+                <h3>Niro AI</h3>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; AstralSync Unblockedd</p>
+</footer>
+</body>
+</html>
