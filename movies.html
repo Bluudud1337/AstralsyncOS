@@ -1,467 +1,763 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>AstralMovies</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080a0f" />
+  <title>CoralFlix — Watch something unforgettable</title>
+  <style>
+    :root {
+      --black: #080a0f;
+      --black-soft: #11151e;
+      --panel: #171c28;
+      --panel-bright: #202839;
+      --coral: #ff6f61;
+      --coral-light: #ff9b90;
+      --blue: #287bff;
+      --blue-light: #60a0ff;
+      --ink: #f8fbff;
+      --muted: #9ba8bd;
+      --line: rgba(255,255,255,.11);
+      --shadow: 0 22px 60px rgba(0,0,0,.36);
+      --radius: 18px;
+    }
 
-<style>
-body{
-  margin:0;
-  font-family:"Segoe UI", sans-serif;
-  background: linear-gradient(to bottom, #04070d, #07121f 40%, #081522);
-  color:white;
-  overflow-x:hidden;
-}
-/* NAVIGATION BAR */
-.nav-bar{
-  display:flex;
-  gap:20px;
-  padding:10px 0 25px 0;
-  border-bottom:1px solid rgba(0,200,255,.15);
-  margin-bottom:25px;
-}
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(255,111,97,.13), transparent 30rem),
+        radial-gradient(circle at 90% 6%, rgba(40,123,255,.12), transparent 35rem),
+        var(--black);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    .hidden { display: none !important; }
 
-.nav-bar a{
-  text-decoration:none;
-  color:#9befff;
-  padding:8px 18px;
-  border-radius:20px;
-  font-size:14px;
-  background:rgba(8,21,34,.4);
-  border:1px solid rgba(0,200,255,.15);
-  transition:.25s ease;
-  backdrop-filter:blur(6px);
-}
+    /* ---------------------- PROFILE GATE ---------------------- */
+    .profile-gate {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px 20px;
+      background:
+        linear-gradient(140deg, rgba(8,10,15,.8), rgba(8,10,15,.96)),
+        radial-gradient(circle at 20% 20%, rgba(255,111,97,.35), transparent 24rem),
+        radial-gradient(circle at 80% 70%, rgba(40,123,255,.3), transparent 28rem);
+    }
+    .gate-inner { width: min(940px, 100%); text-align: center; }
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 900;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      letter-spacing: -.07em;
+    }
+    .brand-mark {
+      width: 48px; height: 48px; display: grid; place-items: center;
+      border-radius: 14px 14px 14px 4px;
+      color: white; background: linear-gradient(135deg, var(--coral), var(--blue));
+      box-shadow: 0 10px 30px rgba(255,111,97,.28);
+      font-size: 1.45rem; letter-spacing: -.16em; padding-right: 4px;
+    }
+    .gate-inner h1 { margin: 34px 0 10px; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.05em; }
+    .gate-inner p { margin: 0 auto 32px; max-width: 570px; color: var(--muted); font-size: 1.05rem; line-height: 1.6; }
+    .profile-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+      max-width: 780px; margin: 0 auto;
+    }
+    .profile-choice {
+      appearance: none; border: 1px solid transparent; background: rgba(23,28,40,.84);
+      color: var(--ink); border-radius: 18px; padding: 20px 14px; transition: .25s ease;
+    }
+    .profile-choice:hover, .profile-choice:focus-visible {
+      transform: translateY(-7px); border-color: var(--coral);
+      background: var(--panel-bright); box-shadow: 0 15px 35px rgba(0,0,0,.3);
+      outline: none;
+    }
+    .avatar {
+      width: 86px; height: 86px; border-radius: 50%; display: grid; place-items: center;
+      margin: 0 auto 14px; color: #fff; font-size: 2rem; font-weight: 900;
+      box-shadow: inset 0 0 0 4px rgba(255,255,255,.1);
+    }
+    .profile-choice strong { display: block; font-size: 1.05rem; }
+    .profile-choice small { display: block; margin-top: 5px; color: var(--muted); }
+    .profile-note { margin-top: 28px !important; font-size: .85rem !important; color: #6f7d92 !important; }
+    .profile-gate-actions { display: flex; justify-content: center; margin-top: 24px; }
+    .profile-gate-actions .btn { min-width: 180px; }
 
-.nav-bar a:hover{
-  background:rgba(0,200,255,.15);
-  border-color:rgba(0,200,255,.4);
-  box-shadow:0 0 12px rgba(0,200,255,.4);
-  transform:translateY(-2px);
-}
-/* Subtle floating glow */
-.particles{
-  position:fixed;
-  width:100%;
-  height:100%;
-  z-index:0;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at 25% 30%, rgba(0,200,255,0.12) 2px, transparent 3px),
-    radial-gradient(circle at 70% 60%, rgba(0,180,255,0.08) 2px, transparent 3px);
-  background-size:250px 250px;
-  animation: float 80s linear infinite;
-}
-@keyframes float{
-  from { transform: translateY(0); }
-  to { transform: translateY(-300px); }
-}
+    /* ---------------------- APP CHROME ---------------------- */
+    .app { min-height: 100vh; }
+    .topbar {
+      position: sticky; z-index: 20; top: 0; display: flex; align-items: center; gap: 28px;
+      height: 74px; padding: 0 clamp(18px, 4vw, 64px);
+      background: rgba(8,10,15,.82); border-bottom: 1px solid rgba(255,255,255,.06);
+      backdrop-filter: blur(22px);
+    }
+    .topbar .brand-lockup { font-size: 1.45rem; flex: 0 0 auto; }
+    .topbar .brand-mark { width: 32px; height: 32px; border-radius: 10px 10px 10px 3px; font-size: .95rem; }
+    .nav-links { display: flex; align-items: center; gap: 20px; color: var(--muted); font-size: .93rem; }
+    .nav-links a { transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+    .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .search-wrap { position: relative; }
+    .search-wrap svg { position: absolute; left: 13px; top: 11px; color: var(--muted); pointer-events: none; }
+    .search-input {
+      width: min(25vw, 240px); min-width: 150px; padding: 10px 14px 10px 38px; color: var(--ink);
+      background: rgba(255,255,255,.07); border: 1px solid transparent; border-radius: 10px; outline: none;
+    }
+    .search-input:focus { border-color: var(--blue); background: rgba(255,255,255,.11); }
+    .profile-trigger {
+      display: flex; align-items: center; gap: 8px; color: var(--ink); border: 0; background: transparent;
+      padding: 4px 0 4px 8px; font-weight: 700;
+    }
+    .mini-avatar { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; font-size: .82rem; font-weight: 900; color: white; }
 
-.content{
-  position:relative;
-  z-index:1;
-  padding:40px;
-}
+    /* ---------------------- HERO ---------------------- */
+    .hero {
+      min-height: min(700px, calc(100vh - 74px)); display: flex; align-items: flex-end;
+      padding: clamp(90px, 13vw, 170px) clamp(18px, 7vw, 112px) 72px; position: relative; overflow: hidden;
+      isolation: isolate;
+    }
+    .hero::before {
+      content: ""; position: absolute; z-index: -2; inset: 0;
+      background:
+        linear-gradient(90deg, var(--black) 2%, rgba(8,10,15,.75) 30%, rgba(8,10,15,.16) 68%, rgba(8,10,15,.7)),
+        linear-gradient(0deg, var(--black) 0%, transparent 36%),
+        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=2200&q=85") center/cover;
+    }
+    .hero::after { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(145deg, rgba(255,111,97,.14), transparent 45%, rgba(40,123,255,.13)); mix-blend-mode: screen; }
+    .hero-copy { width: min(610px, 100%); }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--coral-light); font-size: .76rem; font-weight: 900; letter-spacing: .15em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--coral); }
+    .hero h1 { max-width: 580px; margin: 16px 0 14px; font-size: clamp(3.1rem, 7vw, 6.4rem); line-height: .9; letter-spacing: -.09em; }
+    .hero h1 span { color: var(--coral); }
+    .hero-description { color: #d2daea; max-width: 510px; line-height: 1.65; font-size: 1.02rem; }
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 20px 0; color: var(--muted); font-size: .88rem; }
+    .match { color: #7ee2a4; font-weight: 800; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 11px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: 0;
+      border-radius: 10px; padding: 12px 18px; color: var(--ink); font-weight: 800; transition: .2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+    .btn-primary { color: white; background: var(--coral); box-shadow: 0 10px 24px rgba(255,111,97,.22); }
+    .btn-secondary { background: rgba(255,255,255,.14); backdrop-filter: blur(10px); }
+    .btn-ghost { padding-inline: 11px; background: transparent; color: var(--muted); }
+    .btn-ghost:hover { color: var(--ink); background: rgba(255,255,255,.08); }
 
-/* HEADER */
-.header{
-  margin-bottom:30px;
-}
-.header h1{
-  margin:0;
-  font-size:36px;
-  color:#7fe9ff;
-  text-shadow:0 0 12px rgba(0,200,255,.6);
-}
+    /* ---------------------- CONTENT ---------------------- */
+    .content { padding: 10px clamp(18px, 4vw, 64px) 80px; position: relative; z-index: 2; }
+    .filter-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 38px; }
+    .filter-chip {
+      border: 1px solid var(--line); background: rgba(23,28,40,.74); color: var(--muted);
+      border-radius: 999px; padding: 9px 15px; transition: .2s;
+    }
+    .filter-chip:hover, .filter-chip.active { color: white; border-color: var(--blue); background: rgba(40,123,255,.2); }
+    .suggest-button { color: white; border-color: rgba(255,111,97,.55); background: linear-gradient(135deg, rgba(255,111,97,.24), rgba(40,123,255,.22)); }
+    .suggest-button:hover { border-color: var(--coral); background: linear-gradient(135deg, rgba(255,111,97,.38), rgba(40,123,255,.32)); }
+    .suggest-button.disabled { cursor: not-allowed; opacity: .5; }
+    .section { margin: 0 0 42px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+    .section-heading h2 { margin: 0; font-size: clamp(1.2rem, 2vw, 1.55rem); letter-spacing: -.04em; }
+    .section-heading p { margin: 0; color: var(--muted); font-size: .83rem; }
+    .movie-row {
+      display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px;
+    }
+    .movie-card { min-width: 0; animation: cardIn .45s both; }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .poster {
+      aspect-ratio: 2 / 3; width: 100%; overflow: hidden; position: relative; border-radius: 13px;
+      background: linear-gradient(145deg, var(--panel-bright), #11151e); box-shadow: 0 12px 25px rgba(0,0,0,.22);
+    }
+    .poster::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.8), transparent 48%); pointer-events: none; }
+    .poster img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .45s; }
+    .movie-card:hover .poster img { transform: scale(1.06); }
+    .poster-placeholder { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; color: #74819a; text-align: center; font-weight: 800; }
+    .poster-placeholder strong { display: block; color: var(--coral-light); font-size: 1.8rem; letter-spacing: -.07em; }
+    .card-badge { position: absolute; z-index: 1; top: 10px; left: 10px; background: var(--coral); color: #1d0908; border-radius: 5px; padding: 4px 7px; font-size: .67rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
+    .card-quick-actions { position: absolute; z-index: 2; right: 8px; top: 8px; display: flex; gap: 5px; opacity: 0; transform: translateY(-4px); transition: .2s; }
+    .movie-card:hover .card-quick-actions, .movie-card:focus-within .card-quick-actions { opacity: 1; transform: none; }
+    .icon-btn { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(8,10,15,.8); color: white; }
+    .icon-btn.liked { color: var(--coral); }
+    .movie-info { padding: 11px 2px 0; }
+    .movie-title { margin: 0 0 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+    .movie-sub { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: .76rem; }
+    .movie-sub .rating { color: var(--coral-light); font-weight: 800; }
+    .empty-state { grid-column: 1 / -1; padding: 45px 20px; color: var(--muted); border: 1px dashed var(--line); border-radius: 14px; text-align: center; }
 
-/* SEARCH + FILTER BAR */
-.top-controls{
-  display:flex;
-  gap:15px;
-  margin-top:20px;
-}
+    /* ---------------------- MODALS ---------------------- */
+    .modal-backdrop {
+      position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 20px;
+      background: rgba(0,0,0,.75); backdrop-filter: blur(12px);
+    }
+    .modal {
+      width: min(860px, 100%); max-height: min(90vh, 780px); overflow: auto; border: 1px solid var(--line);
+      border-radius: 20px; background: var(--panel); box-shadow: var(--shadow); position: relative;
+    }
+    .modal-close { position: absolute; z-index: 3; right: 14px; top: 14px; }
+    .player-shell { background: #000; aspect-ratio: 16/9; display: grid; place-items: center; }
+    .player-shell iframe { display: block; border: 0; width: 100%; height: 100%; }
+    .player-placeholder { text-align: center; color: var(--muted); padding: 30px; }
+    .player-placeholder strong { display: block; margin-bottom: 8px; color: var(--coral-light); font-size: 1.3rem; }
+    .modal-copy { padding: 22px 24px 26px; }
+    .modal-copy h2 { margin: 0 0 8px; font-size: 1.8rem; letter-spacing: -.05em; }
+    .modal-copy p { color: var(--muted); line-height: 1.6; margin: 10px 0 18px; }
+     .show-episodes { margin-top: 24px; }
+     .season-picker { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: .84rem; font-weight: 800; }
+     .season-picker select {
+       min-width: 150px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px;
+       color: var(--ink); background: var(--black-soft); outline: none;
+     }
+     .season-picker select:focus { border-color: var(--blue); }
+     .episode-list { display: grid; gap: 8px; margin-top: 14px; }
+     .episode-item {
+       display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 12px;
+       width: 100%; padding: 12px; text-align: left; color: var(--ink); border: 1px solid var(--line);
+       border-radius: 10px; background: rgba(8,10,15,.38); transition: .2s;
+     }
+     .episode-item:hover { border-color: var(--blue); background: rgba(40,123,255,.12); }
+     .episode-number { color: var(--coral-light); font-weight: 900; }
+     .episode-copy strong { display: block; }
+     .episode-copy small { display: block; margin-top: 3px; overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; }
+     .episode-play { color: var(--blue-light); font-size: .8rem; font-weight: 900; }
+     .episode-empty { padding: 18px; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; font-size: .86rem; }
+    .profile-modal { width: min(720px, 100%); padding: 32px; }
+    .profile-modal h2 { margin: 0 0 22px; text-align: center; }
+    .profile-modal .profile-grid { max-width: none; }
+    .profile-modal .profile-gate-actions { margin-top: 24px; }
+    .profile-create-modal { width: min(500px, 100%); padding: 32px; }
+    .profile-create-modal h2 { margin: 0 0 8px; font-size: 1.7rem; letter-spacing: -.05em; }
+    .profile-create-modal > p { margin: 0 0 24px; color: var(--muted); line-height: 1.55; }
+    .profile-form { display: grid; gap: 16px; }
+    .profile-form label { display: grid; gap: 7px; color: #d8e0ed; font-size: .85rem; font-weight: 800; }
+    .profile-form input {
+      width: 100%; border: 1px solid var(--line); border-radius: 10px; outline: none;
+      padding: 12px 13px; color: var(--ink); background: rgba(8,10,15,.56);
+    }
+    .profile-form input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(40,123,255,.15); }
+    .profile-form input::placeholder { color: #68768e; }
+    .form-hint { margin: -6px 0 0; color: #718098; font-size: .76rem; line-height: 1.45; }
+    .form-error { margin: 0; color: var(--coral-light); font-size: .84rem; font-weight: 700; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
 
-.top-controls input,
-.top-controls select{
-  padding:10px 15px;
-  border-radius:20px;
-  border:1px solid rgba(0,200,255,.25);
-  background:rgba(8,21,34,.6);
-  color:white;
-  backdrop-filter:blur(10px);
-  outline:none;
-  transition:.2s;
-}
-
-.top-controls input:focus,
-.top-controls select:focus{
-  border-color:rgba(0,200,255,.6);
-  box-shadow:0 0 10px rgba(0,200,255,.4);
-}
-
-/* GRID */
-.movie-grid{
-  margin-top:40px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:25px;
-}
-
-/* CARD */
-.movie-card{
-  background:rgba(10,20,35,.75);
-  border-radius:14px;
-  overflow:hidden;
-  border:1px solid rgba(0,200,255,.15);
-  transition:.25s ease;
-  cursor:pointer;
-}
-
-.movie-card:hover{
-  transform:translateY(-5px);
-  border-color:rgba(0,200,255,.4);
-  box-shadow:0 8px 20px rgba(0,200,255,.25);
-}
-
-.movie-card img{
-  width:100%;
-  height:280px;
-  object-fit:cover;
-}
-
-.movie-info{
-  padding:12px;
-}
-
-.movie-info h3{
-  margin:0;
-  font-size:16px;
-  color:#d6faff;
-}
-
-/* MODAL PLAYER */
-.modal{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.85);
-  z-index:10;
-}
-
-.modal-content{
-  width:95%;
-  max-width:1100px;
-  background:linear-gradient(to bottom,#081522,#0c1b2a);
-  border-radius:15px;
-  padding:20px;
-  border:1px solid rgba(0,200,255,.25);
-  box-shadow:0 0 30px rgba(0,200,255,.3);
-}
-
-.video-container{
-  width:100%;
-  height:520px;
-  background:black;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.video-container iframe{
-  width:100%;
-  height:100%;
-  border:none;
-}
-
-.player-controls{
-  margin-top:15px;
-}
-
-.player-controls select{
-  margin-right:10px;
-}
-
-.close-btn{
-  float:right;
-  cursor:pointer;
-  font-size:18px;
-  opacity:.7;
-}
-.close-btn:hover{
-  opacity:1;
-}
-</style>
+    footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; padding: 24px clamp(18px,4vw,64px) 42px; color: #647189; font-size: .8rem; border-top: 1px solid rgba(255,255,255,.06); }
+    footer strong { color: var(--coral-light); }
+    @media (max-width: 900px) {
+      .movie-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .nav-links { gap: 11px; }
+      .nav-links a:nth-child(n+4) { display: none; }
+    }
+    @media (max-width: 650px) {
+      .topbar { gap: 12px; }
+      .topbar .brand-lockup { font-size: 1.1rem; }
+      .topbar .brand-mark { width: 28px; height: 28px; }
+      .nav-links { display: none; }
+      .search-input { width: 145px; min-width: 0; }
+      .profile-trigger span { display: none; }
+      .hero { min-height: 640px; padding-bottom: 52px; }
+      .hero::before { background-position: 63% center; }
+      .movie-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+      .profile-grid { grid-template-columns: repeat(2, 1fr); }
+      .profile-modal { padding: 24px 16px; }
+    }
+  </style>
 </head>
 <body>
+  <!--
+    CORALFLIX EDITOR NOTES
+    1. Edit the profiles array and the movies array near the bottom of this file.
+    2. poster accepts a direct image URL. Leave it blank to show an editable placeholder.
+    3. embed accepts either a video URL OR a full HTML embed snippet such as <iframe ...></iframe>.
+    4. Everything is intentionally in this one HTML file. No external app or new-tab behavior is required.
+  -->
 
-<div class="particles"></div>
+  <section id="profileGate" class="profile-gate">
+    <div class="gate-inner">
+      <div class="brand-lockup"><span class="brand-mark">◢</span>CoralFlix</div>
+      <h1>Who’s watching?</h1>
+      <p>Pick a profile and jump back into your favorite stories, latest discoveries, and the movies everyone is talking about.</p>
+      <div id="gateProfiles" class="profile-grid"></div>
+      <div class="profile-gate-actions"><button id="createProfileGate" class="btn btn-primary" type="button">＋ Create profile</button></div>
+      <p class="profile-note">Profiles are saved on this device and matched to the email you enter. No email is sent and nothing leaves this browser.</p>
+    </div>
+  </section>
 
-<div class="content">
-<div class="nav-bar">
-  <a href="index.html">Home</a>
-  <a href="apps.html">Apps</a>
-  <a href="ProxyLinks.html">Proxy Links</a>
-  <a href="BlankLauncher.html">Blank Launcher</a>
-</div>
-  <div class="header">
-    <h1>🌊 AstralWatch</h1>
-    <p>more stuff coming soon! credits to wmath.pages.dev for streaming!!</P>
-    <div class="top-controls">
-      <input type="text" id="searchInput" placeholder="Search movies or shows...">
-      <select id="genreFilter">
-        <option value="all">All</option>
-        <option value="movie">Movies</option>
-        <option value="series">Series</option>
-      </select>
+  <main id="app" class="app hidden">
+    <header class="topbar">
+      <a class="brand-lockup" href="#home" aria-label="CoralFlix home"><span class="brand-mark">◢</span>CoralFlix</a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="active" href="#home">Home</a>
+        <a href="#movies">Movies</a>
+        <a href="#shows">Shows</a>
+        <a href="#my-list">My List</a>
+      </nav>
+      <div class="topbar-actions">
+        <label class="search-wrap" aria-label="Search CoralFlix">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          <input id="searchInput" class="search-input" type="search" placeholder="Search titles..." autocomplete="off" />
+        </label>
+        <button id="profileTrigger" class="profile-trigger" type="button" aria-label="Switch profile"></button>
+      </div>
+    </header>
+
+    <section id="home" class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">CoralFlix original</div>
+        <h1 id="heroTitle">Your <span>next</span> watch</h1>
+        <div class="hero-meta"><span class="match">Your catalog</span><span>Movies</span><span>Shows</span><span>Ready to edit</span></div>
+        <p id="heroDescription" class="hero-description">CoralFlix is ready for your collection. Add your own poster images and video embeds in the editor area below, then make this space yours.</p>
+        <div class="hero-actions">
+          <button id="heroPlay" class="btn btn-primary hidden" type="button">▶ <span>Play</span></button>
+          <button id="heroInfo" class="btn btn-secondary hidden" type="button">ⓘ <span>More info</span></button>
+        </div>
+      </div>
+    </section>
+
+    <div class="content">
+      <div class="filter-row" aria-label="Browse filters">
+        <button class="filter-chip active" data-filter="all" type="button">All</button>
+        <button class="filter-chip" data-filter="movie" type="button">Movies</button>
+        <button class="filter-chip" data-filter="show" type="button">Shows</button>
+        <button class="filter-chip" data-filter="liked" type="button">Most liked</button>
+        <button class="filter-chip" data-filter="watched" type="button">Most watched</button>
+        <a id="suggestButton" class="filter-chip suggest-button" href="" target="_blank" rel="noopener noreferrer">＋ Suggest a movie/show</a>
+      </div>
+
+      <section class="section" id="trending">
+        <div class="section-heading"><div><h2>Most watched this week</h2><p>What the CoralFlix community has on repeat</p></div></div>
+        <div id="watchedRow" class="movie-row"></div>
+      </section>
+
+      <section class="section" id="movies">
+        <div class="section-heading"><div><h2>Movies worth making time for</h2><p>Big feelings. Excellent snacks recommended.</p></div></div>
+        <div id="movieRow" class="movie-row"></div>
+      </section>
+
+      <section class="section" id="shows">
+        <div class="section-heading"><div><h2>Shows you’ll want one more episode of</h2><p>New worlds, familiar faces, no spoilers</p></div></div>
+        <div id="showRow" class="movie-row"></div>
+      </section>
+
+      <section class="section" id="my-list">
+        <div class="section-heading"><div><h2>Most liked by your profile</h2><p>Your personal signal through the noise</p></div></div>
+        <div id="likedRow" class="movie-row"></div>
+      </section>
+    </div>
+    <footer><span><strong>CoralFlix</strong> — stories with a little more color.</span><span>Made for your edit-ready movie night.</span></footer>
+  </main>
+
+  <div id="playerModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Video player">
+    <div class="modal">
+      <button class="icon-btn modal-close" data-close="playerModal" type="button" aria-label="Close player">×</button>
+      <div id="playerShell" class="player-shell"></div>
+      <div class="modal-copy"><h2 id="playerTitle"></h2><div id="playerMeta" class="movie-sub"></div><p id="playerDescription"></p></div>
     </div>
   </div>
 
-  <div class="movie-grid" id="movieGrid"></div>
-
-</div>
-
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal()">✖ Close</span>
-
-    <div class="video-container">
-      <iframe id="videoFrame" allowfullscreen></iframe>
-    </div>
-
-    <div class="player-controls" id="seriesControls" style="display:none;">
-      <select id="seasonSelect"></select>
-      <select id="episodeSelect"></select>
+  <div id="infoModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Movie information">
+    <div class="modal">
+      <button class="icon-btn modal-close" data-close="infoModal" type="button" aria-label="Close details">×</button>
+      <div class="modal-copy" style="padding-top: 46px">
+        <div class="eyebrow">About this title</div>
+        <h2 id="infoTitle"></h2>
+        <div id="infoMeta" class="movie-sub"></div>
+        <p id="infoDescription"></p>
+        <div id="showEpisodes" class="show-episodes hidden">
+          <label class="season-picker" for="seasonSelect">Season <select id="seasonSelect"></select></label>
+          <div id="episodeList" class="episode-list"></div>
+        </div>
+        <button id="infoPlay" class="btn btn-primary" type="button">▶ Play now</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
+  <div id="profileModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Switch profile">
+    <div class="modal profile-modal">
+      <button class="icon-btn modal-close" data-close="profileModal" type="button" aria-label="Close profiles">×</button>
+      <h2>Switch profile</h2>
+      <div id="modalProfiles" class="profile-grid"></div>
+      <div class="profile-gate-actions"><button id="createProfileModalButton" class="btn btn-primary" type="button">＋ Create profile</button></div>
+    </div>
+  </div>
 
-const media = [
-{
-  type:"movie",
-  title:"Sonic The Hedgehog",
-  image:"https://th.bing.com/th/id/R.9c6fabe99cde96a22d14a24b7b73eaa2?rik=RdBtJzNBhJ%2fiOA&riu=http%3a%2f%2fwww.impawards.com%2f2020%2fposters%2fsonic_the_hedgehog_ver12_xlg.jpg&ehk=%2bXnpTKsiwTdERy1vsv5Pmv0mx1857Nn1EE2sl6C%2frHw%3d&risl=&pid=ImgRaw&r=0",
-  embed:"https://wmath.pages.dev/misc/customsource/index3?id=454626&type=movie"
-},
+  <div id="createProfileModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-label="Create profile">
+    <form id="createProfileForm" class="modal profile-create-modal">
+      <button class="icon-btn modal-close" data-close="createProfileModal" type="button" aria-label="Close create profile">×</button>
+      <h2>Create a CoralFlix profile</h2>
+      <p>Give this profile a name and an email to save it on this device. Use the same email later to recognize this profile.</p>
+      <div class="profile-form">
+        <label for="newProfileName">Profile name
+          <input id="newProfileName" name="name" type="text" maxlength="24" placeholder="e.g. Jordan" required />
+        </label>
+        <label for="newProfileEmail">Email for this device
+          <input id="newProfileEmail" name="email" type="email" placeholder="you@example.com" required />
+        </label>
+        <label for="newProfileSubtitle">What do you like watching?
+          <input id="newProfileSubtitle" name="subtitle" type="text" maxlength="32" placeholder="e.g. Sci-fi nights" />
+        </label>
+        <p class="form-hint">This email is only used as a local profile label and storage key. CoralFlix does not send messages or create a remote account.</p>
+        <p id="profileFormError" class="form-error hidden" role="alert"></p>
+        <div class="form-actions">
+          <button class="btn btn-ghost" data-close="createProfileModal" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Save profile</button>
+        </div>
+      </div>
+    </form>
+  </div>
 
-{
-  type:"movie",
-  title:"Sonic The Hedgehog 2",
-  image:"https://tse4.mm.bing.net/th/id/OIP.masulhA3AGB3lnJa96VTZgHaK-?rs=1&pid=ImgDetMain&o=7&rm=3",
-  embed:"https://wmath.pages.dev/misc/customsource/index3?id=675353&type=movie"
-},
-
-{
-  type:"movie",
-  title:"Sonic The Hedgehog 3",
-  image:"https://th.bing.com/th/id/OIP.QRur_WQfTttsyWW9bi55xQHaK-?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-  embed:"https://wmath.pages.dev/misc/customsource/index3?id=939243&type=movie"
-},
-
-{
-  type:"series",
-  title:"Smiling Friends",
-  image:"https://image.tmdb.org/t/p/original/fFwOhXnKmSlAWAuR6O4sVzQW0em.jpg",
-  seasons:{
-    1:[
-      {title:"Episode 1", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=1"},
-      {title:"Episode 2", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=2"},
-      {title:"Episode 3", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=3"},
-      {title:"Episode 4", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=4"},
-      {title:"Episode 5", embed:"https://wmath.pages.dev/misc/customsource/index3?id=126506&type=tv&season=1&episode=5"},
-    ]
+  <script>
+    /* ============================================================
+       EASY EDIT AREA — change the content below, not the UI code.
+       ============================================================ */
+    /*
+     
+      seasons: [
+        {
+          number: 1,
+          episodes: [
+            { number: 1, title: "Episode One", description: "Episode description.", embed: "https://your-episode-link.com/embed/one" },
+            { number: 2, title: "Episode Two", description: "Episode description.", embed: "https://your-episode-link.com/embed/two" }
+          ]
+        }
+      ]
+      Each episode's embed can be a video URL or a full iframe HTML snippet.
+    */
+    const suggestionLink = "https://forms.gle/y54pPNFBHGC6xTVd7";
+    const movies = [
+  {
+    id: "Backrooms",
+    title: "Backrooms",
+    type: "movie",
+    year: "2026",
+    runtime: "1h 45m",
+    rating: "95%",
+    badge: "New",
+    description: "A short description of the movie.",
+    poster: "https://th.bing.com/th/id/OIP.5XiPuzVrClP9Wg_3OQRn3AHaK9?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
+    embed: "https://player.videasy.to/movie/1083381?color=8834ec",
+    watched: 0,
+    likes: 0
+  },
+   {
+    id: "MaM",
+    title: "Minions and Monsters",
+    type: "movie",
+    year: "2026",
+    runtime: "1h 45m",
+    rating: "95%",
+    badge: "New",
+    description: "A short description of the movie.",
+    poster: "https://th.bing.com/th/id/OIP.nRcY7Cw_NLyMnI4MY0s5XwAAAA?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
+    embed: "https://player.videasy.to/movie/1315772?color=8834ec",
+    watched: 0,
+    likes: 0
+  },
+  {
+    id: "my-show",
+    title: "My Show",
+    type: "show",
+    year: "S1",
+    runtime: "8 episodes",
+    rating: "92%",
+    badge: "",
+    description: "A short description of the show.",
+    poster: "https://your-poster-image-url.com/show-poster.jpg",
+    embed: "https://your-video-provider.com/embed/show-id",
+    watched: 0,
+    likes: 0
   }
-},
-
-{
-  type:"series",
-  title:"Sonic Prime",
-  image:"https://tse1.mm.bing.net/th/id/OIP.QJoL7Joh2_zE-KNNl9I0zwHaJ4?rs=1&pid=ImgDetMain&o=7&rm=3",
-  seasons:{
-    1:[
-      {title:"Episode 1", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=1"},
-      {title:"Episode 2", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=2"},
-      {title:"Episode 3", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=3"},
-      {title:"Episode 4", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=4"},
-      {title:"Episode 5", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=5"},
-      {title:"Episode 6", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=6"},
-      {title:"Episode 7", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=7"},
-      {title:"Episode 8", embed:"https://wmath.pages.dev/misc/customsource/index3?id=115577&type=tv&season=1&episode=8"}
-
-    ]
-  }
-},
-
-{
-  type:"movie",
-  title:"The SpongeBob Movie: Search for SquarePants",
-  image:"https://image.tmdb.org/t/p/original/mwoQShS32Xgspr9nHQRYo7n9uwk.jpg",
-  embed:"https://wmath.pages.dev/misc/customsource/index3?id=991494&type=movie"
-},
-{
-  type:"series",
-  title:"Jujitsu Kaisen",
-  image:"https://i.pinimg.com/736x/4e/02/b5/4e02b51e578c4f6a71b7da187a3ed7ad.jpg",
-  seasons:{
-    1:[
-      {title:"Episode 1", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=1"},
-{title:"Episode 2", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=2"},
-{title:"Episode 3", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=3"},
-{title:"Episode 4", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=4"},
-{title:"Episode 5", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=5"},
-{title:"Episode 6", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=6"},
-{title:"Episode 7", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=7"},
-{title:"Episode 8", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=8"},
-{title:"Episode 9", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=9"},
-{title:"Episode 10", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=10"},
-{title:"Episode 11", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=11"},
-{title:"Episode 12", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=12"},
-{title:"Episode 13", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=13"},
-{title:"Episode 14", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=14"},
-{title:"Episode 15", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=15"},
-{title:"Episode 16", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=16"},
-{title:"Episode 17", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=17"},
-{title:"Episode 18", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=18"},
-{title:"Episode 19", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=19"},
-{title:"Episode 20", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=20"},
-{title:"Episode 21", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=21"},
-{title:"Episode 22", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=22"},
-{title:"Episode 23", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=23"},
-{title:"Episode 24", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=24"},
-{title:"Episode 25", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=25"},
-{title:"Episode 26", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=26"},
-{title:"Episode 27", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=27"},
-{title:"Episode 28", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=28"},
-{title:"Episode 29", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=29"},
-{title:"Episode 30", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=30"},
-{title:"Episode 31", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=31"},
-{title:"Episode 32", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=32"},
-{title:"Episode 33", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=33"},
-{title:"Episode 34", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=34"},
-{title:"Episode 35", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=35"},
-{title:"Episode 36", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=36"},
-{title:"Episode 37", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=37"},
-{title:"Episode 38", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=38"},
-{title:"Episode 39", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=39"},
-{title:"Episode 40", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=40"},
-{title:"Episode 41", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=41"},
-{title:"Episode 42", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=42"},
-{title:"Episode 43", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=43"},
-{title:"Episode 44", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=44"},
-{title:"Episode 45", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=45"},
-{title:"Episode 46", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=46"},
-{title:"Episode 47", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=47"},
-{title:"Episode 48", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=48"},
-{title:"Episode 49", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=49"},
-{title:"Episode 50", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=50"},
-{title:"Episode 51", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=51"},
-{title:"Episode 52", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=52"},
-{title:"Episode 53", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=53"},
-{title:"Episode 54", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=54"},
-{title:"Episode 55", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=55"},
-{title:"Episode 56", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=56"},
-{title:"Episode 57", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=57"},
-{title:"Episode 58", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=58"},
-{title:"Episode 59", embed:"https://wmath.pages.dev/misc/customsource/index3?id=95479&type=tv&season=1&episode=59"},
-
-    ]
-  }
-},
 ];
 
-const grid=document.getElementById("movieGrid");
-const searchInput=document.getElementById("searchInput");
-const genreFilter=document.getElementById("genreFilter");
-const modal=document.getElementById("modal");
-const frame=document.getElementById("videoFrame");
-const seriesControls=document.getElementById("seriesControls");
-const seasonSelect=document.getElementById("seasonSelect");
-const episodeSelect=document.getElementById("episodeSelect");
-
-function render(){
-  grid.innerHTML="";
-  const search=searchInput.value.toLowerCase();
-  const filter=genreFilter.value;
-
-  media.forEach((item,index)=>{
-    if(
-      item.title.toLowerCase().includes(search) &&
-      (filter==="all" || item.type===filter)
-    ){
-      const card=document.createElement("div");
-      card.className="movie-card";
-      card.innerHTML=`
-        <img src="${item.image}">
-        <div class="movie-info">
-          <h3>${item.title}</h3>
-        </div>
-      `;
-      card.onclick=()=>openMedia(index);
-      grid.appendChild(card);
+    const savedProfilesKey = "coralflix-saved-profiles";
+    const profileColors = [
+      "linear-gradient(135deg,#ff6f61,#ffb17d)",
+      "linear-gradient(135deg,#287bff,#7b61ff)",
+      "linear-gradient(135deg,#22b8a7,#287bff)",
+      "linear-gradient(135deg,#f9c74f,#ff6f61)"
+    ];
+    function loadProfiles() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(savedProfilesKey) || "[]");
+        return Array.isArray(saved) ? saved.filter((profile) => profile && profile.id && profile.email) : [];
+      } catch {
+        return [];
+      }
     }
-  });
-}
+    let profiles = loadProfiles();
+    let activeProfile = localStorage.getItem("coralflix-profile") || "";
+    let activeTitle = movies[0] || null;
+    let activeEpisode = null;
+    let activeFilter = "all";
 
-function openMedia(index){
-  const item=media[index];
-  modal.style.display="flex";
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => [...document.querySelectorAll(selector)];
+    const likedKey = () => `coralflix-likes-${activeProfile}`;
+    const getLiked = () => JSON.parse(localStorage.getItem(likedKey()) || "[]");
+    const setLiked = (items) => localStorage.setItem(likedKey(), JSON.stringify(items));
+    const suggestionButton = $("#suggestButton");
+    if (suggestionLink.trim()) {
+      suggestionButton.href = suggestionLink.trim();
+      suggestionButton.title = "Suggest a movie or show";
+    } else {
+      suggestionButton.classList.add("disabled");
+      suggestionButton.title = "Paste a suggestion URL into suggestionLink in the editor area";
+      suggestionButton.addEventListener("click", (event) => event.preventDefault());
+    }
 
-  if(item.type==="movie"){
-    seriesControls.style.display="none";
-    frame.src=item.embed;
-  }
+    function profileMarkup(profile) {
+      return `<button class="profile-choice" type="button" data-profile="${profile.id}">
+        <span class="avatar" style="background:${profile.color}">${profile.initials}</span>
+        <strong>${profile.name}</strong><small>${profile.email || profile.subtitle}</small>
+      </button>`;
+    }
+    function renderProfiles() {
+      const emptyProfiles = `<div class="empty-state">No profiles yet. Create your first profile below.</div>`;
+      $("#gateProfiles").innerHTML = profiles.length ? profiles.map(profileMarkup).join("") : emptyProfiles;
+      $("#modalProfiles").innerHTML = profiles.length ? profiles.map(profileMarkup).join("") : emptyProfiles;
+      $$("#profileTrigger").forEach((button) => {
+        const profile = profiles.find((item) => item.id === activeProfile) || profiles[0];
+        if (!profile) {
+          button.innerHTML = `<span class="mini-avatar" style="background:linear-gradient(135deg,#ff6f61,#287bff)">CF</span><span>Profile</span>`;
+          button.disabled = true;
+          return;
+        }
+        button.disabled = false;
+        button.innerHTML = `<span class="mini-avatar" style="background:${profile.color}">${profile.initials}</span><span>${profile.name}</span>`;
+      });
+      $$("[data-profile]").forEach((button) => button.addEventListener("click", () => chooseProfile(button.dataset.profile)));
+    }
+    function openCreateProfile() {
+      $("#profileFormError").classList.add("hidden");
+      $("#profileFormError").textContent = "";
+      $("#createProfileForm").reset();
+      $("#profileModal").classList.add("hidden");
+      $("#createProfileModal").classList.remove("hidden");
+      $("#newProfileName").focus();
+    }
+    function initialsFor(name) {
+      return name.trim().split(/\s+/).slice(0, 2).map((word) => word[0]).join("").toUpperCase() || "CF";
+    }
+    function createProfile(event) {
+      event.preventDefault();
+      const name = $("#newProfileName").value.trim();
+      const email = $("#newProfileEmail").value.trim().toLowerCase();
+      const subtitle = $("#newProfileSubtitle").value.trim() || "New CoralFlix profile";
+      const error = $("#profileFormError");
+      const duplicate = profiles.some((profile) => profile.email && profile.email.toLowerCase() === email);
+      if (duplicate) {
+        error.textContent = "A profile with this email is already saved on this device.";
+        error.classList.remove("hidden");
+        return;
+      }
+      const customProfiles = (() => {
+        try { return JSON.parse(localStorage.getItem(savedProfilesKey) || "[]"); } catch { return []; }
+      })();
+      const profile = {
+        id: `custom-${Date.now()}`,
+        name,
+        email,
+        subtitle,
+        initials: initialsFor(name),
+        color: profileColors[customProfiles.length % profileColors.length]
+      };
+      localStorage.setItem(savedProfilesKey, JSON.stringify([...customProfiles, profile]));
+      profiles = loadProfiles();
+      $("#createProfileModal").classList.add("hidden");
+      renderProfiles();
+      chooseProfile(profile.id);
+    }
+    function chooseProfile(profileId) {
+      if (!profiles.some((profile) => profile.id === profileId)) return;
+      activeProfile = profileId;
+      localStorage.setItem("coralflix-profile", activeProfile);
+      $("#profileGate").classList.add("hidden");
+      $("#app").classList.remove("hidden");
+      $("#profileModal").classList.add("hidden");
+      renderProfiles();
+      renderAll();
+    }
+    function matchesFilter(title) {
+      if (activeFilter === "movie" || activeFilter === "show") return title.type === activeFilter;
+      if (activeFilter === "liked") return getLiked().includes(title.id);
+      if (activeFilter === "watched") return title.watched > 0;
+      return true;
+    }
+    function visibleTitles() {
+      const term = $("#searchInput").value.trim().toLowerCase();
+      return movies.filter((title) => matchesFilter(title) && (!term || `${title.title} ${title.description}`.toLowerCase().includes(term)));
+    }
+    function cardMarkup(title, index) {
+      const isLiked = getLiked().includes(title.id);
+      const poster = title.poster ? `<img src="${title.poster}" alt="${title.title} poster" loading="lazy" onerror="this.remove(); this.nextElementSibling.classList.remove('hidden')">` : "";
+      return `<article class="movie-card" style="animation-delay:${index * 45}ms">
+        <div class="poster">
+          ${poster}<div class="poster-placeholder ${title.poster ? "hidden" : ""}"><div><strong>${title.title}</strong><br><small>Paste a poster URL in the editor area</small></div></div>
+          ${title.badge ? `<span class="card-badge">${title.badge}</span>` : ""}
+          <div class="card-quick-actions">
+            <button class="icon-btn ${isLiked ? "liked" : ""}" type="button" data-like="${title.id}" aria-label="${isLiked ? "Unlike" : "Like"} ${title.title}">${isLiked ? "♥" : "♡"}</button>
+            <button class="icon-btn" type="button" data-play="${title.id}" aria-label="Play ${title.title}">▶</button>
+          </div>
+        </div>
+        <div class="movie-info"><p class="movie-title">${title.title}</p><div class="movie-sub"><span>${title.year}</span><span>•</span><span>${title.type === "show" ? "Show" : "Movie"}</span><span>•</span><span class="rating">${title.rating}</span></div></div>
+      </article>`;
+    }
+    function renderRow(selector, list) {
+      const row = $(selector);
+      row.innerHTML = list.length ? list.map(cardMarkup).join("") : `<div class="empty-state">Nothing here yet. Try another filter or give a title a like.</div>`;
+    }
+    function renderAll() {
+      const visible = visibleTitles();
+      const queryActive = $("#searchInput").value.trim().length > 0 || activeFilter !== "all";
+      if (queryActive) {
+        renderRow("#watchedRow", visible);
+        renderRow("#movieRow", []);
+        renderRow("#showRow", []);
+        renderRow("#likedRow", []);
+      } else {
+        renderRow("#watchedRow", [...movies].sort((a,b) => b.watched-a.watched).slice(0,5));
+        renderRow("#movieRow", movies.filter((t) => t.type === "movie"));
+        renderRow("#showRow", movies.filter((t) => t.type === "show"));
+        renderRow("#likedRow", [...movies].sort((a,b) => b.likes-a.likes).slice(0,5));
+      }
+      $$("[data-like]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); toggleLike(button.dataset.like); }));
+      $$("[data-play]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); openPlayer(button.dataset.play); }));
+      $$(".movie-card").forEach((card) => card.addEventListener("click", () => {
+        const title = movies.find((item) => item.title === card.querySelector(".movie-title").textContent);
+        if (title) openInfo(title.id);
+      }));
+    }
+    function toggleLike(id) {
+      const liked = getLiked();
+      const next = liked.includes(id) ? liked.filter((item) => item !== id) : [...liked, id];
+      setLiked(next);
+      renderAll();
+    }
+    function seasonsFor(show) {
+      return Array.isArray(show?.seasons) ? show.seasons : [];
+    }
+    function episodesFor(show, seasonNumber) {
+      const season = seasonsFor(show).find((item) => Number(item.number) === Number(seasonNumber));
+      return Array.isArray(season?.episodes) ? season.episodes : [];
+    }
+    function renderEpisodeList(show, seasonNumber) {
+      const episodes = episodesFor(show, seasonNumber);
+      $("#episodeList").innerHTML = episodes.length
+        ? episodes.map((episode, index) => `<button class="episode-item" type="button" data-show="${show.id}" data-season="${seasonNumber}" data-episode="${episode.number ?? index + 1}">
+            <span class="episode-number">E${episode.number ?? index + 1}</span>
+            <span class="episode-copy"><strong>${episode.title || `Episode ${episode.number ?? index + 1}`}</strong><small>${episode.description || "Ready to watch"}</small></span>
+            <span class="episode-play">PLAY ▶</span>
+          </button>`).join("")
+        : `<div class="episode-empty">No episodes have been added to this season yet.</div>`;
+      $$("[data-episode]").forEach((button) => button.addEventListener("click", () => openEpisodePlayer(button.dataset.show, button.dataset.season, button.dataset.episode)));
+    }
+    function renderShowEpisodes(show) {
+      const showEpisodes = $("#showEpisodes");
+      const infoPlay = $("#infoPlay");
+      if (show.type !== "show") {
+        showEpisodes.classList.add("hidden");
+        infoPlay.classList.remove("hidden");
+        return;
+      }
+      showEpisodes.classList.remove("hidden");
+      infoPlay.classList.add("hidden");
+      const seasons = seasonsFor(show);
+      if (!seasons.length) {
+        $("#seasonSelect").innerHTML = `<option>No seasons added</option>`;
+        $("#episodeList").innerHTML = `<div class="episode-empty">Add a <b>seasons</b> array to this show in the editor area.</div>`;
+        return;
+      }
+      $("#seasonSelect").innerHTML = seasons.map((season, index) => `<option value="${season.number ?? index + 1}">Season ${season.number ?? index + 1}</option>`).join("");
+      const firstSeason = seasons[0].number ?? 1;
+      $("#seasonSelect").value = String(firstSeason);
+      renderEpisodeList(show, firstSeason);
+    }
+    function makeEmbed(title, episode = null) {
+      const embed = episode?.embed || episode?.link || title.embed;
+      const label = episode?.title || title.title;
+      if (!embed) return `<div class="player-placeholder"><strong>${label}</strong><span>Paste a video URL or full iframe embed in this ${episode ? "episode's" : "title's"} <b>embed</b> field.</span></div>`;
+      const isHtml = embed.trim().startsWith("<");
+      return isHtml ? `<iframe title="${label}" srcdoc="${embed.replaceAll('"', "&quot;")}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>` : `<iframe title="${label}" src="${embed}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+    }
+    function openPlayer(id) {
+      activeTitle = movies.find((title) => title.id === id) || movies[0];
+      if (!activeTitle) return;
+      const firstSeason = seasonsFor(activeTitle)[0];
+      const firstEpisode = firstSeason && episodesFor(activeTitle, firstSeason.number ?? 1)[0];
+      if (activeTitle.type === "show" && firstEpisode) {
+        openEpisodePlayer(activeTitle.id, firstSeason.number ?? 1, firstEpisode.number ?? 1);
+        return;
+      }
+      activeEpisode = null;
+      $("#playerTitle").textContent = activeTitle.title;
+      $("#playerMeta").innerHTML = `<span>${activeTitle.year}</span><span>•</span><span>${activeTitle.type === "show" ? "Show" : "Movie"}</span><span>•</span><span class="rating">${activeTitle.rating}</span>`;
+      $("#playerDescription").textContent = activeTitle.description;
+      $("#playerShell").innerHTML = makeEmbed(activeTitle);
+      $("#playerModal").classList.remove("hidden");
+    }
+    function openEpisodePlayer(showId, seasonNumber, episodeNumber) {
+      const show = movies.find((title) => title.id === showId);
+      const episode = episodesFor(show, seasonNumber).find((item, index) => String(item.number ?? index + 1) === String(episodeNumber));
+      if (!show || !episode) return;
+      activeTitle = show;
+      activeEpisode = episode;
+      $("#playerTitle").textContent = `S${seasonNumber} E${episode.number ?? episodeNumber} · ${episode.title || "Episode"}`;
+      $("#playerMeta").innerHTML = `<span>${show.title}</span><span>•</span><span>Season ${seasonNumber}</span><span>•</span><span class="rating">${show.rating}</span>`;
+      $("#playerDescription").textContent = episode.description || show.description;
+      $("#playerShell").innerHTML = makeEmbed(show, episode);
+      $("#playerModal").classList.remove("hidden");
+    }
+    function openInfo(id) {
+      activeTitle = movies.find((title) => title.id === id) || movies[0];
+      if (!activeTitle) return;
+      activeEpisode = null;
+      $("#infoTitle").textContent = activeTitle.title;
+      $("#infoMeta").innerHTML = `<span>${activeTitle.year}</span><span>•</span><span>${activeTitle.runtime}</span><span>•</span><span class="rating">${activeTitle.rating} match</span>`;
+      $("#infoDescription").textContent = activeTitle.description;
+      renderShowEpisodes(activeTitle);
+      $("#infoModal").classList.remove("hidden");
+    }
+    function closeModal(id) {
+      $(id).classList.add("hidden");
+      if (id === "#playerModal") $("#playerShell").innerHTML = "";
+    }
 
-  if(item.type==="series"){
-    seriesControls.style.display="block";
-    loadSeasons(item);
-  }
-}
-
-function loadSeasons(series){
-  seasonSelect.innerHTML="";
-  episodeSelect.innerHTML="";
-
-  Object.keys(series.seasons).forEach(season=>{
-    const opt=document.createElement("option");
-    opt.value=season;
-    opt.textContent="Season "+season;
-    seasonSelect.appendChild(opt);
-  });
-
-  seasonSelect.onchange=()=>loadEpisodes(series,seasonSelect.value);
-  loadEpisodes(series,Object.keys(series.seasons)[0]);
-}
-
-function loadEpisodes(series,season){
-  episodeSelect.innerHTML="";
-  series.seasons[season].forEach((ep,i)=>{
-    const opt=document.createElement("option");
-    opt.value=i;
-    opt.textContent=ep.title;
-    episodeSelect.appendChild(opt);
-  });
-
-  episodeSelect.onchange=()=>{
-    frame.src=series.seasons[season][episodeSelect.value].embed;
-  };
-
-  frame.src=series.seasons[season][0].embed;
-}
-
-function closeModal(){
-  modal.style.display="none";
-  frame.src="";
-}
-
-searchInput.addEventListener("input",render);
-genreFilter.addEventListener("change",render);
-
-render();
-
-</script>
-
+    renderProfiles();
+    if (activeProfile && profiles.some((profile) => profile.id === activeProfile)) {
+      chooseProfile(activeProfile);
+    } else {
+      localStorage.removeItem("coralflix-profile");
+    }
+    $("#searchInput").addEventListener("input", renderAll);
+    $$("[data-filter]").forEach((button) => button.addEventListener("click", () => {
+      activeFilter = button.dataset.filter;
+      $$("[data-filter]").forEach((item) => item.classList.toggle("active", item === button));
+      renderAll();
+    }));
+    $("#profileTrigger").addEventListener("click", () => $("#profileModal").classList.remove("hidden"));
+    $("#createProfileGate").addEventListener("click", openCreateProfile);
+    $("#createProfileModal").addEventListener("click", (event) => {
+      if (event.target === $("#createProfileModal")) closeModal("#createProfileModal");
+    });
+    $("#createProfileModal").querySelector("form").addEventListener("click", (event) => event.stopPropagation());
+    $("#createProfileModal").querySelector("form").addEventListener("submit", createProfile);
+    $("#createProfileModalButton").addEventListener("click", openCreateProfile);
+    $("#createProfileModal").addEventListener("keydown", (event) => { if (event.key === "Escape") closeModal("#createProfileModal"); });
+    $("#heroPlay").addEventListener("click", () => openPlayer("last-horizon"));
+    $("#heroInfo").addEventListener("click", () => openInfo("last-horizon"));
+    $("#infoPlay").addEventListener("click", () => { closeModal("#infoModal"); openPlayer(activeTitle.id); });
+    $("#seasonSelect").addEventListener("change", () => {
+      if (activeTitle?.type === "show") renderEpisodeList(activeTitle, $("#seasonSelect").value);
+    });
+    $$("[data-close]").forEach((button) => button.addEventListener("click", () => closeModal(`#${button.dataset.close}`)));
+    $$(".modal-backdrop").forEach((backdrop) => backdrop.addEventListener("click", (event) => { if (event.target === backdrop) closeModal(`#${backdrop.id}`); }));
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") $$(".modal-backdrop:not(.hidden)").forEach((modal) => closeModal(`#${modal.id}`)); });
+  </script>
 </body>
 </html>
