@@ -4,148 +4,271 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Astral Tools</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
-
 <style>
+* {
+    box-sizing: border-box;
+}
 body {
     margin: 0;
-    font-family: 'Orbitron', sans-serif;
-    background: #05070d;
-    color: #00bfff;
+    font-family: 'MS Sans Serif', 'Tahoma', sans-serif;
+    background: #008080; /* classic Win95 teal desktop */
+    color: #000000;
+    font-size: 13px;
+    min-height: 100vh;
+    padding: 20px;
 }
 
-/* HEADER */
+/* MAIN WINDOW WRAPPER */
+.win95-window {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #c0c0c0;
+    border: 2px solid #dfdfdf;
+    border-right-color: #000000;
+    border-bottom-color: #000000;
+    box-shadow: 1px 1px 0 #808080, 2px 2px 0 #000000;
+}
+
+/* TITLE BAR */
+.title-bar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff;
+    padding: 3px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 13px;
+}
+.title-bar-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.title-bar-controls {
+    display: flex;
+    gap: 3px;
+}
+.title-bar-controls button {
+    width: 18px;
+    height: 16px;
+    background: #c0c0c0;
+    border: 1px solid #dfdfdf;
+    border-right-color: #000;
+    border-bottom-color: #000;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+}
+.title-bar-controls button:active {
+    border-color: #000 #dfdfdf #dfdfdf #000;
+}
+
+/* MENU BAR */
+.menu-bar {
+    background: #c0c0c0;
+    border-bottom: 1px solid #808080;
+    padding: 2px 4px;
+    display: flex;
+    gap: 14px;
+    font-size: 13px;
+}
+.menu-bar span {
+    padding: 2px 6px;
+    cursor: default;
+}
+.menu-bar span:hover {
+    background: #000080;
+    color: #fff;
+}
+
+/* HEADER / TITLE INSIDE CONTENT */
 .header {
     text-align: center;
-    padding: 15px;
-    border-bottom: 1px solid #00bfff33;
+    padding: 14px 10px 10px;
 }
-
 .title {
-    font-size: 22px;
-    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-shadow: 1px 1px 0 #fff;
 }
 
-/* NAV BUTTONS */
+/* NAV BUTTONS — Win95 3D button style */
 .nav {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap; /* makes them stack */
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 0 10px;
 }
-
-.nav button {
-    padding: 8px 14px;
-    border: 1px solid #00bfff44;
-    background: #0a0f1a;
-    color: #00bfff;
-    border-radius: 6px;
+.win95-btn {
+    padding: 6px 14px;
+    background: #c0c0c0;
+    border: 2px solid #dfdfdf;
+    border-right-color: #000000;
+    border-bottom-color: #000000;
+    color: #000;
+    font-family: inherit;
+    font-size: 13px;
     cursor: pointer;
-    transition: 0.2s;
 }
-
-.nav button:hover {
-    border-color: #00bfff;
-    box-shadow: 0 0 8px #00bfff66;
+.win95-btn:active {
+    border-color: #000000 #dfdfdf #dfdfdf #000000;
+    padding: 7px 13px 5px 15px; /* nudge text to fake being pressed in */
 }
 
 /* SEARCH */
 .search-box {
     display: flex;
     justify-content: center;
-    padding: 15px;
+    padding: 16px 10px;
 }
-
 .search-box input {
     width: 300px;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
+    max-width: 80%;
+    padding: 5px 6px;
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #808080;
+    border-right-color: #dfdfdf;
+    border-bottom-color: #dfdfdf;
     outline: none;
-    background: #0a0f1a;
-    color: #00bfff;
-    border: 1px solid #00bfff44;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+/* CONTENT PANEL — sunken Win95 groupbox look */
+.content-panel {
+    margin: 0 14px 14px;
+    background: #c0c0c0;
+    border: 2px solid #808080;
+    border-right-color: #dfdfdf;
+    border-bottom-color: #dfdfdf;
+    padding: 14px;
 }
 
 /* GRID */
 .tools {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
 }
 
-/* TOOL CARD */
+/* TOOL CARD — raised Win95 panel */
 .tool {
-    background: #0a0f1a;
-    border: 1px solid #00bfff22;
-    border-radius: 10px;
-    padding: 15px;
+    background: #c0c0c0;
+    border: 2px solid #dfdfdf;
+    border-right-color: #000000;
+    border-bottom-color: #000000;
+    padding: 14px 10px;
     text-align: center;
-    transition: 0.2s;
-}
-
-.tool:hover {
-    border-color: #00bfff;
-    box-shadow: 0 0 10px #00bfff55;
-    transform: translateY(-3px);
 }
 
 /* ICON */
 .icon {
-    font-size: 28px;
-    margin-bottom: 10px;
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+.tool-name {
+    font-weight: bold;
+    margin-bottom: 8px;
 }
 
-/* BUTTON */
+/* OPEN BUTTON */
 .tool button {
-    margin-top: 10px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
-    background: #007bff;
-    color: white;
+    padding: 5px 16px;
+    border: 2px solid #dfdfdf;
+    border-right-color: #000000;
+    border-bottom-color: #000000;
+    background: #c0c0c0;
+    color: #000;
+    font-family: inherit;
+    font-size: 12px;
     cursor: pointer;
 }
+.tool button:active {
+    border-color: #000000 #dfdfdf #dfdfdf #000000;
+}
 
-.tool button:hover {
-    background: #0099ff;
+/* FOOTER NOTE */
+.footer-note {
+    text-align: center;
+    padding: 4px 10px 16px;
+    font-style: italic;
+    color: #000;
+}
+
+/* STATUS BAR */
+.status-bar {
+    display: flex;
+    border-top: 1px solid #808080;
+    padding: 3px 6px;
+    font-size: 11px;
+}
+.status-bar div {
+    border: 1px solid #808080;
+    border-right-color: #dfdfdf;
+    border-bottom-color: #dfdfdf;
+    padding: 2px 8px;
+    margin-right: 4px;
 }
 </style>
 </head>
-
 <body>
 
-<div class="header">
-    <div class="title">ASTRAL TOOLS</div>
+<div class="win95-window">
 
-    <div class="nav">
-        <button onclick="goTo('index.html')">Home</button>
-        <button onclick="goTo('apps.html')">Apps</button>
-        <button onclick="goTo('movies.html')">Movies</button>
-        <button onclick="goTo('BlankLauncher.html')">Blank launcher</button>
-        <button onclick="goTo('ProxyLinks.html')">Proxy Links</button>
+    <div class="title-bar">
+        <div class="title-bar-text">🖥️ Astral Tools.exe</div>
+        <div class="title-bar-controls">
+            <button title="Minimize">_</button>
+            <button title="Maximize">▢</button>
+            <button title="Close">✕</button>
+        </div>
     </div>
-</div>
 
-<div class="search-box">
-    <input type="text" id="search" placeholder="Search tools..." onkeyup="filterTools()">
-</div>
-
-<div class="tools" id="toolsList">
-
-    <div class="tool" data-name="calculator math">
-        <div class="icon">🌐</div>
-        <div>Firefox</div>
-        <button onclick="openTool('https://drive.google.com/file/d/1fPyILsgd_D8QUm29-Krrzw-FrqOXeMvU/view')">Open</button>
+    <div class="menu-bar">
+        <span>File</span>
+        <span>Edit</span>
+        <span>View</span>
+        <span>Help</span>
     </div>
-</div>
-<div>
-<p>more coming soon!</p>
 
+    <div class="header">
+        <div class="title">ASTRAL TOOLS</div>
+    </div>
 
+    <div class="search-box">
+        <input type="text" id="search" placeholder="Search tools..." onkeyup="filterTools()">
+    </div>
 
+    <div class="content-panel">
+        <div class="tools" id="toolsList">
+            <div class="tool" data-name="Firefox">
+                <div class="icon">🌐</div>
+                <div class="tool-name">Firefox</div>
+                <button onclick="openTool('https://drive.google.com/file/d/1fPyILsgd_D8QUm29-Krrzw-FrqOXeMvU/view')">Open</button>
+            </div>
+            <div class="tool" data-name="GGBYPASS">
+                <div class="icon">🛡️</div>
+                <div class="tool-name">GoGuardianBypass</div>
+                <button onclick="openTool('https://www.korona.lat/tools/gog.html')">Open</button>
+        </div>
+        
+    </div>
+    
+
+    <div class="footer-note">
+        <p>more coming soon!</p>
+    </div>
+
+    <div class="status-bar">
+        <div>Ready</div>
+        <div id="statusCount">2 item(s)</div>
+    </div>
 
 </div>
 
@@ -153,21 +276,21 @@ body {
 function openTool(url) {
     window.open(url, "_blank");
 }
-
 function goTo(page) {
     window.location.href = page;
 }
-
 function filterTools() {
     let input = document.getElementById("search").value.toLowerCase();
     let tools = document.querySelectorAll(".tool");
-
+    let visibleCount = 0;
     tools.forEach(tool => {
         let name = tool.getAttribute("data-name");
-        tool.style.display = name.includes(input) ? "block" : "none";
+        let match = name.includes(input);
+        tool.style.display = match ? "block" : "none";
+        if (match) visibleCount++;
     });
+    document.getElementById("statusCount").textContent = visibleCount + " item(s)";
 }
 </script>
-
 </body>
 </html>
