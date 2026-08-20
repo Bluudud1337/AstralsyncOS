@@ -4,22 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#080a0f" />
-  <title>CoralFlix</title>
+  <title>AstralFlix</title>
   <style>
     :root {
-      --black: #080a0f;
-      --black-soft: #11151e;
-      --panel: #171c28;
-      --panel-bright: #202839;
-      --coral: #ff6f61;
-      --coral-light: #ff9b90;
-      --blue: #287bff;
-      --blue-light: #60a0ff;
-      --ink: #f8fbff;
-      --muted: #9ba8bd;
-      --line: rgba(255,255,255,.11);
-      --shadow: 0 22px 60px rgba(0,0,0,.36);
-      --radius: 18px;
+      --black: #000000;
+      --black-soft: #0b0b0b;
+      --panel: #141414;
+      --panel-bright: #232323;
+      --coral: #1877ff;
+      --coral-light: #4da0ff;
+      --blue: #1877ff;
+      --blue-light: #4da0ff;
+      --ink: #ffffff;
+      --muted: #a6a6a6;
+      --line: rgba(255,255,255,.14);
+      --shadow: 0 22px 60px rgba(0,0,0,.55);
+      --radius: 4px;
     }
 
     * { box-sizing: border-box; }
@@ -27,11 +27,9 @@
     body {
       margin: 0;
       color: var(--ink);
-      background:
-        radial-gradient(circle at 8% 0%, rgba(255,111,97,.13), transparent 30rem),
-        radial-gradient(circle at 90% 6%, rgba(40,123,255,.12), transparent 35rem),
-        var(--black);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--black);
+      font-family: "Helvetica Neue", Helvetica, Inter, ui-sans-serif, Arial, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 400;
       min-height: 100vh;
     }
     button, input { font: inherit; }
@@ -45,79 +43,78 @@
       display: grid;
       place-items: center;
       padding: 32px 20px;
-      background:
-        linear-gradient(140deg, rgba(8,10,15,.8), rgba(8,10,15,.96)),
-        radial-gradient(circle at 20% 20%, rgba(255,111,97,.35), transparent 24rem),
-        radial-gradient(circle at 80% 70%, rgba(40,123,255,.3), transparent 28rem);
+      background: var(--black);
     }
     .gate-inner { width: min(940px, 100%); text-align: center; }
     .brand-lockup {
       display: inline-flex;
       align-items: center;
-      gap: 11px;
-      font-weight: 900;
-      font-size: clamp(2rem, 5vw, 3.4rem);
-      letter-spacing: -.07em;
+      gap: 8px;
+      font-weight: 800;
+      font-size: clamp(1.8rem, 4.4vw, 2.9rem);
+      letter-spacing: -.02em;
+      text-transform: uppercase;
     }
     .brand-mark {
-      width: 48px; height: 48px; display: grid; place-items: center;
-      border-radius: 14px 14px 14px 4px;
-      color: white; background: linear-gradient(135deg, var(--coral), var(--blue));
-      box-shadow: 0 10px 30px rgba(255,111,97,.28);
-      font-size: 1.45rem; letter-spacing: -.16em; padding-right: 4px;
+      width: 40px; height: 40px; display: grid; place-items: center;
+      border-radius: 3px;
+      color: white; background: var(--coral);
+      font-size: 1.2rem; letter-spacing: -.16em; padding-right: 4px;
     }
-    .gate-inner h1 { margin: 34px 0 10px; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.05em; }
-    .gate-inner p { margin: 0 auto 32px; max-width: 570px; color: var(--muted); font-size: 1.05rem; line-height: 1.6; }
+    .gate-inner h1 { margin: 40px 0 10px; font-size: clamp(2.1rem, 4vw, 2.9rem); font-weight: 500; letter-spacing: 0; }
+    .gate-inner p { margin: 0 auto 40px; max-width: 570px; color: var(--muted); font-size: 1.05rem; line-height: 1.6; }
     .profile-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
       max-width: 780px; margin: 0 auto;
     }
     .profile-choice {
-      appearance: none; border: 1px solid transparent; background: rgba(23,28,40,.84);
-      color: var(--ink); border-radius: 18px; padding: 20px 14px; transition: .25s ease;
+      appearance: none; border: 2px solid transparent; background: transparent;
+      color: var(--ink); border-radius: 4px; padding: 8px; transition: .15s ease;
     }
     .profile-choice:hover, .profile-choice:focus-visible {
-      transform: translateY(-7px); border-color: var(--coral);
-      background: var(--panel-bright); box-shadow: 0 15px 35px rgba(0,0,0,.3);
       outline: none;
     }
+    .profile-choice:hover strong, .profile-choice:focus-visible strong { color: var(--muted); }
     .avatar {
-      width: 86px; height: 86px; border-radius: 50%; display: grid; place-items: center;
-      margin: 0 auto 14px; color: #fff; font-size: 2rem; font-weight: 900;
-      box-shadow: inset 0 0 0 4px rgba(255,255,255,.1);
+      width: 100%; max-width: 130px; aspect-ratio: 1; border-radius: 6px; display: grid; place-items: center;
+      margin: 0 auto 14px; color: #fff; font-size: 2rem; font-weight: 700;
+      transition: outline .15s ease; outline: 2px solid transparent; outline-offset: 2px;
     }
-    .profile-choice strong { display: block; font-size: 1.05rem; }
-    .profile-choice small { display: block; margin-top: 5px; color: var(--muted); }
-    .profile-note { margin-top: 28px !important; font-size: .85rem !important; color: #6f7d92 !important; }
+    .profile-choice:hover .avatar, .profile-choice:focus-visible .avatar { outline-color: #fff; }
+    .profile-choice strong { display: block; font-size: 1rem; color: var(--muted); font-weight: 500; transition: color .15s; }
+    .profile-choice small { display: none; }
+    .profile-note { margin-top: 34px !important; font-size: .85rem !important; color: #6f7d92 !important; }
     .profile-gate-actions { display: flex; justify-content: center; margin-top: 24px; }
-    .profile-gate-actions .btn { min-width: 180px; }
+    .profile-gate-actions .btn { min-width: 180px; border-radius: 4px; }
 
     /* ---------------------- APP CHROME ---------------------- */
     .app { min-height: 100vh; }
     .topbar {
       position: sticky; z-index: 20; top: 0; display: flex; align-items: center; gap: 28px;
-      height: 74px; padding: 0 clamp(18px, 4vw, 64px);
-      background: rgba(8,10,15,.82); border-bottom: 1px solid rgba(255,255,255,.06);
-      backdrop-filter: blur(22px);
+      height: 68px; padding: 0 clamp(18px, 4vw, 64px);
+      background: linear-gradient(180deg, rgba(0,0,0,.9) 0, rgba(0,0,0,.75) 60%, transparent);
+      border-bottom: none;
+      backdrop-filter: blur(6px);
     }
-    .topbar .brand-lockup { font-size: 1.45rem; flex: 0 0 auto; }
-    .topbar .brand-mark { width: 32px; height: 32px; border-radius: 10px 10px 10px 3px; font-size: .95rem; }
-    .nav-links { display: flex; align-items: center; gap: 20px; color: var(--muted); font-size: .93rem; }
+    .topbar .brand-lockup { font-size: 1.15rem; flex: 0 0 auto; }
+    .topbar .brand-mark { width: 28px; height: 28px; border-radius: 3px; font-size: .85rem; }
+    .nav-links { display: flex; align-items: center; gap: 18px; color: #e5e5e5; font-size: .87rem; font-weight: 500; }
     .nav-links a { transition: color .2s; }
-    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+    .nav-links a:hover, .nav-links a.active { color: var(--muted); }
+    .nav-links a.active { font-weight: 700; color: var(--ink); }
     .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
     .search-wrap { position: relative; }
-    .search-wrap svg { position: absolute; left: 13px; top: 11px; color: var(--muted); pointer-events: none; }
+    .search-wrap svg { position: absolute; left: 13px; top: 11px; color: var(--ink); pointer-events: none; }
     .search-input {
       width: min(25vw, 240px); min-width: 150px; padding: 10px 14px 10px 38px; color: var(--ink);
-      background: rgba(255,255,255,.07); border: 1px solid transparent; border-radius: 10px; outline: none;
+      background: rgba(0,0,0,.75); border: 1px solid rgba(255,255,255,.35); border-radius: 2px; outline: none;
     }
-    .search-input:focus { border-color: var(--blue); background: rgba(255,255,255,.11); }
+    .search-input:focus { border-color: #fff; background: rgba(0,0,0,.9); }
     .profile-trigger {
       display: flex; align-items: center; gap: 8px; color: var(--ink); border: 0; background: transparent;
       padding: 4px 0 4px 8px; font-weight: 700;
     }
-    .mini-avatar { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; font-size: .82rem; font-weight: 900; color: white; }
+    .mini-avatar { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 4px; font-size: .82rem; font-weight: 900; color: white; }
 
     /* ---------------------- HERO ---------------------- */
     .hero {
@@ -128,68 +125,69 @@
     .hero::before {
       content: ""; position: absolute; z-index: -2; inset: 0;
       background:
-        linear-gradient(90deg, var(--black) 2%, rgba(8,10,15,.75) 30%, rgba(8,10,15,.16) 68%, rgba(8,10,15,.7)),
-        linear-gradient(0deg, var(--black) 0%, transparent 36%),
+        linear-gradient(90deg, var(--black) 0%, rgba(0,0,0,.65) 32%, rgba(0,0,0,.05) 62%, rgba(0,0,0,.55) 100%),
+        linear-gradient(0deg, var(--black) 0%, rgba(0,0,0,.55) 22%, transparent 55%),
         url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=2200&q=85") center/cover;
     }
-    .hero::after { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(145deg, rgba(255,111,97,.14), transparent 45%, rgba(40,123,255,.13)); mix-blend-mode: screen; }
+    .hero::after { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(0deg, var(--black), transparent 14%); }
     .hero-copy { width: min(610px, 100%); }
-    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--coral-light); font-size: .76rem; font-weight: 900; letter-spacing: .15em; text-transform: uppercase; }
-    .eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--coral); }
-    .hero h1 { max-width: 580px; margin: 16px 0 14px; font-size: clamp(3.1rem, 7vw, 6.4rem); line-height: .9; letter-spacing: -.09em; }
-    .hero h1 span { color: var(--coral); }
-    .hero-description { color: #d2daea; max-width: 510px; line-height: 1.65; font-size: 1.02rem; }
-    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 20px 0; color: var(--muted); font-size: .88rem; }
-    .match { color: #7ee2a4; font-weight: 800; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--coral); font-size: .95rem; font-weight: 900; letter-spacing: .02em; text-transform: uppercase; }
+    .hero h1 { max-width: 580px; margin: 14px 0 16px; font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1.02; letter-spacing: -.01em; font-weight: 800; }
+    .hero h1 span { color: var(--ink); }
+    .hero-description { color: #e5e5e5; max-width: 510px; line-height: 1.5; font-size: 1.08rem; }
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0; color: #e5e5e5; font-size: .92rem; font-weight: 600; }
+    .match { color: #46d369; font-weight: 800; }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 11px; }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: 0;
-      border-radius: 10px; padding: 12px 18px; color: var(--ink); font-weight: 800; transition: .2s ease;
+      border-radius: 4px; padding: 12px 24px; color: var(--ink); font-weight: 700; transition: .15s ease;
+      font-size: 1.02rem;
     }
-    .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-    .btn-primary { color: white; background: var(--coral); box-shadow: 0 10px 24px rgba(255,111,97,.22); }
-    .btn-secondary { background: rgba(255,255,255,.14); backdrop-filter: blur(10px); }
+    .btn:hover { filter: brightness(.85); transform: none; }
+    .btn-primary { color: #000; background: #ffffff; }
+    .btn-secondary { background: rgba(109,109,110,.7); color: #fff; }
+    .btn-secondary:hover { background: rgba(109,109,110,.5); filter: none; }
     .btn-ghost { padding-inline: 11px; background: transparent; color: var(--muted); }
-    .btn-ghost:hover { color: var(--ink); background: rgba(255,255,255,.08); }
+    .btn-ghost:hover { color: var(--ink); background: rgba(255,255,255,.08); filter: none; }
 
     /* ---------------------- CONTENT ---------------------- */
     .content { padding: 10px clamp(18px, 4vw, 64px) 80px; position: relative; z-index: 2; }
-    .filter-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 38px; }
+    .filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 38px; }
     .filter-chip {
-      border: 1px solid var(--line); background: rgba(23,28,40,.74); color: var(--muted);
-      border-radius: 999px; padding: 9px 15px; transition: .2s;
+      border: 1px solid rgba(255,255,255,.28); background: rgba(0,0,0,.4); color: var(--muted);
+      border-radius: 3px; padding: 8px 14px; transition: .15s; font-size: .87rem; font-weight: 600;
     }
-    .filter-chip:hover, .filter-chip.active { color: white; border-color: var(--blue); background: rgba(40,123,255,.2); }
-    .suggest-button { color: white; border-color: rgba(255,111,97,.55); background: linear-gradient(135deg, rgba(255,111,97,.24), rgba(40,123,255,.22)); }
-    .suggest-button:hover { border-color: var(--coral); background: linear-gradient(135deg, rgba(255,111,97,.38), rgba(40,123,255,.32)); }
+    .filter-chip:hover, .filter-chip.active { color: black; border-color: #fff; background: #fff; }
+    .suggest-button { color: white; border-color: var(--coral); background: var(--coral); }
+    .suggest-button:hover { color: white; border-color: var(--coral-light); background: var(--coral-light); }
     .suggest-button.disabled { cursor: not-allowed; opacity: .5; }
     .section { margin: 0 0 42px; }
-    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
-    .section-heading h2 { margin: 0; font-size: clamp(1.2rem, 2vw, 1.55rem); letter-spacing: -.04em; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+    .section-heading h2 { margin: 0; font-size: clamp(1.15rem, 2vw, 1.4rem); letter-spacing: 0; font-weight: 700; }
     .section-heading p { margin: 0; color: var(--muted); font-size: .83rem; }
     .movie-row {
-      display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px;
+      display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px;
     }
     .movie-card { min-width: 0; animation: cardIn .45s both; }
     @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     .poster {
-      aspect-ratio: 2 / 3; width: 100%; overflow: hidden; position: relative; border-radius: 13px;
-      background: linear-gradient(145deg, var(--panel-bright), #11151e); box-shadow: 0 12px 25px rgba(0,0,0,.22);
+      aspect-ratio: 2 / 3; width: 100%; overflow: hidden; position: relative; border-radius: 4px;
+      background: var(--panel-bright); box-shadow: 0 8px 18px rgba(0,0,0,.5); transition: transform .25s ease, box-shadow .25s ease;
     }
-    .poster::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.8), transparent 48%); pointer-events: none; }
-    .poster img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .45s; }
-    .movie-card:hover .poster img { transform: scale(1.06); }
+    .movie-card:hover .poster { transform: scale(1.08); box-shadow: 0 18px 34px rgba(0,0,0,.65); z-index: 3; position: relative; }
+    .poster::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.85), transparent 44%); pointer-events: none; }
+    .poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .poster-placeholder { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; color: #74819a; text-align: center; font-weight: 800; }
     .poster-placeholder strong { display: block; color: var(--coral-light); font-size: 1.8rem; letter-spacing: -.07em; }
-    .card-badge { position: absolute; z-index: 1; top: 10px; left: 10px; background: var(--coral); color: #1d0908; border-radius: 5px; padding: 4px 7px; font-size: .67rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
+    .card-badge { position: absolute; z-index: 1; top: 10px; left: 10px; background: var(--coral); color: #fff; border-radius: 2px; padding: 4px 7px; font-size: .67rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
     .card-quick-actions { position: absolute; z-index: 2; right: 8px; top: 8px; display: flex; gap: 5px; opacity: 0; transform: translateY(-4px); transition: .2s; }
     .movie-card:hover .card-quick-actions, .movie-card:focus-within .card-quick-actions { opacity: 1; transform: none; }
-    .icon-btn { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(8,10,15,.8); color: white; }
-    .icon-btn.liked { color: var(--coral); }
-    .movie-info { padding: 11px 2px 0; }
-    .movie-title { margin: 0 0 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+    .icon-btn { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.4); border-radius: 50%; background: rgba(20,20,20,.85); color: white; }
+    .icon-btn.liked { color: var(--coral); border-color: var(--coral); }
+    .movie-info { padding: 10px 2px 0; }
+    .movie-title { margin: 0 0 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: .92rem; }
     .movie-sub { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: .76rem; }
-    .movie-sub .rating { color: var(--coral-light); font-weight: 800; }
+    .movie-sub .rating { color: #46d369; font-weight: 800; }
     .empty-state { grid-column: 1 / -1; padding: 45px 20px; color: var(--muted); border: 1px dashed var(--line); border-radius: 14px; text-align: center; }
 
     /* ---------------------- MODALS ---------------------- */
@@ -198,8 +196,8 @@
       background: rgba(0,0,0,.75); backdrop-filter: blur(12px);
     }
     .modal {
-      width: min(860px, 100%); max-height: min(90vh, 780px); overflow: auto; border: 1px solid var(--line);
-      border-radius: 20px; background: var(--panel); box-shadow: var(--shadow); position: relative;
+      width: min(860px, 100%); max-height: min(90vh, 780px); overflow: auto; border: 0;
+      border-radius: 6px; background: var(--panel); box-shadow: var(--shadow); position: relative;
     }
     .modal-close { position: absolute; z-index: 3; right: 14px; top: 14px; }
     .player-shell { background: #000; aspect-ratio: 16/9; display: grid; place-items: center; }
@@ -222,7 +220,7 @@
        width: 100%; padding: 12px; text-align: left; color: var(--ink); border: 1px solid var(--line);
        border-radius: 10px; background: rgba(8,10,15,.38); transition: .2s;
      }
-     .episode-item:hover { border-color: var(--blue); background: rgba(40,123,255,.12); }
+     .episode-item:hover { border-color: var(--coral); background: rgba(24,119,255,.16); }
      .episode-number { color: var(--coral-light); font-weight: 900; }
      .episode-copy strong { display: block; }
      .episode-copy small { display: block; margin-top: 3px; overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; }
@@ -241,7 +239,7 @@
       width: 100%; border: 1px solid var(--line); border-radius: 10px; outline: none;
       padding: 12px 13px; color: var(--ink); background: rgba(8,10,15,.56);
     }
-    .profile-form input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(40,123,255,.15); }
+    .profile-form input:focus { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(24,119,255,.2); }
     .profile-form input::placeholder { color: #68768e; }
     .form-hint { margin: -6px 0 0; color: #718098; font-size: .76rem; line-height: 1.45; }
     .form-error { margin: 0; color: var(--coral-light); font-size: .84rem; font-weight: 700; }
@@ -250,7 +248,7 @@
     footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; padding: 24px clamp(18px,4vw,64px) 42px; color: #647189; font-size: .8rem; border-top: 1px solid rgba(255,255,255,.06); }
     footer strong { color: var(--coral-light); }
     @media (max-width: 900px) {
-      .movie-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .movie-row { grid-template-columns: repeat(5, minmax(0, 1fr)); }
       .nav-links { gap: 11px; }
       .nav-links a:nth-child(n+4) { display: none; }
     }
@@ -263,7 +261,7 @@
       .profile-trigger span { display: none; }
       .hero { min-height: 640px; padding-bottom: 52px; }
       .hero::before { background-position: 63% center; }
-      .movie-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+      .movie-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 8px; }
       .profile-grid { grid-template-columns: repeat(2, 1fr); }
       .profile-modal { padding: 24px 16px; }
     }
@@ -299,7 +297,7 @@
         <a href="#my-list">My List</a>
       </nav>
       <div class="topbar-actions">
-        <label class="search-wrap" aria-label="Search CoralFlix">
+        <label class="search-wrap" aria-label="Search AstralFlix">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
           <input id="searchInput" class="search-input" type="search" placeholder="Search titles..." autocomplete="off" />
         </label>
@@ -309,10 +307,10 @@
 
     <section id="home" class="hero">
       <div class="hero-copy">
-        <div class="eyebrow">CoralFlix original</div>
+        <div class="eyebrow">AstralFlix original</div>
         <h1 id="heroTitle">Your <span>next</span> watch</h1>
         <div class="hero-meta"><span class="match">Your catalog</span><span>Movies</span><span>Shows</span><span>Ready to edit</span></div>
-        <p id="heroDescription" class="hero-description">CoralFlix is ready for your collection. Add your own poster images and video embeds in the editor area below, then make this space yours.</p>
+        <p id="heroDescription" class="hero-description">IsraelFlix is ready for your collection. Add your own poster images and video embeds in the editor area below, then make this space yours.</p>
         <div class="hero-actions">
           <button id="heroPlay" class="btn btn-primary hidden" type="button">▶ <span>Play</span></button>
           <button id="heroInfo" class="btn btn-secondary hidden" type="button">ⓘ <span>More info</span></button>
@@ -331,7 +329,7 @@
       </div>
 
       <section class="section" id="trending">
-        <div class="section-heading"><div><h2>Most watched this week</h2><p>What the CoralFlix community has on repeat</p></div></div>
+        <div class="section-heading"><div><h2>Most watched this week</h2><p>What the AstralFlix community has on repeat</p></div></div>
         <div id="watchedRow" class="movie-row"></div>
       </section>
 
@@ -417,17 +415,28 @@
        EASY EDIT AREA — change the content below, not the UI code.
        ============================================================ */
     /*
-     
+      SEASONS — the simple way (recommended):
+      Just paste a list of episode links. Each inner array is one season,
+      episodes are numbered automatically in order, and titles default to
+      "Episode 1", "Episode 2", etc.
+
       seasons: [
-        {
-          number: 1,
-          episodes: [
-            { number: 1, title: "Episode One", description: "Episode description.", embed: "https://your-episode-link.com/embed/one" },
-            { number: 2, title: "Episode Two", description: "Episode description.", embed: "https://your-episode-link.com/embed/two" }
-          ]
-        }
+        [ "https://embed-link-episode-1", "https://embed-link-episode-2" ],   // Season 1
+        [ "https://embed-link-episode-1", "https://embed-link-episode-2" ]    // Season 2
       ]
-      Each episode's embed can be a video URL or a full iframe HTML snippet.
+
+      Need a custom title or description for one episode? Swap that entry
+      for an object instead of a link — you can mix strings and objects
+      in the same season:
+
+      seasons: [
+        [
+          "https://embed-link-episode-1",
+          { title: "The Big Twist", description: "Everything changes.", embed: "https://embed-link-episode-2" }
+        ]
+      ]
+
+      Each embed can be a video URL or a full iframe HTML snippet.
     */
     const suggestionLink = "https://forms.gle/y54pPNFBHGC6xTVd7";
     const movies = [
@@ -460,8 +469,8 @@
     likes: 0
   },
   {
-    id: "my-show",
-    title: "My Show",
+    id: "AU",
+    title: "Among Us",
     type: "show",
     year: "S1",
     runtime: "8 episodes",
@@ -469,18 +478,26 @@
     badge: "",
     description: "A short description of the show.",
     poster: "https://your-poster-image-url.com/show-poster.jpg",
-    embed: "https://your-video-provider.com/embed/show-id",
+    embed: "https://player.videasy.to/tv/229544/1/1?color=8834ec",
     watched: 0,
-    likes: 0
+    likes: 0,
+    seasons: [
+      [
+        "https://your-video-provider.com/embed/s1-e1",
+        "https://your-video-provider.com/embed/s1-e2",
+        "https://your-video-provider.com/embed/s1-e3"
+      ]
+    ]
   }
 ];
 
     const savedProfilesKey = "coralflix-saved-profiles";
     const profileColors = [
-      "linear-gradient(135deg,#ff6f61,#ffb17d)",
-      "linear-gradient(135deg,#287bff,#7b61ff)",
-      "linear-gradient(135deg,#22b8a7,#287bff)",
-      "linear-gradient(135deg,#f9c74f,#ff6f61)"
+      "#1877ff",
+      "#5b0eab",
+      "#0071eb",
+      "#a35709",
+      "#00a884"
     ];
     function loadProfiles() {
       try {
@@ -524,7 +541,7 @@
       $$("#profileTrigger").forEach((button) => {
         const profile = profiles.find((item) => item.id === activeProfile) || profiles[0];
         if (!profile) {
-          button.innerHTML = `<span class="mini-avatar" style="background:linear-gradient(135deg,#ff6f61,#287bff)">CF</span><span>Profile</span>`;
+          button.innerHTML = `<span class="mini-avatar" style="background:#1877ff">CF</span><span>Profile</span>`;
           button.disabled = true;
           return;
         }
@@ -639,19 +656,36 @@
       setLiked(next);
       renderAll();
     }
+    function normalizeEpisode(episode, index) {
+      if (typeof episode === "string") {
+        return { number: index + 1, title: `Episode ${index + 1}`, description: "", embed: episode };
+      }
+      const number = episode?.number ?? index + 1;
+      return {
+        number,
+        title: episode?.title || `Episode ${number}`,
+        description: episode?.description || "",
+        embed: episode?.embed || episode?.link || ""
+      };
+    }
     function seasonsFor(show) {
-      return Array.isArray(show?.seasons) ? show.seasons : [];
+      const raw = Array.isArray(show?.seasons) ? show.seasons : [];
+      return raw.map((season, index) => {
+        if (Array.isArray(season)) return { number: index + 1, episodes: season };
+        return { number: season?.number ?? index + 1, episodes: Array.isArray(season?.episodes) ? season.episodes : [] };
+      });
     }
     function episodesFor(show, seasonNumber) {
       const season = seasonsFor(show).find((item) => Number(item.number) === Number(seasonNumber));
-      return Array.isArray(season?.episodes) ? season.episodes : [];
+      const episodes = season ? season.episodes : [];
+      return episodes.map((episode, index) => normalizeEpisode(episode, index));
     }
     function renderEpisodeList(show, seasonNumber) {
       const episodes = episodesFor(show, seasonNumber);
       $("#episodeList").innerHTML = episodes.length
-        ? episodes.map((episode, index) => `<button class="episode-item" type="button" data-show="${show.id}" data-season="${seasonNumber}" data-episode="${episode.number ?? index + 1}">
-            <span class="episode-number">E${episode.number ?? index + 1}</span>
-            <span class="episode-copy"><strong>${episode.title || `Episode ${episode.number ?? index + 1}`}</strong><small>${episode.description || "Ready to watch"}</small></span>
+        ? episodes.map((episode) => `<button class="episode-item" type="button" data-show="${show.id}" data-season="${seasonNumber}" data-episode="${episode.number}">
+            <span class="episode-number">E${episode.number}</span>
+            <span class="episode-copy"><strong>${episode.title}</strong><small>${episode.description || "Ready to watch"}</small></span>
             <span class="episode-play">PLAY ▶</span>
           </button>`).join("")
         : `<div class="episode-empty">No episodes have been added to this season yet.</div>`;
@@ -703,11 +737,11 @@
     }
     function openEpisodePlayer(showId, seasonNumber, episodeNumber) {
       const show = movies.find((title) => title.id === showId);
-      const episode = episodesFor(show, seasonNumber).find((item, index) => String(item.number ?? index + 1) === String(episodeNumber));
+      const episode = episodesFor(show, seasonNumber).find((item) => String(item.number) === String(episodeNumber));
       if (!show || !episode) return;
       activeTitle = show;
       activeEpisode = episode;
-      $("#playerTitle").textContent = `S${seasonNumber} E${episode.number ?? episodeNumber} · ${episode.title || "Episode"}`;
+      $("#playerTitle").textContent = `S${seasonNumber} E${episode.number} · ${episode.title}`;
       $("#playerMeta").innerHTML = `<span>${show.title}</span><span>•</span><span>Season ${seasonNumber}</span><span>•</span><span class="rating">${show.rating}</span>`;
       $("#playerDescription").textContent = episode.description || show.description;
       $("#playerShell").innerHTML = makeEmbed(show, episode);
