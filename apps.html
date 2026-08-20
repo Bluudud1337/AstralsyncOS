@@ -5,15 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Astral Apps</title>
 <link rel="icon" href="https://academic-mathwork.vercel.app/icon-192.png">
-
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
+* { box-sizing: border-box; }
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
     margin: 0;
     padding: 0;
     background-color: #000;
-    color: white;
+    color: #00ff41;
+}
+
+/* Faint scanline overlay across the whole page */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 65, 0.025) 0px,
+        rgba(0, 255, 65, 0.025) 1px,
+        transparent 1px,
+        transparent 3px
+    );
 }
 
 /* ================= FULLSCREEN POPUP MESSAGE ================= */
@@ -27,17 +45,18 @@ body {
     font-size: 3em;
     font-weight: bold;
     text-align: center;
-    opacity: 0; /* start invisible, JS will set to 1 */
+    opacity: 0;
     pointer-events: none;
-    transition: opacity 1s ease; /* fade out smoothly */
+    transition: opacity 1s ease;
     z-index: 9999;
-    -webkit-text-stroke: 2px #320ff0; 
-    color: #000;
+    -webkit-text-stroke: 1px #00ff41;
+    color: #001a08;
     text-shadow:
-        0 0 5px #320ff0,
-        0 0 10px #320ff0,
-        0 0 20px #320ff0,
-        0 0 40px #320ff0;
+        0 0 5px #00ff41,
+        0 0 10px #00ff41,
+        0 0 20px #00ff41,
+        0 0 40px #00ff41;
+    padding: 20px;
 }
 
 /* ================= HEADER ================= */
@@ -46,21 +65,28 @@ header {
     padding: 20px 30px;
     display: flex;
     justify-content: flex-end;
+    border-bottom: 1px solid #00ff4133;
 }
 
 header button {
-    background-color: #320ff0;
-    border: none;
+    background-color: #000;
+    border: 1px solid #00ff41;
     padding: 10px 20px;
-    color: white;
-    font-size: 18px;
+    color: #00ff41;
+    font-size: 16px;
+    font-family: inherit;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 2px;
     margin-left: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: 0.2s;
 }
 
 header button:hover {
-    background-color: #000;
+    background-color: #00ff41;
+    color: #000;
+    box-shadow: 0 0 12px #00ff41;
 }
 
 /* ================= SECTION ================= */
@@ -70,20 +96,23 @@ header button:hover {
 }
 
 .section {
-    background-color: #320ff0;
+    background-color: #020a04;
     padding: 60px 40px;
     text-align: center;
     position: relative;
+    border-top: 1px solid #00ff4122;
 }
 
-/* PARTICLES */
+/* PARTICLES — tinted green to match matrix rain feel */
 .particle-overlay {
     position: absolute;
     inset: 0;
-    background-image: url("https://media.giphy.com/media/RopTs3DIHoDfi/giphy.gif");
+    background-image: url("https://www.textures4photoshop.com/tex/thumbs/matrix-code-animation-gif-free-animated-background-716.gif");
     background-repeat: repeat;
     background-size: 400px 400px;
-    opacity: 1;
+    opacity: 0.15;
+    mix-blend-mode: screen;
+    filter: hue-rotate(60deg) saturate(3) brightness(0.9);
     z-index: 1;
     pointer-events: none;
 }
@@ -92,11 +121,15 @@ header button:hover {
 .section-content {
     position: relative;
     z-index: 10;
-
 }
 
 .section-content h2 {
     margin-bottom: 10px;
+    color: #00ff41;
+    text-shadow: 0 0 8px #00ff41aa;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 28px;
 }
 
 /* SEARCH BAR */
@@ -105,29 +138,30 @@ header button:hover {
     width: 260px;
     padding: 12px 15px;
     margin: 15px auto 35px;
-    border-radius: 8px;
-    border: none;
+    border-radius: 4px;
+    border: 1px solid #00ff41;
     font-size: 16px;
+    font-family: inherit;
     outline: none;
     background-color: #000;
-    color: white;
+    color: #00ff41;
     text-align: center;
 }
-.search-bar:focus{
-    box-shadow: 0 0 10px #320ff0;
+.search-bar:focus {
+    box-shadow: 0 0 12px #00ff41;
 }
 
 .search-bar::placeholder {
-    color: blue;
-    opacity: 0.50;
+    color: #00ff41;
+    opacity: 0.45;
 }
 
-/* APP GRID (FIXES STACKING) */
-.apps-container{
-    display:grid;
+/* APP GRID */
+.apps-container {
+    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap:20px;
-    justify-items:center;
+    gap: 20px;
+    justify-items: center;
 }
 
 /* APP CARD */
@@ -135,30 +169,38 @@ header button:hover {
     width: 100%;
     max-width: 200px;
     height: 250px;
-    background-color: #000;
-    border-radius: 12px;
+    background-color: #010401;
+    border: 1px solid #00ff4144;
+    border-radius: 6px;
     cursor: pointer;
     overflow: hidden;
-    transition: 0.25s ease;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+    transition: 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .app-card:hover {
-    transform: scale(1.06);
-    box-shadow: 0 0 15px #320ff0;
+    transform: scale(1.05);
+    border-color: #00ff41;
+    box-shadow: 0 0 18px #00ff41aa, inset 0 0 12px #00ff4122;
 }
 
 .app-card img {
     width: 100%;
     height: 160px;
     object-fit: cover;
+    filter: grayscale(0.3) contrast(1.1);
+    border-bottom: 1px solid #00ff4133;
 }
 
 .app-card h3 {
-    margin: 10px;
-    font-size: 15px;
+    margin: 5px;
+    font-size: 14px;
+    color: #00ff41;
+    text-align: center;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 4px #00ff4188;
 }
 
 /* FOOTER */
@@ -166,6 +208,10 @@ footer {
     background-color: #000;
     text-align: center;
     padding: 20px 0;
+    border-top: 1px solid #00ff4133;
+    color: #00ff41aa;
+    font-size: 13px;
+    letter-spacing: 1px;
 }
 
 /* FULLSCREEN IFRAME */
@@ -183,16 +229,36 @@ iframe.fullscreen {
     position: fixed;
     top: 30px;
     right: 30px;
-    font-size: 24px;
-    color: white;
-    background-color: blue;
-    border: none;
+    font-size: 20px;
+    color: #00ff41;
+    background-color: #000;
+    border: 1px solid #00ff41;
     border-radius: 50%;
     width: 40px;
     height: 40px;
     cursor: pointer;
-    display: none; /* hidden by default */
-    z-index: 1001; /* above iframe */
+    display: none;
+    z-index: 1001;
+    box-shadow: 0 0 10px #00ff41aa;
+}
+#close-btn:hover {
+    background-color: #00ff41;
+    color: #000;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #000;
+}
+::-webkit-scrollbar-thumb {
+    background: #00ff4155;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #00ff41aa;
 }
 </style>
 
@@ -225,7 +291,7 @@ const popupMessages = [
     "r.i.p outcome memories..",
 ];
 
-const fonts = ["Arial", "Verdana", "Georgia"];
+const fonts = ["'Share Tech Mono'", "'Courier New'", "monospace"];
 
 window.addEventListener("DOMContentLoaded", () => {
   const popup = document.getElementById("popup-message");
@@ -291,9 +357,7 @@ if ("serviceWorker" in navigator) {
 <div id="popup-message"></div>
 
 <header>
-    <button onclick="location.href='index.html'">Games</button>
-    <button onclick="location.href='ProxyLinks.html'">Proxy Links</button>
-    <button onclick="location.href='BlankLauncher.html'">blank launcher</button>
+    Yo is that verity?
 </header>
 
 <!-- CLOSE BUTTON FOR IFRAME -->
@@ -334,7 +398,7 @@ if ("serviceWorker" in navigator) {
                 <h3>Interstellar</h3>
             </div>
 
-            <div class="app-card" onclick="openFullscreen('https://198.ip.nowgg.lol/apps/a/4478/b.html')">
+            <div class="app-card" onclick="openFullscreen('https://www.korona.lat/pages/embed.html#https://tiktok.com')">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtsaMcDb_U_sIot7EgRgUpx3dtWyE8gr07dw&s">
                 <h3>Tiktok</h3>
             </div>
