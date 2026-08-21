@@ -3,30 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstralCode IDE</title>
+    <title>AstralCode IDE | Sleek</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
+    <!-- Ace Editor & Extensions -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/ext-language_tools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/ext-modelist.js"></script>
 
     <style>
-        /* --- PROFESSIONAL GALAXY THEME --- */
+        /* --- SLEEK MONOCHROME THEME --- */
         :root {
-            --bg-base: #0B0E14;
-            --bg-panel: #151B25;
-            --bg-hover: #1F2735;
-            --accent-primary: #3B82F6;
-            --accent-glow: rgba(59, 130, 246, 0.2);
-            --accent-secondary: #8B5CF6;
-            --text-main: #E2E8F0;
-            --text-muted: #8B949E;
-            --border-color: #2D3748;
-            --danger: #EF4444;
+            --bg-base: #000000;
+            --bg-panel: #0a0a0a;
+            --bg-hover: #171717;
+            --accent-primary: #ffffff;
+            --accent-primary-hover: #e5e5e5;
+            --accent-secondary: #a3a3a3;
+            --text-main: #ffffff;
+            --text-muted: #737373;
+            --border-color: #262626;
+            --danger: #ef4444;
 
             --font-ui: 'Inter', -apple-system, sans-serif;
             --font-code: 'Fira Code', monospace;
@@ -46,10 +48,6 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
-            /* Subtle starry gradient */
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05), transparent 25%),
-                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05), transparent 25%);
         }
 
         /* --- HEADER & NAVIGATION --- */
@@ -61,7 +59,6 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             z-index: 10;
         }
 
@@ -72,13 +69,13 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .logo i {
-            color: var(--accent-secondary);
+            color: var(--accent-primary);
             font-size: 1.5rem;
-            filter: drop-shadow(0 0 8px var(--accent-secondary));
         }
 
         .spaces-nav {
@@ -88,16 +85,18 @@
         }
 
         .space-tab {
-            padding: 6px 14px;
+            padding: 6px 16px;
             cursor: pointer;
             border: 1px solid transparent;
-            border-radius: 6px;
+            border-radius: 4px;
             background: transparent;
             color: var(--text-muted);
             font-family: var(--font-ui);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .space-tab:hover {
@@ -106,23 +105,22 @@
         }
 
         .space-tab.active {
-            color: #fff;
-            background: var(--bg-hover);
-            border-color: var(--border-color);
-            box-shadow: 0 0 12px var(--accent-glow);
+            color: #000;
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
         }
 
         /* --- BUTTONS --- */
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: var(--bg-hover);
             color: var(--text-main);
             border: 1px solid var(--border-color);
-            padding: 6px 12px;
+            padding: 6px 14px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 4px;
             transition: all 0.2s ease;
             font-family: var(--font-ui);
             font-size: 0.85rem;
@@ -135,13 +133,14 @@
 
         .btn-primary {
             background: var(--accent-primary);
-            color: #fff;
+            color: #000;
             border-color: var(--accent-primary);
+            font-weight: 600;
         }
 
         .btn-primary:hover {
-            background: #2563EB;
-            box-shadow: 0 0 10px var(--accent-glow);
+            background: var(--accent-primary-hover);
+            border-color: var(--accent-primary-hover);
         }
 
         /* --- WORKSPACE LAYOUT --- */
@@ -153,7 +152,7 @@
 
         /* --- SIDEBAR --- */
         .sidebar {
-            width: 240px;
+            width: 260px;
             background-color: var(--bg-panel);
             border-right: 1px solid var(--border-color);
             display: flex;
@@ -171,19 +170,21 @@
             padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
 
         .file-item {
-            padding: 8px 10px;
+            padding: 10px 12px;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            font-family: var(--font-code);
             transition: all 0.1s ease;
+            border-left: 2px solid transparent;
         }
 
         .file-item:hover {
@@ -192,14 +193,15 @@
         }
 
         .file-item.active {
-            background: rgba(59, 130, 246, 0.1);
+            background: var(--bg-hover);
             color: var(--accent-primary);
+            border-left: 2px solid var(--accent-primary);
         }
 
         .file-item-name {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -210,17 +212,18 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 4px;
             border-radius: 4px;
+            transition: all 0.2s;
         }
 
         .delete-file:hover {
-            color: var(--danger);
-            background: rgba(239, 68, 68, 0.1);
+            color: var(--bg-panel);
+            background: var(--danger);
         }
 
         /* --- EDITOR AREA --- */
@@ -233,8 +236,8 @@
         }
 
         .editor-toolbar {
-            background: var(--bg-base);
-            padding: 10px 20px;
+            background: var(--bg-panel);
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -245,13 +248,12 @@
         .file-breadcrumbs {
             font-family: var(--font-code);
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: var(--accent-primary);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
-        /* Container for Ace Editor */
         .editor-wrapper {
             flex: 1;
             position: relative;
@@ -269,11 +271,11 @@
         /* --- PREVIEW AREA --- */
         .preview-container {
             width: 45%;
-            background: #ffffff;
+            background: var(--bg-base);
             display: flex;
             flex-direction: column;
             border-left: 1px solid var(--border-color);
-            transition: width 0.3s ease;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .preview-container.hidden {
@@ -284,7 +286,7 @@
         .preview-header {
             background: var(--bg-panel);
             height: 45px;
-            padding: 0 15px;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -292,19 +294,21 @@
             color: var(--text-main);
             font-size: 0.85rem;
             font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         iframe {
             flex: 1;
             border: none;
             width: 100%;
-            background: #fff;
+            background: #ffffff;
         }
 
         /* Custom Scrollbars */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-panel); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
     </style>
@@ -313,21 +317,14 @@
 
     <header>
         <div class="logo">
-    <i class="ph-fill ph-planet"></i>
-
-    <span>AstralCode</span>
-
-    <button class="btn"
-        style="padding: 5px 10px; margin-left: 10px;"
-        onclick="window.location.href='index.html'">
-
-        <i class="ph ph-house"></i>
-        Home
-    </button>
-</div>
-        <div class="spaces-nav" id="spaces-nav">
-            </div>
-        <div></div> </header>
+            <i class="ph-fill ph-code"></i>
+            <span>AstralCode</span>
+        </div>
+        <div class="spaces-nav" id="spaces-nav"></div>
+        <div>
+            
+        </div> 
+    </header>
 
     <div class="workspace">
         <div class="sidebar">
@@ -336,8 +333,7 @@
                     <i class="ph ph-plus"></i> New File
                 </button>
             </div>
-            <div class="file-list" id="file-list">
-                </div>
+            <div class="file-list" id="file-list"></div>
         </div>
 
         <div class="editor-container">
@@ -357,71 +353,58 @@
 
         <div class="preview-container" id="preview-container">
             <div class="preview-header">
-                <span style="display: flex; align-items: center; gap: 6px;">
-                    <i class="ph ph-browser"></i> Live Preview
+                <span style="display: flex; align-items: center; gap: 8px;">
+                    <i class="ph ph-browser"></i> Preview
                 </span>
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn" style="padding: 4px 8px; font-size: 0.8rem;" onclick="openInNewTab()">
-                        <i class="ph ph-arrow-square-out"></i> Pop Out
-                    </button>
-                </div>
+                <button class="btn" style="padding: 4px 10px; font-size: 0.75rem;" onclick="openInNewTab()">
+                    <i class="ph ph-arrow-square-out"></i> Pop Out
+                </button>
             </div>
             <iframe id="preview-frame" sandbox="allow-scripts allow-modals"></iframe>
         </div>
     </div>
 
     <script>
-        // --- DEFAULT DATA ---
         const DEFAULT_HTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap');
     body {
-      background: #0B0E14;
-      color: #E2E8F0;
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
+      background: #000; color: #fff; font-family: 'Inter', sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; height: 100vh; margin: 0;
     }
-    .card {
-      background: #151B25;
-      padding: 40px;
-      border-radius: 12px;
-      border: 1px solid #2D3748;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      text-align: center;
-    }
-    h1 { color: #3B82F6; margin-bottom: 10px; }
-    p { color: #8B949E; }
+    .card { background: #0a0a0a; padding: 50px; border-radius: 4px; border: 1px solid #262626; text-align: center; max-width: 400px; }
+    h1 { font-weight: 600; letter-spacing: -1px; margin-bottom: 16px; }
+    p { color: #a3a3a3; font-weight: 300; line-height: 1.6; }
+    .badge { display: inline-block; padding: 4px 12px; border: 1px solid #fff; border-radius: 50px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>AstralCode IDE 🚀</h1>
-    <p>Professional grade. Start coding to see live updates.</p>
+    <div class="badge">Universal Code</div>
+    <h1>AstralCode IDE</h1>
+    <p>A minimalist workspace. Add .py, .java, .cpp, or any file extension to see syntax highlighting.</p>
   </div>
 </body>
 </html>`;
 
-        // Initialize Data
         const createDefaultSpaces = () => {
-            return Array.from({ length: 5 }, (_, i) => ({
+            return Array.from({ length: 3 }, (_, i) => ({
                 id: i,
                 name: `Space ${i + 1}`,
                 files: [
-                    { name: 'index.html', content: i === 0 ? DEFAULT_HTML : `<h1>Hello from Space ${i + 1}</h1>` },
-                    { name: 'styles.css', content: '/* Add your CSS here */' }
+                    { name: 'index.html', content: i === 0 ? DEFAULT_HTML : `<h1>Space ${i + 1} Ready</h1>` },
+                    { name: 'script.py', content: 'def hello_world():\n    print("AstralCode supports Python now!")\n\nhello_world()' },
+                    { name: 'app.js', content: 'console.log("System initialized.");' }
                 ]
             }));
         };
 
-        let spacesData = JSON.parse(localStorage.getItem('astralCodeData_v2'));
-        if (!spacesData || spacesData.length !== 5) {
+        let spacesData = JSON.parse(localStorage.getItem('astralCodeData_sleek_universal'));
+        if (!spacesData || spacesData.length === 0) {
             spacesData = createDefaultSpaces();
         }
 
@@ -430,7 +413,6 @@
         let isPreviewVisible = true;
         let previewTimeout;
 
-        // --- DOM ELEMENTS ---
         const spacesNav = document.getElementById('spaces-nav');
         const fileList = document.getElementById('file-list');
         const previewFrame = document.getElementById('preview-frame');
@@ -438,20 +420,21 @@
         const previewBtnText = document.getElementById('preview-btn-text');
         const currentFileNameDisplay = document.getElementById('current-file-name');
 
-        // --- ACE EDITOR SETUP ---
         const editor = ace.edit("code-editor");
-        editor.setTheme("ace/theme/tomorrow_night_eighties");
-        editor.session.setMode("ace/mode/html");
+        editor.setTheme("ace/theme/chaos");
+        
+        // --- REQUIRE ACE MODELIST ---
+        const modelist = ace.require("ace/ext/modelist");
+
         editor.setOptions({
             fontSize: "14px",
             showPrintMargin: false,
             enableBasicAutocompletion: true,
             enableLiveAutocompletion: true,
-            tabSize: 2,
-            useWorker: false // Disables syntax linting errors for external scripts
+            tabSize: 4,
+            useWorker: false 
         });
 
-        // Event listener for editor changes
         editor.session.on('change', () => {
             const currentFile = spacesData[currentSpaceIndex].files[currentFileIndex];
             if (currentFile) {
@@ -461,24 +444,25 @@
             }
         });
 
-        // --- CORE FUNCTIONS ---
         function saveData() {
-            localStorage.setItem('astralCodeData_v2', JSON.stringify(spacesData));
+            localStorage.setItem('astralCodeData_sleek_universal', JSON.stringify(spacesData));
         }
 
+        // Updated Icon logic to fall back to a generic code file for unknown types
         function getFileIcon(filename) {
-            if (filename.endsWith('.html')) return '<i class="ph-fill ph-file-html" style="color: #E34F26"></i>';
-            if (filename.endsWith('.css')) return '<i class="ph-fill ph-file-css" style="color: #1572B6"></i>';
-            if (filename.endsWith('.js')) return '<i class="ph-fill ph-file-js" style="color: #F7DF1E"></i>';
-            if (filename.endsWith('.json')) return '<i class="ph-fill ph-brackets-curly" style="color: #8B949E"></i>';
-            return '<i class="ph-fill ph-file-text" style="color: #8B949E"></i>';
+            if (filename.endsWith('.html')) return '<i class="ph ph-file-html" style="color: #fff"></i>';
+            if (filename.endsWith('.css')) return '<i class="ph ph-file-css" style="color: #a3a3a3"></i>';
+            if (filename.endsWith('.js') || filename.endsWith('.ts')) return '<i class="ph ph-file-js" style="color: #d4d4d4"></i>';
+            if (filename.endsWith('.json')) return '<i class="ph ph-brackets-curly" style="color: #737373"></i>';
+            if (filename.endsWith('.py')) return '<i class="ph ph-file-py" style="color: #d4d4d4"></i>';
+            if (filename.endsWith('.cpp') || filename.endsWith('.c')) return '<i class="ph ph-file-c" style="color: #d4d4d4"></i>';
+            return '<i class="ph ph-file-code" style="color: #737373"></i>';
         }
 
+        // --- DYNAMIC MODE DETECTION ---
         function getEditorMode(filename) {
-            if (filename.endsWith('.js')) return "ace/mode/javascript";
-            if (filename.endsWith('.css')) return "ace/mode/css";
-            if (filename.endsWith('.json')) return "ace/mode/json";
-            return "ace/mode/html";
+            // modelist.getModeForPath reads the file extension and returns the correct Ace Editor syntax mode
+            return modelist.getModeForPath(filename).mode;
         }
 
         function renderSpacesNav() {
@@ -510,7 +494,7 @@
                 if (currentSpace.files.length > 1) {
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'delete-file';
-                    deleteBtn.innerHTML = '<i class="ph ph-trash"></i>';
+                    deleteBtn.innerHTML = '<i class="ph ph-x"></i>';
                     deleteBtn.onclick = (e) => {
                         e.stopPropagation();
                         deleteFile(index);
@@ -525,13 +509,13 @@
         function loadEditorContent() {
             const currentFile = spacesData[currentSpaceIndex].files[currentFileIndex];
             if (currentFile) {
-                // Set value without triggering the 'change' event unnecessarily
                 editor.setValue(currentFile.content, -1);
+                
+                // Set dynamic mode based on the file extension
                 editor.session.setMode(getEditorMode(currentFile.name));
+                
                 editor.setReadOnly(false);
                 currentFileNameDisplay.innerText = currentFile.name;
-
-                // Immediately update preview to the current file
                 updatePreview();
             } else {
                 editor.setValue('');
@@ -541,30 +525,26 @@
             }
         }
 
-        // --- PREVIEW LOGIC ---
         function debouncedUpdatePreview() {
             clearTimeout(previewTimeout);
-            previewTimeout = setTimeout(updatePreview, 500); // 500ms delay to prevent freezing
+            previewTimeout = setTimeout(updatePreview, 500);
         }
 
         function updatePreview() {
             if (!isPreviewVisible) return;
             const currentFile = spacesData[currentSpaceIndex].files[currentFileIndex];
-            if (currentFile && currentFile.name.endsWith('.html')) {
+            if (currentFile && (currentFile.name.endsWith('.html') || currentFile.name.endsWith('.htm'))) {
                 previewFrame.srcdoc = currentFile.content;
             } else if (currentFile) {
-                // If viewing a non-html file, try to find an index.html to render instead, 
-                // otherwise show a placeholder
                 const htmlFile = spacesData[currentSpaceIndex].files.find(f => f.name.endsWith('.html'));
                 if (htmlFile) {
                      previewFrame.srcdoc = htmlFile.content;
                 } else {
-                     previewFrame.srcdoc = `<body style="font-family:sans-serif; padding:20px; color:#333;"><i>Preview is only available for HTML files.</i></body>`;
+                     previewFrame.srcdoc = `<body style="background:#000; color:#a3a3a3; font-family:'Inter',sans-serif; padding:20px;"><i>Preview requires an HTML file.<br><br>Viewing code for: ${currentFile.name}</i></body>`;
                 }
             }
         }
 
-        // --- ACTIONS ---
         function switchSpace(index) {
             currentSpaceIndex = index;
             currentFileIndex = 0;
@@ -580,9 +560,8 @@
         }
 
         function addFile() {
-            const fileName = prompt("Enter file name (e.g., script.js, style.css):", "newfile.html");
+            const fileName = prompt("Enter file name (e.g., script.py, main.cpp, server.js):", "newfile.html");
             if (fileName && fileName.trim() !== "") {
-                // Check for duplicates
                 if(spacesData[currentSpaceIndex].files.some(f => f.name === fileName.trim())) {
                     alert("A file with that name already exists!");
                     return;
@@ -617,7 +596,6 @@
                 previewContainer.classList.add('hidden');
                 previewBtnText.innerText = 'Show Preview';
             }
-            // Trigger Ace editor resize event to fix sizing when flex container changes
             setTimeout(() => editor.resize(), 300);
         }
 
@@ -632,7 +610,6 @@
             }
         }
 
-        // --- INITIALIZATION ---
         renderSpacesNav();
         renderFileList();
         loadEditorContent();
