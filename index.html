@@ -226,6 +226,11 @@ body.os-win95 .win-content,body.os-win95 .os-input,body.os-win95 .search-field{b
 html.cursor-arrow{cursor:default;}
 html.cursor-neon,html.cursor-neon *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M3 2l8 25 5-9 9 5z' fill='%2300ff78' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E") 3 2,auto;}
 html.cursor-pixel,html.cursor-pixel *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M4 2v23h6v5h6v-5h6V15h5V9h-5V4h-6V2z' fill='%23fff' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E") 4 2,auto;}
+html.cursor-blue,html.cursor-blue *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M3 2l7 25 6-9 10 5z' fill='%233b82f6' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E") 3 2,auto;}
+html.cursor-rainbow,html.cursor-rainbow *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M3 2l8 26 5-10 10 5z' fill='%23ff4fd8' stroke='%23ffd84f' stroke-width='2'/%3E%3C/svg%3E") 3 2,auto;}
+html.cursor-crosshair,html.cursor-crosshair *{cursor:crosshair;}
+html.cursor-precision,html.cursor-precision *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='12' cy='12' r='8' fill='none' stroke='%23fff' stroke-width='2'/%3E%3Cpath d='M12 0v6m0 12v6M0 12h6m12 0h6' stroke='%23ff3b30' stroke-width='2'/%3E%3C/svg%3E") 12 12,auto;}
+html.cursor-gold,html.cursor-gold *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M3 2l8 26 5-10 10 5z' fill='%23ffd700' stroke='%23704f00' stroke-width='2'/%3E%3C/svg%3E") 3 2,auto;}
 html.custom-cursor,html.custom-cursor *{cursor:var(--custom-cursor),auto;}
 
 html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
@@ -909,6 +914,97 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
 .modal h3{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;}
 .modal p{font-size:13px;color:var(--text-secondary);margin-bottom:16px;}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;}
+
+/* WINDOWS SIGN-IN */
+#login-screen{
+  position:fixed;inset:0;z-index:99997;display:none;align-items:center;justify-content:center;
+  color:#fff;background:
+    linear-gradient(135deg,rgba(7,28,63,.76),rgba(20,72,125,.64)),
+    url('https://raw.githubusercontent.com/niivu/Windows-11-Wallpapers/main/11%20defaulttheme%20wallpaper.jpg') center/cover;
+  font-family:'Segoe UI',var(--font);
+}
+#login-screen.visible{display:flex;animation:login-in .28s ease-out;}
+@keyframes login-in{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
+.login-card{width:min(390px,calc(100vw - 36px));text-align:center;padding:30px 28px 24px;
+  background:rgba(20,35,58,.48);border:1px solid rgba(255,255,255,.2);border-radius:14px;
+  box-shadow:0 24px 80px rgba(0,0,0,.42);backdrop-filter:blur(26px);}
+.login-avatar{width:96px;height:96px;border-radius:50%;margin:0 auto 14px;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-size:46px;overflow:hidden;
+  border:2px solid rgba(255,255,255,.75);box-shadow:0 8px 24px rgba(0,0,0,.25);}
+.login-avatar img{width:100%;height:100%;object-fit:cover;}
+.login-name{font-size:22px;font-weight:600;margin-bottom:3px;}
+.login-sub{font-size:13px;color:rgba(255,255,255,.72);margin-bottom:20px;}
+.login-methods{display:flex;gap:8px;justify-content:center;margin-bottom:14px;}
+.login-method{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;
+  border-radius:6px;padding:7px 12px;cursor:pointer;font-size:12px;}
+.login-method.active,.login-method:hover{background:var(--accent);border-color:transparent;}
+.login-input{width:100%;height:42px;border:1px solid rgba(255,255,255,.25);border-radius:6px;
+  padding:0 13px;background:rgba(255,255,255,.13);color:#fff;font-size:15px;outline:none;}
+.login-input:focus{border-color:#8cc8ff;box-shadow:0 0 0 2px rgba(140,200,255,.25);}
+.login-input::placeholder{color:rgba(255,255,255,.6);}
+.login-error{height:18px;margin-top:8px;color:#ffb4b4;font-size:12px;}
+.login-submit{width:100%;height:40px;border:0;border-radius:6px;background:#1a73c9;color:#fff;
+  font-weight:600;cursor:pointer;font-size:14px;margin-top:5px;}
+.login-submit:hover{background:#2387e5;}
+.login-links{display:flex;justify-content:space-between;margin-top:18px;font-size:12px;color:rgba(255,255,255,.78);}
+.login-links button{border:0;background:none;color:inherit;cursor:pointer;text-decoration:underline;}
+.login-footer{position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:12px;color:rgba(255,255,255,.65);}
+.security-note{font-size:11px;color:var(--text-secondary);line-height:1.45;margin-top:8px;}
+
+/* Keep Windows 11 surfaces coherent when dark mode is enabled. */
+body.dark-mode.os-win11{
+  --text:#f3f6fb;--text-secondary:#aab7c8;--separator:rgba(255,255,255,.12);
+  --window-bg:#1b2430;--sidebar-bg:#121a24;--menubar-bg:rgba(15,23,34,.94);
+  --bg-glass:rgba(25,35,49,.94);--bg-glass-dark:rgba(25,35,49,.96);
+  --hover:rgba(255,255,255,.09);--dock-bg:rgba(21,30,42,.9);
+}
+body.dark-mode.os-win11 .window,
+body.dark-mode.os-win11 .win-toolbar,
+body.dark-mode.os-win11 .finder-sidebar,
+body.dark-mode.os-win11 .settings-sidebar,
+body.dark-mode.os-win11 .win-content,
+body.dark-mode.os-win11 .os-input,
+body.dark-mode.os-win11 .search-field{
+  background-color:var(--window-bg);color:var(--text);
+}
+body.dark-mode.os-win11 .finder-sidebar,
+body.dark-mode.os-win11 .settings-sidebar{background-color:var(--sidebar-bg);}
+body.dark-mode.os-win11 .win-toolbar{background-color:#202c3b;}
+body.dark-mode.os-win11 .os-input,
+body.dark-mode.os-win11 .search-field{border-color:var(--separator);}
+body.dark-mode.os-win11 #dock{background:var(--dock-bg);border-color:var(--separator);}
+body.dark-mode.os-win11 #start-menu,
+body.dark-mode.os-win11 #apple-menu,
+body.dark-mode.os-win11 #ctx-menu{background:var(--bg-glass);color:var(--text);border-color:var(--separator);}
+body.dark-mode.os-win11 .store-card,
+body.dark-mode.os-win11 .setting-group,
+body.dark-mode.os-win11 .cursor-choice{background:rgba(255,255,255,.06);border-color:var(--separator);}
+body.dark-mode.os-win11 .win-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.24);}
+
+/* WINDOWS START LAUNCHER */
+#start-menu{position:fixed;left:50%;bottom:76px;transform:translateX(-50%) translateY(12px);
+  width:min(620px,calc(100vw - 24px));max-height:min(680px,calc(100vh - 100px));z-index:9200;
+  display:none;padding:20px;color:var(--text);background:var(--bg-glass);border:1px solid var(--separator);
+  border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.38);backdrop-filter:blur(28px) saturate(1.4);}
+#start-menu.visible{display:block;animation:start-in .16s ease-out forwards;}
+@keyframes start-in{to{transform:translateX(-50%) translateY(0);}}
+.start-search{width:100%;height:38px;border:1px solid var(--separator);border-radius:5px;background:var(--hover);
+  color:var(--text);padding:0 13px;font-size:14px;outline:none;margin-bottom:18px;}
+.start-heading{font-size:12px;font-weight:700;margin:8px 0 10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;}
+.start-pinned{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.start-app{display:flex;align-items:center;gap:9px;border:0;background:transparent;color:var(--text);padding:10px 8px;
+  border-radius:6px;text-align:left;cursor:pointer;font:inherit;font-size:12px;}
+.start-app:hover{background:var(--hover);}
+.start-app-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:19px;background:var(--accent);color:#fff;flex-shrink:0;}
+.start-list{max-height:220px;overflow:auto;border-top:1px solid var(--separator);margin-top:10px;padding-top:8px;}
+.start-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--separator);margin-top:14px;padding-top:12px;}
+.start-user{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;}
+.start-user-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent);overflow:hidden;}
+.start-user-avatar img{width:100%;height:100%;object-fit:cover;}
+.start-power{display:flex;gap:6px;}
+.start-power button{border:0;background:var(--hover);color:var(--text);border-radius:5px;padding:7px 9px;cursor:pointer;font-size:12px;}
+.start-power button:hover{background:var(--accent);color:#fff;}
+.app-status{font-size:11px;color:var(--text-secondary);margin-left:auto;}
 </style>
 </head>
 <body>
@@ -940,10 +1036,33 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
   </div>
 </div>
 
+<!-- WINDOWS SIGN-IN / LOCK SCREEN -->
+<div id="login-screen" aria-label="Windows sign-in">
+  <div class="login-card">
+    <div class="login-avatar" id="login-avatar">👤</div>
+    <div class="login-name" id="login-name">Player 1</div>
+    <div class="login-sub" id="login-sub">Sign in to AstralSync</div>
+    <div class="login-methods">
+      <button class="login-method active" id="login-password-method" onclick="setLoginMethod('password')">🔑 Password</button>
+      <button class="login-method" id="login-pin-method" onclick="setLoginMethod('pin')">🔢 PIN</button>
+    </div>
+    <form onsubmit="event.preventDefault();submitLogin()">
+      <input class="login-input" id="login-input" type="password" autocomplete="current-password" placeholder="Password">
+      <div class="login-error" id="login-error"></div>
+      <button class="login-submit" type="submit">Sign in&nbsp; <span aria-hidden="true">→</span></button>
+    </form>
+    <div class="login-links">
+      <button onclick="cycleLoginProfile()">Switch user</button>
+      <button onclick="openRecoveryHint()">I forgot my password</button>
+    </div>
+  </div>
+  <div class="login-footer">🌐&nbsp; Network &nbsp;&nbsp; ◴&nbsp; Accessibility &nbsp;&nbsp; ⏻&nbsp; Power</div>
+</div>
+
 <!-- MENU BAR -->
 <div id="menubar">
-  <div class="menu-apple" onclick="toggleAppleMenu()">&#63743;</div>
-  <div class="menu-item bold" id="active-app-name">Finder</div>
+  <div class="menu-apple" onclick="toggleAppleMenu()">⊞</div>
+  <div class="menu-item bold" id="active-app-name">File Explorer</div>
   <div class="menu-item" onclick="openWindow('finder')">File</div>
   <div class="menu-item" onclick="openWindow('finder')">Edit</div>
   <div class="menu-item">View</div>
@@ -968,7 +1087,23 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
   <div class="apple-menu-sep"></div>
   <div class="apple-menu-item" onclick="toggleDarkMode();hideAppleMenu()">Toggle Dark Mode</div>
   <div class="apple-menu-sep"></div>
-  <div class="apple-menu-item" style="color:#ff3b30;">Restart&hellip;</div>
+  <div class="apple-menu-item" onclick="lockScreen();hideAppleMenu()">🔒 Lock</div>
+  <div class="apple-menu-item" onclick="restartShell();hideAppleMenu()">↻ Restart shell</div>
+</div>
+
+<div id="start-menu" onclick="event.stopPropagation()">
+  <input class="start-search" id="start-search" placeholder="Search apps, files, and settings" oninput="renderStartMenu(this.value)" onkeydown="if(event.key==='Escape')toggleStartMenu()">
+  <div class="start-heading">Pinned</div>
+  <div class="start-pinned" id="start-pinned"></div>
+  <div class="start-heading">All apps</div>
+  <div class="start-list" id="start-list"></div>
+  <div class="start-footer">
+    <div class="start-user" id="start-user"></div>
+    <div class="start-power">
+      <button onclick="openWindow('settings');toggleStartMenu()">⚙ Settings</button>
+      <button onclick="lockScreen();toggleStartMenu()">🔒 Lock</button>
+    </div>
+  </div>
 </div>
 
 <!-- DESKTOP -->
@@ -1003,14 +1138,14 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
 </div>
 
 <div id="dock">
-  <div class="dock-item" onclick="toggleAppleMenu()" title="Start">
+  <div class="dock-item" onclick="toggleStartMenu()" title="Start">
     <div class="dock-img" style="background:linear-gradient(135deg,#0078d4,#106ebe);color:#fff;font-size:26px;">⊞</div>
     <div class="dock-label">Start</div>
   </div>
   <div class="dock-sep"></div>
   <div class="dock-item" onclick="openWindow('finder')" id="dock-finder">
     <div class="dock-img">📁</div>
-    <div class="dock-label">Finder</div>
+    <div class="dock-label">File Explorer</div>
     <div class="dock-dot" id="dot-finder"></div>
   </div>
   <div class="dock-item" onclick="openWindow('store')" id="dock-store">
@@ -1080,6 +1215,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
   <div class="ctx-item" onclick="openWindow('store');hideCtx()">🛍️ App Store</div>
   <div class="ctx-sep"></div>
   <div class="ctx-item" onclick="openWindow('settings');hideCtx()">⚙️ Settings <span class="ctx-kbd">⌘,</span></div>
+  <div class="ctx-item" onclick="openWindow('terminal');hideCtx()">▣ Terminal</div>
+  <div class="ctx-item" onclick="openWindow('files');hideCtx()">📂 Files</div>
   <div class="ctx-item" onclick="openWindow('profiles');hideCtx()">👤 Profiles</div>
   <div class="ctx-sep"></div>
   <div class="ctx-item" onclick="toggleDarkMode();hideCtx()">🌙 Toggle Dark Mode</div>
@@ -1100,7 +1237,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
     <p id="modal-desc">Enter a name for the new profile.</p>
     <input class="os-input" id="modal-input" placeholder="Display name…" style="margin-bottom:10px;" -webkit-user-select:text;>
     <input class="os-input" id="modal-email" placeholder="Email (optional)" type="email" style="margin-bottom:10px;" -webkit-user-select:text;>
-    <input class="os-input" id="modal-pass" placeholder="Password (optional)" type="password" style="margin-bottom:16px;" autocomplete="new-password" -webkit-user-select:text;>
+    <input class="os-input" id="modal-pass" placeholder="Password (optional)" type="password" style="margin-bottom:10px;" autocomplete="new-password" -webkit-user-select:text;>
+    <input class="os-input" id="modal-pin" placeholder="PIN (optional, 4–6 digits)" type="password" inputmode="numeric" maxlength="6" style="margin-bottom:16px;" autocomplete="new-password">
     <div class="modal-actions">
       <button class="os-btn" onclick="closeModal()">Cancel</button>
       <button class="os-btn primary" id="modal-confirm" onclick="confirmModal()">Create</button>
@@ -1303,16 +1441,16 @@ try {
   state = JSON.parse(localStorage.getItem('astralOS') || '{}');
   if(typeof state !== 'object' || !state) state = {};
 } catch(e) { state = {}; }
-state.profiles = state.profiles || [{id:1,name:"Player 1",color:"#007AFF",emoji:"👾",email:"",password:""}];
+state.profiles = state.profiles || [{id:1,name:"Player 1",color:"#007AFF",emoji:"👾",email:"",password:"",pin:""}];
 // Ensure existing profiles have new fields
-state.profiles.forEach(p=>{ if(!p.email) p.email=''; if(!p.password) p.password=''; if(!p.frame) p.frame='none'; });
+state.profiles.forEach(p=>{ if(!p.email) p.email=''; if(!p.password) p.password=''; if(!p.pin) p.pin=''; if(!p.frame) p.frame='none'; });
 state.activeProfile = state.activeProfile || 0;
-state.wallpaper = (typeof state.wallpaper === 'number' && state.wallpaper >= 0) ? state.wallpaper : 0;
-state.accent = state.accent || "#007AFF";
+state.wallpaper = (typeof state.wallpaper === 'number' && state.wallpaper >= 0) ? state.wallpaper : 4;
+state.accent = state.accent || "#3b82f6";
 state.dark = state.dark ?? false;
 state.finderCategory = state.finderCategory || "All";
 state.font = state.font || 'system';
-state.osStyle = state.osStyle || 'astral';
+state.osStyle = state.osStyle || 'win11';
 state.cursor = state.cursor || 'arrow';
 state.oobe_done = state.oobe_done || false;
 state.installedApps = state.installedApps || [];
@@ -1403,7 +1541,7 @@ function applyOSStyle(id){
 
 function applyCursor(){
   const root=document.documentElement;
-  root.classList.remove('cursor-arrow','cursor-neon','cursor-pixel','custom-cursor');
+  root.classList.remove('cursor-arrow','cursor-neon','cursor-pixel','cursor-blue','cursor-rainbow','cursor-crosshair','cursor-precision','cursor-gold','custom-cursor');
   if(state.cursor==='custom'&&state.customCursor){
     root.style.setProperty('--custom-cursor',`url("${state.customCursor}") 4 2`);
     root.classList.add('custom-cursor');
@@ -1496,7 +1634,9 @@ let winZ=1000;
 const openWindows={};
 
 const WIN_CONFIGS={
-  finder:{title:'Finder',w:820,h:520,icon:'📁'},
+  finder:{title:'File Explorer',w:820,h:520,icon:'📁'},
+  files:{title:'Files',w:760,h:500,icon:'📂'},
+  terminal:{title:'Terminal',w:760,h:460,icon:'▣'},
   store:{title:'App Store',w:750,h:560,icon:'🛍️'},
   settings:{title:'System Settings',w:700,h:520,icon:'⚙️'},
   profiles:{title:'Profiles',w:500,h:560,icon:'👤'},
@@ -1529,6 +1669,8 @@ function openWindow(id, extra){
 function buildWinHTML(id,cfg,extra){
   let body='';
   if(id==='finder') body=buildFinder();
+  else if(id==='files') body=buildFiles();
+  else if(id==='terminal') body=buildTerminal();
   else if(id==='store') body=buildStore();
   else if(id==='settings') body=buildSettings();
   else if(id==='profiles') body=buildProfiles();
@@ -1764,15 +1906,36 @@ const APPS = [
   {id:'Blank',   title:'BlankLauncher',  icon:'🌐', url:'BlankLauncher.html',     sub:'Private Tab.', desc:'About Blank laucher for private tab urls.',    color:'#2c3e50'},
 ];
 
+function isAppInstalled(id){return state.installedApps.includes(id);}
+function installApp(id){
+  if(!APPS.some(app=>app.id===id))return;
+  if(!isAppInstalled(id)){
+    state.installedApps.push(id);saveState();
+    showNotif('⬇️','App installed','Added '+APPS.find(app=>app.id===id).title+' to your OS.');
+  }
+  const store=openWindows.store;
+  if(store)store.querySelector('.win-body').innerHTML=buildStore();
+}
+function uninstallApp(id){
+  state.installedApps=state.installedApps.filter(appId=>appId!==id);
+  closeWindow('app_'+id);saveState();renderStartMenu();
+  const store=openWindows.store;
+  if(store)store.querySelector('.win-body').innerHTML=buildStore();
+  showNotif('🗑️','App removed','The app was removed from this OS.');
+}
+
 function buildStore(){
   const cards = APPS.map(app=>`
-<div class="store-card" onclick="launchApp('${app.id}','${app.title}','${app.icon}','${app.url}')" style="cursor:pointer;">
+<div class="store-card" style="cursor:default;">
   <div style="width:60px;height:60px;border-radius:14px;background:${app.color};display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">${app.icon}</div>
   <div class="store-card-info">
     <div class="store-card-title">${app.title}</div>
     <div class="store-card-sub">${app.sub}</div>
     <div style="font-size:11px;color:var(--text-secondary);margin:4px 0 6px;line-height:1.4;">${app.desc}</div>
-    <button class="store-card-btn" onclick="event.stopPropagation();launchApp('${app.id}','${app.title}','${app.icon}','${app.url}')">Open</button>
+    <span class="app-status">${isAppInstalled(app.id)?'Installed':'Not installed'}</span>
+    ${isAppInstalled(app.id)
+      ? `<button class="store-card-btn" onclick="uninstallApp('${app.id}')">Uninstall</button>`
+      : `<button class="store-card-btn" onclick="installApp('${app.id}')">Download &amp; install</button>`}
   </div>
 </div>`).join('');
 
@@ -1789,8 +1952,78 @@ function buildStore(){
 }
 
 function launchApp(id, title, icon, url){
+  if(!isAppInstalled(id)){
+    showNotif('⬇️','App not installed','Open the App Store to download '+title+' first.');
+    openWindow('store');
+    return;
+  }
   const winId = 'app_' + id;
   openWindow(winId, {title, icon, url});
+}
+
+// ============================================================
+// START LAUNCHER, TERMINAL, AND FILES
+// ============================================================
+function toggleStartMenu(){
+  const menu=document.getElementById('start-menu');
+  if(!menu)return;
+  menu.classList.toggle('visible');
+  if(menu.classList.contains('visible')){
+    renderStartMenu();
+    setTimeout(()=>document.getElementById('start-search')?.focus(),50);
+  }
+}
+function renderStartMenu(filter=''){
+  const q=(filter||'').toLowerCase();
+  const builtins=[
+    {id:'finder',title:'File Explorer',icon:'📁',action:"openWindow('finder');toggleStartMenu()"},
+    {id:'files',title:'Files',icon:'📂',action:"openWindow('files');toggleStartMenu()"},
+    {id:'terminal',title:'Terminal',icon:'▣',action:"openWindow('terminal');toggleStartMenu()"},
+    {id:'settings',title:'Settings',icon:'⚙️',action:"openWindow('settings');toggleStartMenu()"},
+    {id:'store',title:'App Store',icon:'🛍️',action:"openWindow('store');toggleStartMenu()"}
+  ];
+  const installed=APPS.filter(app=>isAppInstalled(app.id)).map(app=>({
+    id:app.id,title:app.title,icon:app.icon,action:`launchApp('${app.id}','${app.title}','${app.icon}','${app.url}');toggleStartMenu()`
+  }));
+  const items=[...builtins,...installed].filter(item=>!q||item.title.toLowerCase().includes(q));
+  const pinned=(q?items:builtins.slice(0,4)).map(item=>`<button class="start-app" onclick="${item.action}"><span class="start-app-icon">${item.icon}</span>${item.title}</button>`).join('');
+  const list=(q?[]:installed).map(item=>`<button class="start-app" onclick="${item.action}"><span class="start-app-icon">${item.icon}</span>${item.title}<span class="app-status">Installed</span></button>`).join('');
+  document.getElementById('start-pinned').innerHTML=pinned||'<div class="security-note">No matching apps.</div>';
+  document.getElementById('start-list').innerHTML=list||(q?items.slice(0,8).map(item=>`<button class="start-app" onclick="${item.action}"><span class="start-app-icon">${item.icon}</span>${item.title}</button>`).join(''):'<div class="security-note">Downloaded apps will appear here.</div>');
+  const p=state.profiles[state.activeProfile], image=getProfileAvatar(p.id);
+  document.getElementById('start-user').innerHTML=`<span class="start-user-avatar">${image?`<img src="${image}" alt="">`:(p.emoji||'👤')}</span>${p.name}`;
+}
+function buildTerminal(){
+  return `<div class="terminal-shell" style="height:100%;display:flex;flex-direction:column;background:#0c1117;color:#d7e3ef;font-family:'Space Mono',monospace;">
+    <div id="terminal-output" style="flex:1;overflow:auto;padding:16px;font-size:12px;line-height:1.7;">AstralSync Terminal [Version 2.1]<br>Type <b>help</b> for available commands.<br><br></div>
+    <form onsubmit="runTerminalCommand(event)" style="display:flex;gap:8px;padding:10px 14px;border-top:1px solid #263544;">
+      <span style="color:#5dd6ff;">user@astral:~$</span><input id="terminal-input" autocomplete="off" spellcheck="false" style="flex:1;background:none;border:0;outline:0;color:#fff;font:inherit;">
+    </form>
+  </div>`;
+}
+function runTerminalCommand(event){
+  event.preventDefault();
+  const input=document.getElementById('terminal-input'), output=document.getElementById('terminal-output');
+  if(!input||!output)return;
+  const command=input.value.trim(), safe=command.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  let result='';
+  if(command==='help')result='help  about  apps  clear  date  files  whoami';
+  else if(command==='about')result='AstralSync OS 2.1 — Windows Edition';
+  else if(command==='apps')result=state.installedApps.length?state.installedApps.join('  '):'No apps installed.';
+  else if(command==='files')result='Documents/  Downloads/  Pictures/  Desktop/';
+  else if(command==='whoami')result=state.profiles[state.activeProfile].name;
+  else if(command==='date')result=new Date().toLocaleString();
+  else if(command==='clear'){output.innerHTML='';input.value='';return;}
+  else if(command)result='Command not found. Type help.';
+  output.innerHTML+=`<span style="color:#8ca2b5;">user@astral:~$ ${safe}</span><br>${result}<br>`;
+  output.scrollTop=output.scrollHeight;input.value='';
+}
+function buildFiles(){
+  const folders=[['📄','Documents','Personal files'],['⬇️','Downloads','Downloaded apps and files'],['🖼️','Pictures','Images and wallpapers'],['🖥️','Desktop','Desktop items'],['☁️','AstralDrive','Cloud placeholder']];
+  return `<div class="win-content" style="padding:20px;"><div class="setting-row-title">This PC</div>
+  <div class="store-grid" style="grid-template-columns:repeat(auto-fill,minmax(170px,1fr));padding:10px 0;">
+  ${folders.map(folder=>`<button class="store-card" style="border:0;text-align:left;cursor:pointer;" onclick="showNotif('${folder[0]}','${folder[1]}','${folder[2]} is ready to browse.')"><div style="font-size:32px;">${folder[0]}</div><div class="store-card-title">${folder[1]}</div><div class="store-card-sub">${folder[2]}</div></button>`).join('')}</div>
+  <div class="security-note">Files is a local OS view. Uploaded wallpapers and profile photos stay in this browser.</div></div>`;
 }
 
 // ============================================================
@@ -1806,6 +2039,7 @@ function buildSettings(){
     <div class="settings-item${settingsTab==='accent'?' active':''}" onclick="switchSettingsTab('accent')"><span class="s-icon">🎡</span>Accent Color</div>
     <div class="settings-section">Account</div>
     <div class="settings-item${settingsTab==='profile'?' active':''}" onclick="switchSettingsTab('profile')"><span class="s-icon">👤</span>Profile</div>
+    <div class="settings-item${settingsTab==='security'?' active':''}" onclick="switchSettingsTab('security')"><span class="s-icon">🔐</span>Sign-in options</div>
     <div class="settings-section">Info</div>
     <div class="settings-item" onclick="openWindow('about')"><span class="s-icon">ℹ️</span>About</div>
   </div>
@@ -1819,12 +2053,13 @@ function switchSettingsTab(tab){
   if(c)c.innerHTML=buildSettingsTab(tab);
   document.querySelectorAll('.settings-item').forEach(el=>{
     el.classList.toggle('active',el.textContent.includes(
-      tab==='appearance'?'Appearance':tab==='wallpaper'?'Wallpaper':tab==='accent'?'Accent':tab==='profile'?'Profile':'__'
+      tab==='appearance'?'Appearance':tab==='wallpaper'?'Wallpaper':tab==='accent'?'Accent':tab==='profile'?'Profile':tab==='security'?'Sign-in options':'__'
     ));
   });
 }
 
 function buildSettingsTab(tab){
+  if(tab==='security') return buildSecuritySettings();
   if(tab==='appearance') return`
 <div class="setting-row-title">Appearance</div>
 <div class="os-style-grid">${OS_STYLES.map(style=>`
@@ -1846,6 +2081,11 @@ function buildSettingsTab(tab){
     ['arrow','↖','Default'],
     ['neon','✦','Neon'],
     ['pixel','▰','Pixel'],
+    ['blue','➤','Blue Steel'],
+    ['rainbow','🌈','Rainbow'],
+    ['crosshair','＋','Crosshair'],
+    ['precision','⊙','Precision'],
+    ['gold','⭐','Gold'],
   ].map(c=>`<button class="cursor-choice${state.cursor===c[0]?' active':''}" onclick="setCursorStyle('${c[0]}')"><span class="cursor-glyph">${c[1]}</span>${c[2]}</button>`).join('')}
 </div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
@@ -1905,6 +2145,23 @@ ${state.customWP?`<div style="font-size:11px;color:var(--accent);margin-bottom:1
   return'<div class="empty-state"><div class="es-icon">🔧</div><p>Coming soon</p></div>';
 }
 
+function buildSecuritySettings(){
+  const p=state.profiles[state.activeProfile];
+  return `<div class="setting-row-title">Sign-in options</div>
+  <p class="security-note" style="margin-bottom:18px;">Choose how ${p.name} signs in when AstralSync is locked.</p>
+  <div class="setting-group">
+    <div class="setting-row"><div><strong>🔑 Password</strong><div class="security-note">Use a password on the Windows-style sign-in screen.</div></div>
+      <input class="os-input" type="password" style="max-width:190px;" placeholder="Password" value="${p.password||''}" oninput="updateProfileField('password',this.value)" autocomplete="new-password"></div>
+    <div class="setting-row"><div><strong>🔢 PIN</strong><div class="security-note">A quick 4–6 digit sign-in.</div></div>
+      <input class="os-input" type="password" inputmode="numeric" maxlength="6" style="max-width:190px;" placeholder="PIN" value="${p.pin||''}" oninput="updateProfileField('pin',this.value.replace(/\\D/g,''))" autocomplete="new-password"></div>
+  </div>
+  <div class="setting-group" style="margin-top:16px;">
+    <div class="setting-row"><div><strong>🔒 Lock now</strong><div class="security-note">Preview the sign-in experience.</div></div>
+      <button class="os-btn" onclick="lockScreen()">Lock</button></div>
+  </div>
+  <div class="security-note">This is local browser demo security, not a replacement for a real operating-system account.</div>`;
+}
+
 function renderAvatarHTML(p, size=80, fontSize=40, editable=true){
   const img = getProfileAvatar(p.id);
   const frameClass = p.frame && p.frame !== 'none' ? ` frame-${p.frame}` : '';
@@ -1940,7 +2197,9 @@ function buildProfileSettings(){
 <div class="setting-group">
   <div class="setting-row"><label>Display Name</label><span style="font-weight:600;color:var(--text)">${p.name}</span></div>
   <div class="setting-row"><label>Email (optional)</label><input class="os-input" style="max-width:200px;" placeholder="your@email.com" value="${p.email||''}" oninput="updateProfileField('email',this.value)" onchange="saveState()"></div>
-  <div class="setting-row"><label>Password (optional)</label><input class="os-input" type="password" style="max-width:200px;" placeholder="••••••••" value="${p.password||''}" oninput="updateProfileField('password',this.value)" onchange="saveState()" autocomplete="new-password"></div>
+<div class="setting-row"><label>Password</label><input class="os-input" type="password" style="max-width:200px;" placeholder="Set a password" value="${p.password||''}" oninput="updateProfileField('password',this.value)" onchange="saveState()" autocomplete="new-password"></div>
+<div class="setting-row"><label>PIN</label><input class="os-input" type="password" inputmode="numeric" maxlength="6" style="max-width:200px;" placeholder="4–6 digit PIN" value="${p.pin||''}" oninput="updateProfileField('pin',this.value.replace(/\\D/g,''))" onchange="saveState()" autocomplete="new-password"></div>
+<div class="security-note">Passwords and PINs are stored locally in this browser for this demo. They do not protect an online account.</div>
 </div>
 <div class="theme-section"><span>🎨 Avatar Color</span><div class="theme-section-line"></div></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 12px;">
@@ -2017,6 +2276,72 @@ function setProfileFrame(frame){
 function updateProfileField(field,val){
   const p=state.profiles[state.activeProfile];
   p[field]=val;
+  saveState();
+}
+
+// WINDOWS SIGN-IN + LOCAL PROFILE SECURITY
+let loginMethod='password';
+let loginProfileIndex=0;
+function syncLoginScreen(){
+  const p=state.profiles[loginProfileIndex]||state.profiles[0];
+  if(!p)return;
+  const avatar=document.getElementById('login-avatar');
+  const image=getProfileAvatar(p.id);
+  if(avatar) avatar.innerHTML=image?`<img src="${image}" alt="">`:(p.emoji||'👤');
+  const name=document.getElementById('login-name');
+  const sub=document.getElementById('login-sub');
+  if(name)name.textContent=p.name;
+  if(sub)sub.textContent=p.email||'Sign in to AstralSync';
+  const input=document.getElementById('login-input');
+  if(input){
+    input.value='';
+    input.placeholder=loginMethod==='pin'?'PIN':'Password';
+    input.type=loginMethod==='pin'?'tel':'password';
+    input.setAttribute('inputmode',loginMethod==='pin'?'numeric':'text');
+    setTimeout(()=>input.focus(),80);
+  }
+  const err=document.getElementById('login-error');
+  if(err)err.textContent='';
+}
+function setLoginMethod(method){
+  loginMethod=method;
+  document.getElementById('login-password-method')?.classList.toggle('active',method==='password');
+  document.getElementById('login-pin-method')?.classList.toggle('active',method==='pin');
+  syncLoginScreen();
+}
+function lockScreen(){
+  loginProfileIndex=state.activeProfile;
+  const screen=document.getElementById('login-screen');
+  if(screen){screen.classList.add('visible');syncLoginScreen();}
+}
+function unlockScreen(){
+  document.getElementById('login-screen')?.classList.remove('visible');
+  document.getElementById('login-input')?.blur();
+  state.activeProfile=loginProfileIndex;
+  saveState();updateDockAvatar();showNotif('👋','Welcome back','Signed in as '+state.profiles[state.activeProfile].name+'.');
+}
+function submitLogin(){
+  const p=state.profiles[loginProfileIndex]||state.profiles[0];
+  const value=(document.getElementById('login-input')?.value||'').trim();
+  const expected=loginMethod==='pin'?p.pin:p.password;
+  const error=document.getElementById('login-error');
+  if(!expected || value===expected){unlockScreen();return;}
+  if(error)error.textContent='That '+(loginMethod==='pin'?'PIN':'password')+' is incorrect.';
+  const input=document.getElementById('login-input');
+  if(input){input.value='';input.focus();}
+}
+function cycleLoginProfile(){
+  if(state.profiles.length<2){showNotif('👤','Only one profile','Create another profile in Settings.');return;}
+  loginProfileIndex=(loginProfileIndex+1)%state.profiles.length;
+  syncLoginScreen();
+}
+function openRecoveryHint(){
+  showNotif('🔐','Sign-in options','Use Settings › Sign-in options to update your local password or PIN.');
+}
+function restartShell(){
+  Object.keys(openWindows).forEach(id=>closeWindow(id));
+  setTimeout(()=>openWindow('finder'),100);
+  showNotif('↻','Shell restarted','Your windows were closed and the desktop was refreshed.');
 }
 function uploadProfileAvatar(pid){
   const inp=document.getElementById('profile-img-upload');
@@ -2061,11 +2386,12 @@ function deleteProfile(i){
 let modalAction=null;
 function showCreateProfileModal(){
   document.getElementById('modal-title').textContent='New Profile';
-  document.getElementById('modal-desc').textContent='Fill in details for your new profile. Email and password are optional.';
+  document.getElementById('modal-desc').textContent='Fill in details for your new profile. Password and PIN are optional.';
   document.getElementById('modal-input').value='';
   const ef=document.getElementById('modal-email');
   const pf=document.getElementById('modal-pass');
-  if(ef)ef.value='';if(pf)pf.value='';
+  const pin=document.getElementById('modal-pin');
+  if(ef)ef.value='';if(pf)pf.value='';if(pin)pin.value='';
   document.getElementById('modal-confirm').textContent='Create';
   modalAction='create';
   document.getElementById('modal').classList.add('visible');
@@ -2073,11 +2399,12 @@ function showCreateProfileModal(){
 function showRenameModal(){
   const p=state.profiles[state.activeProfile];
   document.getElementById('modal-title').textContent='Edit Profile';
-  document.getElementById('modal-desc').textContent='Update your profile details. Email and password are optional.';
+  document.getElementById('modal-desc').textContent='Update your profile details. Password and PIN are optional.';
   document.getElementById('modal-input').value=p.name;
   const ef=document.getElementById('modal-email');
   const pf=document.getElementById('modal-pass');
-  if(ef)ef.value=p.email||'';if(pf)pf.value=p.password||'';
+  const pin=document.getElementById('modal-pin');
+  if(ef)ef.value=p.email||'';if(pf)pf.value=p.password||'';if(pin)pin.value=p.pin||'';
   document.getElementById('modal-confirm').textContent='Save';
   modalAction='rename';
   document.getElementById('modal').classList.add('visible');
@@ -2087,14 +2414,15 @@ function confirmModal(){
   const name=document.getElementById('modal-input').value.trim()||'Player';
   const email=(document.getElementById('modal-email')?.value||'').trim();
   const password=document.getElementById('modal-pass')?.value||'';
+  const pin=(document.getElementById('modal-pin')?.value||'').replace(/\D/g,'').slice(0,6);
   const EMOJIS=['👾','🚀','🎮','🦊','🐉','⚡','🌟','🔥'];
   if(modalAction==='create'){
     const colors=['#007AFF','#5E5CE6','#FF2D55','#FF9500','#34C759'];
-    state.profiles.push({id:Date.now(),name,color:colors[state.profiles.length%colors.length],emoji:EMOJIS[state.profiles.length%EMOJIS.length],email,password,frame:'none'});
+    state.profiles.push({id:Date.now(),name,color:colors[state.profiles.length%colors.length],emoji:EMOJIS[state.profiles.length%EMOJIS.length],email,password,pin:'',frame:'none'});
     state.activeProfile=state.profiles.length-1;
   } else if(modalAction==='rename'){
     const p=state.profiles[state.activeProfile];
-    p.name=name;p.email=email;p.password=password;
+    p.name=name;p.email=email;p.password=password;p.pin=pin;
   }
   saveState();closeModal();updateDockAvatar();
   switchSettingsTab('profile');
@@ -2119,7 +2447,7 @@ function buildAbout(){
   return`<div class="about-body">
   <div class="about-logo">🚀</div>
   <div class="about-title">AstralSync OS</div>
-  <div class="about-ver">Version 2.0 &mdash; macOS Edition</div>
+  <div class="about-ver">Version 2.1 &mdash; Windows Edition</div>
   <div class="about-sep"></div>
   <div class="about-info">
     <strong>${GAMES.length} games</strong> across ${CATEGORIES.length} categories.<br>
@@ -2387,7 +2715,9 @@ function oobeSkip(){
     if(!bs)return;
     bs.style.animation='none';
     if(sessionStorage.getItem('astralBooted')){
-      bs.style.display='none';return;
+      bs.style.display='none';
+      if(state.oobe_done)setTimeout(()=>{try{lockScreen();}catch(e){}},120);
+      return;
     }
     let p=0;
     const bar=document.getElementById('boot-bar');
@@ -2404,6 +2734,8 @@ function oobeSkip(){
               // Show OOBE if first run
               if(!state.oobe_done){
                 try{ showOOBE(); }catch(e){}
+              }else{
+                try{ lockScreen(); }catch(e){}
               }
             },700);
             sessionStorage.setItem('astralBooted','1');
