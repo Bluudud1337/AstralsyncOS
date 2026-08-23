@@ -99,6 +99,7 @@
   --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter',sans-serif;
   --accent:#007AFF;
   --accent2:#5E5CE6;
+  --particle-color:#b9d8ff;
   --bg-glass:rgba(255,255,255,0.72);
   --bg-glass-dark:rgba(30,30,30,0.75);
   --text:#1c1c1e;
@@ -129,6 +130,7 @@
 /* OS STYLE PRESETS */
 body.os-korona{
   --accent:#9b5cff;--accent2:#d16cff;
+  --particle-color:#d8b4ff;
   --bg-glass:rgba(28,8,54,.72);--menubar-bg:rgba(19,4,38,.78);
   --window-bg:#190d2d;--sidebar-bg:rgba(31,12,52,.9);
 }
@@ -141,6 +143,7 @@ body.os-korona .win-titlebar{background:linear-gradient(90deg,rgba(118,43,204,.2
 
 body.os-frogies{
   --accent:#39d98a;--accent2:#a5f3c7;
+  --particle-color:#a5f3c7;
   --bg-glass:rgba(16,24,20,.78);--menubar-bg:rgba(9,14,11,.8);
   --window-bg:#111813;--sidebar-bg:rgba(17,27,20,.92);
 }
@@ -154,12 +157,13 @@ body.os-frogies .dock-img{background:linear-gradient(145deg,rgba(57,217,138,.45)
 
 body.os-matrix{
   --accent:#20ff75;--accent2:#00b84f;
+  --particle-color:#20ff75;
   --text:#d8ffe5;--text-secondary:#76b98c;--separator:rgba(32,255,117,.18);
   --window-bg:#06130a;--sidebar-bg:rgba(3,19,8,.94);--menubar-bg:rgba(0,12,4,.86);
 }
 body.os-matrix #desktop{
-  background-color:#000602;
-  background-image:linear-gradient(rgba(0,6,2,.45),rgba(0,6,2,.72)),repeating-linear-gradient(90deg,transparent 0 80px,rgba(32,255,117,.06) 81px 82px);
+  background:#000!important;
+  background-image:none!important;
 }
 body.os-matrix,body.os-matrix input,body.os-matrix button,body.os-matrix select{font-family:'Space Mono',monospace;}
 body.os-matrix .window{border-radius:2px;box-shadow:0 20px 50px rgba(0,0,0,.8),0 0 0 1px rgba(32,255,117,.35);}
@@ -167,6 +171,7 @@ body.os-matrix .traffic{border-radius:2px;}
 
 body.os-win95{
   --accent:#000080;--accent2:#1084d7;--text:#111;--text-secondary:#333;
+  --particle-color:#72d6d6;
   --separator:#808080;--window-bg:#c0c0c0;--sidebar-bg:#d4d0c8;--menubar-bg:#c0c0c0;--hover:#d4d0c8;
 }
 body.os-win95 #desktop{background:#008080;}
@@ -180,13 +185,22 @@ body.os-win95 .win11-btn{height:22px;width:22px;background:#c0c0c0;color:#111;bo
 body.os-win95 #dock{border-radius:0;}
 
 body.os-win11{
-  --accent:#3b82f6;--accent2:#60a5fa;--window-bg:#f4f7fb;--sidebar-bg:rgba(238,243,250,.92);
+  --accent:#3b82f6;--accent2:#60a5fa;--particle-color:#8ec5ff;--window-bg:#f4f7fb;--sidebar-bg:rgba(238,243,250,.92);
 }
-body.os-win11 .window{border-radius:8px;box-shadow:0 24px 70px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.45);}
-body.os-win11 .win-titlebar{height:38px;}
+body.os-win11 #menubar{height:36px;background:rgba(246,248,251,.9);border-bottom-color:rgba(0,0,0,.12);box-shadow:0 1px 14px rgba(0,0,0,.1);}
+body.os-win11 .window{border-radius:10px;box-shadow:0 24px 70px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.58);}
+body.os-win11 .win-titlebar{height:38px;background:rgba(255,255,255,.24);}
 body.os-win11 .traffic{display:none;}
-body.os-win11 .win-titlebar-actions{display:flex;}
-body.os-win11 #dock{border-radius:12px;bottom:12px;}
+body.os-win11 .win-titlebar-actions{display:flex;gap:0;width:auto;}
+body.os-win11 .win11-btn{width:44px;height:30px;border:0;border-radius:0;background:transparent;color:#1b2b41;}
+body.os-win11 .win11-btn:hover{background:rgba(0,0,0,.08);}
+body.os-win11 .win11-btn.win11-close:hover{background:#c42b1c;color:#fff;}
+body.os-win11 #dock{border-radius:12px;bottom:12px;background:rgba(245,247,250,.78);border-color:rgba(255,255,255,.82);box-shadow:0 14px 36px rgba(0,0,0,.24);}
+body.dark-mode.os-win11 #menubar{background:rgba(26,31,39,.92);border-bottom-color:rgba(255,255,255,.12);}
+body.dark-mode.os-win11 .win-titlebar{background:rgba(255,255,255,.03);}
+body.dark-mode.os-win11 .win11-btn{color:#eef4fb;}
+body.dark-mode.os-win11 .win11-btn:hover{background:rgba(255,255,255,.1);}
+body.dark-mode.os-win11 #dock{background:rgba(28,34,43,.82);border-color:rgba(255,255,255,.14);}
 
 body.os-rainy #desktop{
   background-color:#111827;
@@ -194,17 +208,30 @@ body.os-rainy #desktop{
   background-size:auto,100% 100%;
   animation:rainShift .8s linear infinite;
 }
+body.os-rainy{--particle-color:#9bd2ff;}
 @keyframes rainShift{to{background-position:0 0,18px 30px;}}
 body.os-rainy .window{background:rgba(14,24,41,.76);border-color:rgba(147,197,253,.2);}
 
 body.os-sakura{
-  --accent:#f472b6;--accent2:#fb7185;--window-bg:#2b1521;--sidebar-bg:rgba(53,24,38,.9);
+  --accent:#f472b6;--accent2:#fb7185;--particle-color:#ffd1e5;--window-bg:#2b1521;--sidebar-bg:rgba(53,24,38,.9);
 }
 body.os-sakura #desktop{
   background-color:#1b0d18;
   background-image:radial-gradient(circle at 22% 18%,rgba(244,114,182,.22),transparent 22%),radial-gradient(circle at 80% 65%,rgba(251,113,133,.18),transparent 28%),linear-gradient(135deg,#170b15,#3c142d);
 }
 body.os-sakura .window{border-color:rgba(244,114,182,.25);box-shadow:0 24px 70px rgba(113,25,74,.42),0 0 0 1px rgba(255,196,220,.15);}
+
+body.os-midnight{
+  --accent:#7c9cff;--accent2:#b7c7ff;--particle-color:#b7c7ff;
+  --text:#edf2ff;--text-secondary:#9da9c7;--separator:rgba(183,199,255,.16);
+  --bg-glass:rgba(10,17,39,.76);--window-bg:#0d1530;--sidebar-bg:rgba(12,20,45,.92);--menubar-bg:rgba(7,12,28,.82);
+}
+body.os-midnight #desktop{
+  background-color:#050817;
+  background-image:radial-gradient(circle at 18% 20%,rgba(124,156,255,.24),transparent 28%),radial-gradient(circle at 80% 72%,rgba(93,55,190,.2),transparent 32%),linear-gradient(135deg,#030511,#101b43 52%,#060918);
+}
+body.os-midnight .window{border-radius:16px;border-color:rgba(183,199,255,.18);box-shadow:0 24px 80px rgba(0,0,0,.62),0 0 32px rgba(91,112,255,.12);}
+body.os-midnight .win-titlebar{background:linear-gradient(90deg,rgba(124,156,255,.16),transparent 65%);}
 
 /* Keep every shell surface aligned with the selected OS palette. */
 body.os-korona .window,body.os-korona .win-toolbar,body.os-korona .finder-sidebar,body.os-korona .settings-sidebar,
@@ -253,6 +280,10 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
   content:"";position:absolute;inset:28px 0 0;z-index:0;pointer-events:none;opacity:.12;
   background-image:linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);
   background-size:72px 72px;mask-image:linear-gradient(to bottom,transparent,black 35%,transparent 100%);
+}
+#particle-canvas{
+  position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:.72;
+  mix-blend-mode:screen;
 }
 
 /* MENU BAR */
@@ -996,6 +1027,16 @@ body.dark-mode.os-win11 .win-content::-webkit-scrollbar-thumb{background:rgba(25
   border-radius:6px;text-align:left;cursor:pointer;font:inherit;font-size:12px;}
 .start-app:hover{background:var(--hover);}
 .start-app-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:19px;background:var(--accent);color:#fff;flex-shrink:0;}
+.start-app-row{display:flex;align-items:center;border-radius:6px;position:relative;}
+.start-app-row:hover{background:var(--hover);}
+.start-app-row .start-app{flex:1;min-width:0;}
+.start-app-row .start-app:hover{background:transparent;}
+.app-more{width:28px;height:28px;border:0;border-radius:5px;background:transparent;color:var(--text-secondary);font-size:18px;line-height:1;cursor:pointer;margin-right:5px;}
+.app-more:hover{background:var(--hover);color:var(--text);}
+.app-menu{position:absolute;right:6px;top:42px;z-index:9500;min-width:150px;padding:4px;background:var(--bg-glass);border:1px solid var(--separator);border-radius:7px;box-shadow:0 10px 28px rgba(0,0,0,.28);}
+.app-menu button{display:block;width:100%;border:0;border-radius:4px;background:transparent;color:var(--text);padding:8px 10px;text-align:left;font:inherit;font-size:12px;cursor:pointer;white-space:nowrap;}
+.app-menu button:hover{background:var(--accent);color:#fff;}
+.app-menu button.danger:hover{background:#d93025;}
 .start-list{max-height:220px;overflow:auto;border-top:1px solid var(--separator);margin-top:10px;padding-top:8px;}
 .start-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--separator);margin-top:14px;padding-top:12px;}
 .start-user{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;}
@@ -1062,7 +1103,7 @@ body.dark-mode.os-win11 .win-content::-webkit-scrollbar-thumb{background:rgba(25
 <!-- MENU BAR -->
 <div id="menubar">
   <div class="menu-apple" onclick="toggleAppleMenu()">⊞</div>
-  <div class="menu-item bold" id="active-app-name">File Explorer</div>
+  <div class="menu-item bold" id="active-app-name">Game Library</div>
   <div class="menu-item" onclick="openWindow('finder')">File</div>
   <div class="menu-item" onclick="openWindow('finder')">Edit</div>
   <div class="menu-item">View</div>
@@ -1071,7 +1112,7 @@ body.dark-mode.os-win11 .win-content::-webkit-scrollbar-thumb{background:rgba(25
     <div class="menu-item" onclick="toggleSpotlight()">&#9906;</div>
     <div class="menu-item status-glyph" title="Wi-Fi">⌁</div>
     <div class="menu-item status-glyph" title="Sound">◖</div>
-    <div class="menu-item menu-status" onclick="toggleControlCenter()" title="Control Center">◉</div>
+    <div class="menu-item menu-status" onclick="toggleControlCenter()" title="Quick Settings">◉</div>
     <div id="clock" class="menu-item"></div>
   </div>
 </div>
@@ -1082,8 +1123,8 @@ body.dark-mode.os-win11 .win-content::-webkit-scrollbar-thumb{background:rgba(25
   <div class="apple-menu-sep"></div>
   <div class="apple-menu-item" onclick="openWindow('settings');hideAppleMenu()">System Settings&hellip;</div>
   <div class="apple-menu-sep"></div>
-  <div class="apple-menu-item" onclick="openWindow('finder');hideAppleMenu()">Finder</div>
-  <div class="apple-menu-item" onclick="openWindow('store');hideAppleMenu()">App Store</div>
+  <div class="apple-menu-item" onclick="openWindow('finder');hideAppleMenu()">Game Library</div>
+  <div class="apple-menu-item" onclick="openWindow('store');hideAppleMenu()">Game Store</div>
   <div class="apple-menu-sep"></div>
   <div class="apple-menu-item" onclick="toggleDarkMode();hideAppleMenu()">Toggle Dark Mode</div>
   <div class="apple-menu-sep"></div>
@@ -1109,11 +1150,12 @@ body.dark-mode.os-win11 .win-content::-webkit-scrollbar-thumb{background:rgba(25
 <!-- DESKTOP -->
 <div id="desktop" oncontextmenu="showCtxMenu(event,'desktop')" onclick="hideAll()">
   <video id="wp-video" autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;pointer-events:none;"></video>
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
   <input type="file" id="wp-upload" accept="image/*,video/*,.gif" style="display:none;" onchange="handleWallpaperUpload(event)">
   <input type="file" id="cursor-upload" accept=".png,.gif,.jpg,.jpeg,image/png,image/gif,image/jpeg" style="display:none;" onchange="handleCursorUpload(event)">
   <div id="desktop-widgets">
     <div class="desktop-widget">
-      <div class="widget-eyebrow">AstraOS</div>
+      <div class="widget-eyebrow">AstralSync OS</div>
       <div class="widget-date" id="widget-date">Tuesday, Aug 11</div>
       <div class="widget-meta" id="widget-time">11:53 PM · All systems online</div>
     </div>
@@ -1145,12 +1187,12 @@ body.dark-mode.os-win11 .win-content::-webkit-scrollbar-thumb{background:rgba(25
   <div class="dock-sep"></div>
   <div class="dock-item" onclick="openWindow('finder')" id="dock-finder">
     <div class="dock-img">📁</div>
-    <div class="dock-label">File Explorer</div>
+    <div class="dock-label">Game Library</div>
     <div class="dock-dot" id="dot-finder"></div>
   </div>
   <div class="dock-item" onclick="openWindow('store')" id="dock-store">
     <div class="dock-img">🛍️</div>
-    <div class="dock-label">App Store</div>
+    <div class="dock-label">Game Store</div>
     <div class="dock-dot" id="dot-store" style="display:none"></div>
   </div>
   <div class="dock-item" onclick="openWindow('settings')" id="dock-settings">
@@ -1176,7 +1218,7 @@ body.dark-mode.os-win11 .win-content::-webkit-scrollbar-thumb{background:rgba(25
 
 <!-- CONTROL CENTER -->
 <div id="control-center" onclick="event.stopPropagation()">
-  <div class="cc-heading"><strong>Control Center</strong><span id="cc-profile-label">AstraOS</span></div>
+  <div class="cc-heading"><strong>Quick Settings</strong><span id="cc-profile-label">AstralSync OS</span></div>
   <div class="cc-grid">
     <button class="cc-tile active" id="cc-wifi" onclick="toggleControlTile('wifi')">
       <span class="cc-tile-icon">⌁</span><span class="cc-tile-label">Wi-Fi · Connected</span>
@@ -1212,7 +1254,7 @@ body.dark-mode.os-win11 .win-content::-webkit-scrollbar-thumb{background:rgba(25
 <!-- CONTEXT MENU -->
 <div id="ctx-menu">
   <div class="ctx-item" onclick="openWindow('finder');hideCtx()">🎮 Games <span class="ctx-kbd">⌘F</span></div>
-  <div class="ctx-item" onclick="openWindow('store');hideCtx()">🛍️ App Store</div>
+  <div class="ctx-item" onclick="openWindow('store');hideCtx()">🛍️ Game Store</div>
   <div class="ctx-sep"></div>
   <div class="ctx-item" onclick="openWindow('settings');hideCtx()">⚙️ Settings <span class="ctx-kbd">⌘,</span></div>
   <div class="ctx-item" onclick="openWindow('terminal');hideCtx()">▣ Terminal</div>
@@ -1423,7 +1465,7 @@ const ACCENT_COLORS = [
 ];
 
 const OS_STYLES = [
-  {id:"astral",name:"AstraOS",icon:"✦",description:"The balanced AstralSync desktop.",wallpaper:0,accent:"#007AFF",font:"system",className:""},
+  {id:"astral",name:"AstralSync Classic",icon:"✦",description:"The original AstralSync desktop.",wallpaper:0,accent:"#007AFF",font:"system",className:""},
   {id:"korona",name:"Korona",icon:"✧",description:"Deep purple cosmic glass.",wallpaper:24,accent:"#9b5cff",font:"orbitron",className:"os-korona"},
   {id:"frogies",name:"Frogies Arcade",icon:"🐸",description:"Dark arcade energy with neon green.",wallpaper:10,accent:"#39d98a",font:"nunito",className:"os-frogies"},
   {id:"matrix",name:"Matrix",icon:"▦",description:"Terminal green with hacker mode.",wallpaper:20,accent:"#20ff75",font:"spacemono",className:"os-matrix"},
@@ -1431,6 +1473,7 @@ const OS_STYLES = [
   {id:"win11",name:"Windows 11",icon:"▦",description:"Clean blue modern desktop.",wallpaper:4,accent:"#3b82f6",font:"inter",className:"os-win11"},
   {id:"rainy",name:"Rainy",icon:"☂",description:"Cool storm glass with moving rain.",wallpaper:11,accent:"#60a5fa",font:"system",className:"os-rainy"},
   {id:"sakura",name:"Sakura",icon:"✿",description:"Soft pink petals over a night garden.",wallpaper:12,accent:"#f472b6",font:"nunito",className:"os-sakura"},
+  {id:"midnight",name:"Midnight",icon:"☾",description:"Deep blue night glass with drifting starlight.",wallpaper:24,accent:"#7c9cff",font:"system",className:"os-midnight"},
 ];
 
 // ============================================================
@@ -1454,6 +1497,8 @@ state.osStyle = state.osStyle || 'win11';
 state.cursor = state.cursor || 'arrow';
 state.oobe_done = state.oobe_done || false;
 state.installedApps = state.installedApps || [];
+state.desktopApps = state.desktopApps || [];
+state.customTheme = state.customTheme || null;
 state.iconPositions = state.iconPositions || {};
 // Custom wallpaper stored separately to avoid localStorage quota issues
 state.customWP = null;
@@ -1523,8 +1568,13 @@ function applyState(){
   applyFont(state.font);
   document.documentElement.style.setProperty('--accent', state.accent);
   document.documentElement.style.setProperty('--accent2', osStyle.accent);
+  document.documentElement.style.setProperty('--particle-color', state.customTheme?.particleColor||getParticleColor(osStyle.id));
   applyCursor();
   applyWallpaper();
+}
+
+function getParticleColor(theme){
+  return ({korona:'#d8b4ff',frogies:'#a5f3c7',matrix:'#20ff75',win95:'#72d6d6',win11:'#8ec5ff',rainy:'#9bd2ff',sakura:'#ffd1e5',midnight:'#b7c7ff'}[theme]||'#b9d8ff');
 }
 
 function applyOSStyle(id){
@@ -1534,9 +1584,28 @@ function applyOSStyle(id){
   state.accent=style.accent;
   state.font=style.font;
   state.customWP=null;
+  state.customTheme=null;
   saveState();saveCustomWP();applyState();
   switchSettingsTab('appearance');
   showNotif(style.icon,'OS Style',style.name+' applied');
+}
+
+function saveCustomTheme(){
+  const type=document.getElementById('custom-particle-type')?.value||'stars';
+  const color=document.getElementById('custom-particle-color')?.value||'#b9d8ff';
+  const backgroundColor=document.getElementById('custom-background-color')?.value||'#050817';
+  const speed=parseFloat(document.getElementById('custom-particle-speed')?.value||'1');
+  state.customTheme={particleType:type,particleColor:color,backgroundColor,particleSpeed:speed};
+  state.osStyle='custom';
+  state.accent=state.accent||'#007AFF';
+  saveState();applyState();switchSettingsTab('appearance');
+  showNotif('✨','Custom theme saved','Your background, cursor, and particle style are now active.');
+}
+
+function clearCustomTheme(){
+  state.customTheme=null;state.osStyle='astral';state.accent='#007AFF';state.font='system';
+  saveState();applyState();switchSettingsTab('appearance');
+  showNotif('🎨','Theme reset','AstralSync Classic is active again.');
 }
 
 function applyCursor(){
@@ -1606,8 +1675,67 @@ function applyWallpaper(){
 
   const idx=(typeof state.wallpaper==='number'&&state.wallpaper>=0&&state.wallpaper<WALLPAPERS.length)?state.wallpaper:0;
   const w=WALLPAPERS[idx]||WALLPAPERS[0];
-  desktop.style.background=w.css;
+  desktop.style.background=state.customTheme?.backgroundColor||w.css;
+  if(state.osStyle==='matrix')desktop.style.background='#000';
 }
+
+// A light, GPU-friendly layer of drifting particles gives every theme a little
+// atmosphere without changing the desktop's interaction layer.
+function initParticles(){
+  const canvas=document.getElementById('particle-canvas');
+  const desktop=document.getElementById('desktop');
+  if(!canvas||!desktop)return;
+  const ctx=canvas.getContext('2d');
+  let particles=[];
+  function resize(){
+    const d=devicePixelRatio||1;
+    canvas.width=desktop.clientWidth*d;canvas.height=desktop.clientHeight*d;
+    canvas.style.width=desktop.clientWidth+'px';canvas.style.height=desktop.clientHeight+'px';
+    ctx.setTransform(d,0,0,d,0,0);
+    if(!particles.length){
+      particles=Array.from({length:90},()=>({
+        x:Math.random()*desktop.clientWidth,y:Math.random()*desktop.clientHeight,
+        r:Math.random()*1.8+.35,alpha:Math.random()*.55+.18,
+        vx:(Math.random()-.5)*.12,vy:Math.random()*.22+.04,
+        phase:Math.random()*Math.PI*2
+      }));
+    }
+  }
+  function frame(){
+    const w=desktop.clientWidth,h=desktop.clientHeight;
+    ctx.clearRect(0,0,w,h);
+    const color=getComputedStyle(document.body).getPropertyValue('--particle-color').trim()||'#b9d8ff';
+    const theme=state.customTheme?.particleType||({sakura:'petals',rainy:'rain',matrix:'matrix',frogies:'fireflies',midnight:'stars',korona:'orbs'}[state.osStyle]||'stars');
+    particles.forEach(p=>{
+      const speed=state.customTheme?.particleSpeed||1;
+      p.x+=(p.vx+Math.sin(p.phase+performance.now()/2400)*.03)*speed;
+      p.y+=p.vy*speed;
+      if(p.y>h+8){p.y=-8;p.x=Math.random()*w;}
+      if(p.x>w+8)p.x=-8;if(p.x<-8)p.x=w+8;
+      ctx.globalAlpha=p.alpha;
+      if(theme==='petals'){
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(Math.sin(p.phase+p.y/80)*.7);
+        ctx.fillStyle=color;ctx.beginPath();ctx.ellipse(0,0,p.r*2.5,p.r*1.35,.2,0,Math.PI*2);ctx.fill();ctx.restore();
+      }else if(theme==='rain'){
+        ctx.strokeStyle=color;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-2,p.y+10+p.r*4);ctx.stroke();
+      }else if(theme==='matrix'){
+        ctx.fillStyle=color;ctx.font='10px monospace';ctx.fillText(Math.random()>.5?'1':'0',p.x,p.y);
+      }else if(theme==='fireflies'){
+        const glow=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*6);
+        glow.addColorStop(0,color);glow.addColorStop(1,'transparent');ctx.fillStyle=glow;ctx.beginPath();ctx.arc(p.x,p.y,p.r*6,0,Math.PI*2);ctx.fill();
+      }else if(theme==='snow'){
+        ctx.fillStyle=color;ctx.beginPath();ctx.arc(p.x,p.y,p.r*1.8,0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle=color;ctx.globalAlpha=p.alpha*.55;ctx.lineWidth=.7;
+        for(let i=0;i<3;i++){const a=i*Math.PI/3;ctx.beginPath();ctx.moveTo(p.x-Math.cos(a)*p.r*2.5,p.y-Math.sin(a)*p.r*2.5);ctx.lineTo(p.x+Math.cos(a)*p.r*2.5,p.y+Math.sin(a)*p.r*2.5);ctx.stroke();}
+      }else{
+        ctx.fillStyle=color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+      }
+    });
+    ctx.globalAlpha=1;requestAnimationFrame(frame);
+  }
+  resize();window.addEventListener('resize',resize);requestAnimationFrame(frame);
+}
+initParticles();
 
 // ============================================================
 // CLOCK
@@ -1634,10 +1762,10 @@ let winZ=1000;
 const openWindows={};
 
 const WIN_CONFIGS={
-  finder:{title:'File Explorer',w:820,h:520,icon:'📁'},
+  finder:{title:'Game Library',w:820,h:520,icon:'🎮'},
   files:{title:'Files',w:760,h:500,icon:'📂'},
   terminal:{title:'Terminal',w:760,h:460,icon:'▣'},
-  store:{title:'App Store',w:750,h:560,icon:'🛍️'},
+  store:{title:'Game Store',w:750,h:560,icon:'🛍️'},
   settings:{title:'System Settings',w:700,h:520,icon:'⚙️'},
   profiles:{title:'Profiles',w:500,h:560,icon:'👤'},
   about:{title:'About AstralSync OS',w:380,h:340,icon:'ℹ️'},
@@ -1798,7 +1926,7 @@ function buildFinder(){
     <div class="sidebar-section">Library</div>
     ${sidebar}
     <div class="sidebar-section">Links</div>
-    <div class="sidebar-item" onclick="openWindow('store')"><span class="si-icon">🛍️</span>App Store</div>
+    <div class="sidebar-item" onclick="openWindow('store')"><span class="si-icon">🛍️</span>Game Store</div>
     <div class="sidebar-item" onclick="openWindow('settings')"><span class="si-icon">⚙️</span>Settings</div>
     <div class="sidebar-item" onclick="window.open('https://discord.gg/9CucEhZfYj','_blank')"><span class="si-icon">💬</span>Discord</div>
     <div class="sidebar-item" onclick="window.open('https://forms.gle/zzE787SgJvLh1WYz6','_blank')"><span class="si-icon">✉️</span>Suggest Game</div>
@@ -1904,6 +2032,7 @@ const APPS = [
   {id:'proxy',   title:'Proxy Links',  icon:'🔗', url:'ProxyLinks.html',   sub:'Network',          desc:'Access unblocked proxy links and bypass restrictions.',          color:'#16a085'},
   {id:'ai',      title:'AstralAI',     icon:'🤖', url:'ai.html',           sub:'Artificial Intelligence', desc:'AI-powered assistant built into your OS.',               color:'#2c3e50'},
   {id:'Blank',   title:'BlankLauncher',  icon:'🌐', url:'BlankLauncher.html',     sub:'Private Tab.', desc:'About Blank laucher for private tab urls.',    color:'#2c3e50'},
+  
 ];
 
 function isAppInstalled(id){return state.installedApps.includes(id);}
@@ -1918,10 +2047,64 @@ function installApp(id){
 }
 function uninstallApp(id){
   state.installedApps=state.installedApps.filter(appId=>appId!==id);
+  state.desktopApps=state.desktopApps.filter(appId=>appId!==id);
   closeWindow('app_'+id);saveState();renderStartMenu();
+  renderDesktopApps();
   const store=openWindows.store;
   if(store)store.querySelector('.win-body').innerHTML=buildStore();
   showNotif('🗑️','App removed','The app was removed from this OS.');
+}
+
+function addAppToDesktop(id){
+  const app=APPS.find(item=>item.id===id);
+  if(!app||!isAppInstalled(id))return;
+  if(!state.desktopApps.includes(id)){
+    state.desktopApps.push(id);
+    saveState();
+    renderDesktopApps();
+    showNotif('🖥️','Added to desktop',app.title+' is now on your desktop.');
+  }
+  closeAppMenus();
+  renderStartMenu(document.getElementById('start-search')?.value||'');
+}
+
+function removeAppFromDesktop(id){
+  state.desktopApps=state.desktopApps.filter(appId=>appId!==id);
+  saveState();
+  renderDesktopApps();
+  closeAppMenus();
+  renderStartMenu(document.getElementById('start-search')?.value||'');
+}
+
+function toggleAppMenu(id,event){
+  if(event)event.stopPropagation();
+  const menu=document.getElementById('app-menu-'+id);
+  if(!menu)return;
+  document.querySelectorAll('.app-menu').forEach(item=>{
+    if(item!==menu)item.style.display='none';
+  });
+  menu.style.display=menu.style.display==='block'?'none':'block';
+}
+
+function closeAppMenus(){
+  document.querySelectorAll('.app-menu').forEach(menu=>menu.style.display='none');
+}
+
+function renderDesktopApps(){
+  const desktop=document.getElementById('desktop-icons');
+  if(!desktop)return;
+  desktop.innerHTML=state.desktopApps.map((id,index)=>{
+    const app=APPS.find(item=>item.id===id);
+    if(!app||!isAppInstalled(id))return '';
+    const pos=state.iconPositions['app_'+id]||{x:18,y:70+index*92};
+    return `<div class="desk-icon" style="left:${pos.x}px;top:${pos.y}px" title="${app.title}" onclick="event.stopPropagation();launchApp('${app.id}','${app.title}','${app.icon}','${app.url}')" oncontextmenu="event.stopPropagation();toggleAppMenu('desktop-menu-${app.id}',event)">
+      <div class="icon-emoji" style="background:${app.color};">${app.icon}</div><span>${app.title}</span>
+      <div class="app-menu" id="desktop-menu-${app.id}" style="display:none;top:70px;left:76px;" onclick="event.stopPropagation()">
+        <button onclick="removeAppFromDesktop('${app.id}')">Remove from desktop</button>
+        <button class="danger" onclick="uninstallApp('${app.id}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function buildStore(){
@@ -1942,7 +2125,7 @@ function buildStore(){
   return`<div class="win-content">
   <div class="store-hero">
     <div style="font-size:32px;margin-bottom:8px;">🛍️</div>
-    <h2>AstralSync App Store</h2>
+    <h2>AstralSync Game Store</h2>
     <p>${APPS.length} apps • Free • Always available</p>
   </div>
   <div class="store-category">📦 All Apps</div>
@@ -1953,7 +2136,7 @@ function buildStore(){
 
 function launchApp(id, title, icon, url){
   if(!isAppInstalled(id)){
-    showNotif('⬇️','App not installed','Open the App Store to download '+title+' first.');
+    showNotif('⬇️','App not installed','Open the Game Store to download '+title+' first.');
     openWindow('store');
     return;
   }
@@ -1976,18 +2159,25 @@ function toggleStartMenu(){
 function renderStartMenu(filter=''){
   const q=(filter||'').toLowerCase();
   const builtins=[
-    {id:'finder',title:'File Explorer',icon:'📁',action:"openWindow('finder');toggleStartMenu()"},
+    {id:'finder',title:'Game Library',icon:'🎮',action:"openWindow('finder');toggleStartMenu()"},
     {id:'files',title:'Files',icon:'📂',action:"openWindow('files');toggleStartMenu()"},
     {id:'terminal',title:'Terminal',icon:'▣',action:"openWindow('terminal');toggleStartMenu()"},
     {id:'settings',title:'Settings',icon:'⚙️',action:"openWindow('settings');toggleStartMenu()"},
-    {id:'store',title:'App Store',icon:'🛍️',action:"openWindow('store');toggleStartMenu()"}
+    {id:'store',title:'Game Store',icon:'🛍️',action:"openWindow('store');toggleStartMenu()"}
   ];
   const installed=APPS.filter(app=>isAppInstalled(app.id)).map(app=>({
     id:app.id,title:app.title,icon:app.icon,action:`launchApp('${app.id}','${app.title}','${app.icon}','${app.url}');toggleStartMenu()`
   }));
   const items=[...builtins,...installed].filter(item=>!q||item.title.toLowerCase().includes(q));
   const pinned=(q?items:builtins.slice(0,4)).map(item=>`<button class="start-app" onclick="${item.action}"><span class="start-app-icon">${item.icon}</span>${item.title}</button>`).join('');
-  const list=(q?[]:installed).map(item=>`<button class="start-app" onclick="${item.action}"><span class="start-app-icon">${item.icon}</span>${item.title}<span class="app-status">Installed</span></button>`).join('');
+  const list=(q?[]:installed).map(item=>`<div class="start-app-row">
+    <button class="start-app" onclick="${item.action}"><span class="start-app-icon">${item.icon}</span>${item.title}<span class="app-status">Installed</span></button>
+    <button class="app-more" aria-label="More options for ${item.title}" onclick="toggleAppMenu('${item.id}',event)">⋯</button>
+    <div class="app-menu" id="app-menu-${item.id}" style="display:none;">
+      <button onclick="${state.desktopApps.includes(item.id)?`removeAppFromDesktop('${item.id}')`:`addAppToDesktop('${item.id}')`}">${state.desktopApps.includes(item.id)?'Remove from desktop':'Add to desktop'}</button>
+      <button class="danger" onclick="uninstallApp('${item.id}')">Delete</button>
+    </div>
+  </div>`).join('');
   document.getElementById('start-pinned').innerHTML=pinned||'<div class="security-note">No matching apps.</div>';
   document.getElementById('start-list').innerHTML=list||(q?items.slice(0,8).map(item=>`<button class="start-app" onclick="${item.action}"><span class="start-app-icon">${item.icon}</span>${item.title}</button>`).join(''):'<div class="security-note">Downloaded apps will appear here.</div>');
   const p=state.profiles[state.activeProfile], image=getProfileAvatar(p.id);
@@ -1997,25 +2187,83 @@ function buildTerminal(){
   return `<div class="terminal-shell" style="height:100%;display:flex;flex-direction:column;background:#0c1117;color:#d7e3ef;font-family:'Space Mono',monospace;">
     <div id="terminal-output" style="flex:1;overflow:auto;padding:16px;font-size:12px;line-height:1.7;">AstralSync Terminal [Version 2.1]<br>Type <b>help</b> for available commands.<br><br></div>
     <form onsubmit="runTerminalCommand(event)" style="display:flex;gap:8px;padding:10px 14px;border-top:1px solid #263544;">
-      <span style="color:#5dd6ff;">user@astral:~$</span><input id="terminal-input" autocomplete="off" spellcheck="false" style="flex:1;background:none;border:0;outline:0;color:#fff;font:inherit;">
+      <span id="terminal-prompt" style="color:#5dd6ff;">user@astral:~$</span><input id="terminal-input" autocomplete="off" spellcheck="false" onkeydown="terminalKey(event)" style="flex:1;background:none;border:0;outline:0;color:#fff;font:inherit;">
     </form>
   </div>`;
+}
+let terminalCwd='~';
+let terminalHistory=[];
+let terminalHistoryIndex=0;
+function terminalKey(event){
+  if(event.key==='ArrowUp'){
+    event.preventDefault();
+    terminalHistoryIndex=Math.max(0,terminalHistoryIndex-1);
+    event.target.value=terminalHistory[terminalHistoryIndex]||'';
+  }else if(event.key==='ArrowDown'){
+    event.preventDefault();
+    terminalHistoryIndex=Math.min(terminalHistory.length,terminalHistoryIndex+1);
+    event.target.value=terminalHistory[terminalHistoryIndex]||'';
+  }else if(event.key==='Tab'){
+    event.preventDefault();
+    const value=event.target.value.trim().toLowerCase();
+    const names=['help','ls','cd','pwd','cat','echo','open','apps','theme','history','neofetch','clear'];
+    const match=names.find(name=>name.startsWith(value)&&name!==value);
+    if(match)event.target.value=match+' ';
+  }
 }
 function runTerminalCommand(event){
   event.preventDefault();
   const input=document.getElementById('terminal-input'), output=document.getElementById('terminal-output');
   if(!input||!output)return;
   const command=input.value.trim(), safe=command.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  if(!command){input.value='';return;}
+  terminalHistory.push(command);
+  terminalHistoryIndex=terminalHistory.length;
+  const parts=command.match(/(?:[^\s"]+|"[^"]*")+/g)||[], cmd=(parts.shift()||'').toLowerCase();
+  const args=parts.map(a=>a.replace(/^"|"$/g,''));
+  const esc=value=>String(value).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   let result='';
-  if(command==='help')result='help  about  apps  clear  date  files  whoami';
-  else if(command==='about')result='AstralSync OS 2.1 — Windows Edition';
-  else if(command==='apps')result=state.installedApps.length?state.installedApps.join('  '):'No apps installed.';
-  else if(command==='files')result='Documents/  Downloads/  Pictures/  Desktop/';
-  else if(command==='whoami')result=state.profiles[state.activeProfile].name;
-  else if(command==='date')result=new Date().toLocaleString();
-  else if(command==='clear'){output.innerHTML='';input.value='';return;}
-  else if(command)result='Command not found. Type help.';
-  output.innerHTML+=`<span style="color:#8ca2b5;">user@astral:~$ ${safe}</span><br>${result}<br>`;
+  if(cmd==='clear'||cmd==='cls'){output.innerHTML='';input.value='';return;}
+  if(cmd==='help')result=`<span style="color:#7dd3fc;">Available commands</span>
+<br>help       Show this command list
+<br>ls, dir    List files and folders
+<br>cd         Change directory (try: cd Desktop)
+<br>pwd        Print working directory
+<br>cat        Read a file (try: cat README.md)
+<br>echo       Print text
+<br>open       Open an AstralSync app
+<br>apps       List downloaded apps
+<br>theme      Show the active theme
+<br>history    Show command history
+<br>neofetch   Show system information
+<br>clear      Clear the terminal`;
+  else if(cmd==='pwd')result=terminalCwd==='~'?'/home/astral':'/home/astral/'+terminalCwd.replace(/^~\/?/,'');
+  else if(cmd==='ls'||cmd==='dir'){
+    const folders=terminalCwd==='~'?'Desktop/  Documents/  Downloads/  Pictures/  AstralDrive/':'..  README.md';
+    result=folders;
+  }else if(cmd==='cd'){
+    const target=args[0]||'~';
+    if(target==='..'||target==='~'||target==='/home/astral')terminalCwd='~';
+    else if(['Desktop','Documents','Downloads','Pictures','AstralDrive'].includes(target))terminalCwd=target;
+    else result=`cd: ${esc(target)}: No such directory`;
+  }else if(cmd==='cat'){
+    if((args[0]||'').toLowerCase()==='readme.md')result='AstralSync OS — a personal web desktop.<br>Type <b>help</b> to explore the shell.';
+    else result=`cat: ${esc(args[0]||'')}: No such file`;
+  }else if(cmd==='echo')result=esc(args.join(' '));
+  else if(cmd==='whoami')result=esc(state.profiles[state.activeProfile].name.toLowerCase().replace(/\s+/g,'.'));
+  else if(cmd==='date')result=esc(new Date().toString());
+  else if(cmd==='apps')result=state.installedApps.length?state.installedApps.map(id=>esc(APPS.find(a=>a.id===id)?.title||id)).join('  '):'No apps installed.';
+  else if(cmd==='theme')result=esc(OS_STYLES.find(s=>s.id===state.osStyle)?.name||'Custom theme');
+  else if(cmd==='history')result=terminalHistory.map((entry,i)=>`${i+1}  ${esc(entry)}`).join('<br>');
+  else if(cmd==='neofetch')result=`<span style="color:#5dd6ff;">       ✦       </span> astral@astralsync<br>OS: AstralSync OS 2.1<br>Shell: astralsh<br>Theme: ${esc(OS_STYLES.find(s=>s.id===state.osStyle)?.name||'Custom')}<br>Apps: ${state.installedApps.length}`;
+  else if(cmd==='open'){
+    const target=(args[0]||'').toLowerCase(), aliases={settings:'settings',store:'store','game-store':'store',files:'files',terminal:'terminal',library:'finder',finder:'finder',profiles:'profiles',about:'about'};
+    if(aliases[target]){openWindow(aliases[target]);result=`Opening ${esc(target)}...`;}
+    else {const app=APPS.find(a=>a.id===target||a.title.toLowerCase()===target);if(app){launchApp(app.id,app.title,app.icon,app.url);result=`Opening ${esc(app.title)}...`;}else result=`open: ${esc(args[0]||'')}: App not found`;}
+  }else result=`${esc(cmd)}: command not found. Type <b>help</b> for commands.`;
+  const prompt=`user@astral:${terminalCwd}$`;
+  output.innerHTML+=`<div><span style="color:#8ca2b5;">${prompt} ${safe}</span><br>${result}</div>`;
+  const promptEl=document.getElementById('terminal-prompt');if(promptEl)promptEl.textContent=prompt;
   output.scrollTop=output.scrollHeight;input.value='';
 }
 function buildFiles(){
@@ -2069,6 +2317,36 @@ function buildSettingsTab(tab){
     <div class="os-style-description">${style.description}</div>
     ${state.osStyle===style.id?'<span class="os-style-check">✓</span>':''}
   </button>`).join('')}</div>
+ <div class="setting-group" style="margin-top:16px;">
+   <div class="setting-row-title" style="margin-top:0;">Create your own theme</div>
+   <div class="security-note" style="margin-bottom:12px;">Build a personal look from your current background and cursor, then choose its atmosphere.</div>
+   <div class="setting-row">
+     <label>Particle style</label>
+     <select id="custom-particle-type" style="background:var(--hover);border:1px solid var(--separator);border-radius:6px;padding:5px 8px;color:var(--text);font-family:var(--font);">
+       ${[['stars','Starlight'],['petals','Sakura petals'],['snow','Snow'],['fireflies','Fireflies'],['orbs','Glow orbs'],['rain','Rain'],['matrix','Digital rain']].map(p=>`<option value="${p[0]}" ${state.customTheme?.particleType===p[0]?'selected':''}>${p[1]}</option>`).join('')}
+     </select>
+   </div>
+   <div class="setting-row">
+     <label>Particle color</label>
+     <input id="custom-particle-color" type="color" value="${state.customTheme?.particleColor||getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim()||'#b9d8ff'}" style="width:42px;height:28px;border:0;background:transparent;cursor:pointer;">
+   </div>
+   <div class="setting-row">
+     <label>Background color</label>
+     <input id="custom-background-color" type="color" value="${state.customTheme?.backgroundColor||'#050817'}" title="Choose a custom background color" style="width:42px;height:28px;border:0;background:transparent;cursor:pointer;">
+   </div>
+   <div class="setting-row">
+     <label>Particle speed</label>
+     <div style="display:flex;align-items:center;gap:8px;min-width:150px;">
+       <input id="custom-particle-speed" type="range" min="0.1" max="3" step="0.1" value="${state.customTheme?.particleSpeed||1}" oninput="document.getElementById('custom-particle-speed-value').textContent=this.value+'×'" style="width:110px;accent-color:var(--accent);">
+       <span id="custom-particle-speed-value" style="font-size:11px;color:var(--text-secondary);min-width:26px;">${state.customTheme?.particleSpeed||1}×</span>
+     </div>
+   </div>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+     <button class="os-btn primary" onclick="saveCustomTheme()">✨ Save custom theme</button>
+     ${state.customTheme&&state.osStyle==='custom'?'<button class="os-btn danger" onclick="clearCustomTheme()">Reset custom theme</button>':''}
+   </div>
+   <div class="security-note">Use the color wheels or Wallpaper tab to customize the background, and Upload Cursor above to include a custom cursor.</div>
+ </div>
 <div class="setting-group">
   <div class="setting-row">
     <label>Dark Mode</label>
@@ -2479,8 +2757,8 @@ function spotlightSearch(){
   if(!val){res.innerHTML='';return;}
   const matches=GAMES.filter(g=>g.title.toLowerCase().includes(val)||g.cat.toLowerCase().includes(val)).slice(0,8);
   const extras=[
-    {title:'Open Finder',sub:'Browse all games',icon:'📁',action:"openWindow('finder')"},
-    {title:'App Store',sub:'Discover games',icon:'🛍️',action:"openWindow('store')"},
+    {title:'Open Game Library',sub:'Browse all games',icon:'🎮',action:"openWindow('finder')"},
+    {title:'Game Store',sub:'Discover AstralSync apps',icon:'🛍️',action:"openWindow('store')"},
     {title:'Settings',sub:'Customize AstralSync OS',icon:'⚙️',action:"openWindow('settings')"},
   ].filter(e=>e.title.toLowerCase().includes(val)||e.sub.toLowerCase().includes(val));
 
@@ -2543,7 +2821,7 @@ function syncControlCenter(){
   document.getElementById('cc-dark')?.classList.toggle('active',state.dark);
   const p=state.profiles[state.activeProfile];
   const label=document.getElementById('cc-profile-label');
-  if(label)label.textContent=p?.name||'AstraOS';
+  if(label)label.textContent=p?.name||'AstralSync OS';
 }
 function toggleControlTile(id){
   const tile=document.getElementById('cc-'+id);
@@ -2581,6 +2859,7 @@ function hideAll(){
   hideCtx();
   hideAppleMenu();
   hideControlCenter();
+  closeAppMenus();
   document.querySelectorAll('.desk-icon').forEach(el=>el.classList.remove('selected'));
 }
 function selectIcon(el){
@@ -2596,6 +2875,9 @@ document.addEventListener('keydown',e=>{
     hideCtx();hideAppleMenu();hideControlCenter();
   }
 });
+
+// Restore apps the user chose to keep on the desktop.
+renderDesktopApps();
 
 // ============================================================
 // OOBE — first-run profile setup
@@ -2681,25 +2963,48 @@ function oobeSkip(){
 
   function sendHeartbeat(){
     fetch('/api/heartbeat?id='+encodeURIComponent(sid)).catch(()=>{});
+    try{
+      localStorage.setItem('astralPresence:'+sid,Date.now().toString());
+      updateLocalCount();
+    }catch(e){}
+  }
+
+  function updateLocalCount(){
+    const now=Date.now(), maxAge=35000, prefix='astralPresence:';
+    let count=0;
+    try{
+      Object.keys(localStorage).forEach(key=>{
+        if(!key.startsWith(prefix))return;
+        const stamp=parseInt(localStorage.getItem(key)||'0',10);
+        if(now-stamp>maxAge)localStorage.removeItem(key);
+        else count++;
+      });
+    }catch(e){count=1;}
+    const el=document.getElementById('oc-num');
+    if(el&&count)el.textContent=fmt(count);
+    return count||1;
   }
 
   function fetchOnline(){
     fetch('/api/online')
-      .then(r=>r.json())
+      .then(r=>{if(!r.ok)throw new Error('online endpoint unavailable');return r.json();})
       .then(d=>{
         const el=document.getElementById('oc-num');
-        if(el) el.textContent = fmt(d.online||1);
+        if(el&&Number.isFinite(Number(d.online)))el.textContent = fmt(Math.max(1,Number(d.online)));
       })
-      .catch(()=>{});
+      .catch(()=>{updateLocalCount();});
   }
 
   function init(){
     const vis=document.getElementById('oc-visits');
     if(vis) vis.textContent = fmt(visits)+' visits';
     sendHeartbeat();
-    fetchOnline();
+    updateLocalCount();fetchOnline();
     setInterval(sendHeartbeat, 20000);   // keep alive every 20s
     setInterval(fetchOnline,  15000);    // refresh display every 15s
+    setInterval(updateLocalCount, 5000);
+    window.addEventListener('storage',updateLocalCount);
+    window.addEventListener('beforeunload',()=>{try{localStorage.removeItem('astralPresence:'+sid);}catch(e){}});
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
