@@ -477,6 +477,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
   #desktop-widgets{right:12px;top:44px;width:180px;}
   .desktop-widget{padding:11px 12px;border-radius:15px;}
   .widget-date{font-size:19px;}
+  .global-announcement{left:12px;right:12px;top:44px;max-width:none;}
   .window{min-width:calc(100vw - 24px);min-height:300px;left:12px!important;top:44px!important;width:calc(100vw - 24px)!important;height:calc(100vh - 130px)!important;}
   .win-titlebar-actions{display:none;}
   .dock-item .dock-img{width:44px;height:44px;font-size:26px;}
@@ -548,6 +549,23 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
 .widget-row strong{font-size:14px;}
 .widget-meter{height:4px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:10px;}
 .widget-meter span{display:block;width:68%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#60a5fa,#a78bfa);}
+.global-announcement{
+  position:absolute;left:22px;right:268px;top:54px;z-index:3;
+  display:none;align-items:flex-start;gap:12px;max-width:680px;
+  padding:13px 14px;color:#fff;background:rgba(17,24,39,.62);
+  border:1px solid rgba(255,255,255,.2);border-radius:12px;
+  backdrop-filter:blur(22px) saturate(1.35);-webkit-backdrop-filter:blur(22px) saturate(1.35);
+  box-shadow:0 12px 30px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.14);
+}
+.global-announcement.visible{display:flex;animation:announcement-in .2s ease-out;}
+@keyframes announcement-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.announcement-badge{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--accent);font-size:16px;flex-shrink:0;}
+.announcement-copy{min-width:0;flex:1;}
+.announcement-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.announcement-message{font-size:12px;line-height:1.4;opacity:.82;margin-top:3px;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.announcement-meta{font-size:10px;opacity:.5;margin-top:6px;}
+.announcement-dismiss{width:24px;height:24px;border:0;border-radius:6px;background:transparent;color:#fff;cursor:pointer;font-size:17px;line-height:1;opacity:.7;}
+.announcement-dismiss:hover{background:rgba(255,255,255,.14);opacity:1;}
 
 /* CONTROL CENTER */
 #control-center{
@@ -668,6 +686,28 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
 .settings-item.active{background:var(--accent);color:#fff;}
 .settings-item .s-icon{font-size:18px;width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
 .settings-content{flex:1;overflow-y:auto;padding:24px;}
+.announcement-hero{display:flex;align-items:flex-start;gap:13px;padding:16px;border-radius:12px;margin-bottom:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,transparent),var(--hover));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--separator));}
+.announcement-hero-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:23px;flex-shrink:0;box-shadow:0 7px 16px color-mix(in srgb,var(--accent) 25%,transparent);}
+.announcement-hero strong{display:block;font-size:16px;color:var(--text);}
+.announcement-hero p{font-size:12px;line-height:1.45;color:var(--text-secondary);margin-top:4px;}
+.announcement-compose{padding:16px;}
+.announcement-field{margin-bottom:13px;}
+.announcement-field label{display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.announcement-field small{display:block;color:var(--text-secondary);font-size:10px;line-height:1.4;margin-top:5px;}
+.announcement-textarea{min-height:105px;resize:vertical;line-height:1.45;}
+.announcement-recipient-status{font-size:11px;min-height:16px;margin-top:6px;color:var(--text-secondary);}
+.announcement-recipient-status.invalid{color:#ff6b63;}
+.announcement-recipient-status.valid{color:#34c759;}
+.announcement-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+.announcement-chip{padding:4px 7px;border-radius:99px;background:color-mix(in srgb,var(--accent) 13%,transparent);border:1px solid color-mix(in srgb,var(--accent) 25%,var(--separator));color:var(--text);font-size:10px;}
+.announcement-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.announcement-history{display:flex;flex-direction:column;gap:8px;}
+.announcement-history-item{padding:12px 14px;border:1px solid var(--separator);border-radius:9px;background:var(--hover);}
+.announcement-history-head{display:flex;align-items:center;gap:8px;}
+.announcement-history-title{font-weight:700;font-size:13px;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.announcement-history-time{font-size:10px;color:var(--text-secondary);margin-left:auto;white-space:nowrap;}
+.announcement-history-body{font-size:11px;color:var(--text-secondary);line-height:1.4;margin-top:5px;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.announcement-history-recipients{font-size:10px;color:var(--text-secondary);margin-top:7px;}
 .setting-group{background:var(--hover);border-radius:12px;overflow:hidden;margin-bottom:20px;}
 .setting-row{
   display:flex;align-items:center;justify-content:space-between;
@@ -1385,6 +1425,7 @@ body.os-win11 #dock,
       <div class="widget-meta">Everything is running smoothly</div>
     </div>
   </div>
+  <div id="global-announcement" class="global-announcement" aria-live="polite"></div>
   <div id="desktop-icons"></div>
 </div>
 
@@ -1482,6 +1523,7 @@ body.os-win11 #dock,
   <div class="ctx-item" onclick="openWindow('terminal');hideCtx()">▣ Terminal</div>
   <div class="ctx-item" onclick="openWindow('files');hideCtx()">📂 Files</div>
   <div class="ctx-item" onclick="openWindow('profiles');hideCtx()">👤 Profiles</div>
+  <div class="ctx-item" id="ctx-announcements" style="display:none" onclick="openWindow('settings');switchSettingsTab('announcements');hideCtx()">📣 Global Announcements</div>
   <div class="ctx-sep"></div>
   <div class="ctx-item" onclick="toggleDarkMode();hideCtx()">🌙 Toggle Dark Mode</div>
   <div class="ctx-item" onclick="openWindow('settings');switchSettingsTab('wallpaper');hideCtx()">🖼️ Change Wallpaper</div>
@@ -1728,7 +1770,14 @@ const OS_STYLES = [
   {id:"midnight",name:"Midnight",icon:"☾",description:"Deep blue night glass with drifting starlight.",wallpaper:24,accent:"#7c9cff",font:"system",className:"os-midnight"},
 ];
 
-const GOOGLE_DOCK_URL = "https://oct-isle-calculated-guarantees.trycloudflare.com/learn/study/https://www.google.com/";
+const GOOGLE_DOCK_URL = "https://oct-isle-calculated-guarantees.trycloudflare.com/learn/study/about:blank";
+
+// Add the profile emails that are allowed to create global announcements.
+// Email matching ignores capitalization and surrounding spaces.
+const GLOBAL_ANNOUNCER_EMAILS = [
+  "19582590a@gmail.com",
+  "ap6636@amanicharter.org",
+];
 
 // ============================================================
 // STATE
@@ -1754,6 +1803,9 @@ state.installedApps = state.installedApps || [];
 state.desktopApps = state.desktopApps || [];
 state.dockApps = Array.isArray(state.dockApps) ? state.dockApps : [];
 state.dockLinks = Array.isArray(state.dockLinks) ? state.dockLinks : [];
+state.announcements = Array.isArray(state.announcements) ? state.announcements : [];
+state.activeAnnouncement = state.activeAnnouncement || null;
+state.announcementDismissed = state.announcementDismissed || '';
 // Keep the requested Google shortcut present without duplicating it on reload.
 if(!state.dockLinks.some(link=>link.id==='google')){
   state.dockLinks.unshift({id:'google',title:'Google',url:GOOGLE_DOCK_URL,icon:'google'});
@@ -1825,6 +1877,8 @@ var wallpaperDBPromise=null;
 try{applyState();}catch(e){console.warn('applyState error',e);}
 try{startClock();}catch(e){}
 setTimeout(()=>{try{updateDockAvatar();}catch(e){}},100);
+setTimeout(()=>{try{renderGlobalAnnouncement();}catch(e){}},120);
+setTimeout(()=>{try{syncAnnouncementAccess();}catch(e){}},140);
 setTimeout(()=>{try{openWindow('finder');}catch(e){}},400);
 setTimeout(()=>{try{showNotif('🎮','AstralSync OS','Welcome! Double-click icons or use the Dock.');}catch(e){}},800);
 
@@ -1839,6 +1893,23 @@ function applyState(){
   document.documentElement.style.setProperty('--particle-color', state.customTheme?.particleColor||getParticleColor(osStyle.id));
   applyCursor();
   applyWallpaper();
+}
+
+function normalizedProfileEmail(profile){
+  return String(profile?.email||'').trim().toLowerCase();
+}
+function canMakeGlobalAnnouncements(){
+  const email=normalizedProfileEmail(state.profiles[state.activeProfile]);
+  return Boolean(email&&GLOBAL_ANNOUNCER_EMAILS.some(allowed=>String(allowed||'').trim().toLowerCase()===email));
+}
+function syncAnnouncementAccess(){
+  const menuItem=document.getElementById('ctx-announcements');
+  if(menuItem)menuItem.style.display=canMakeGlobalAnnouncements()?'flex':'none';
+}
+function refreshSettingsAccess(){
+  const settingsWindow=openWindows?.settings;
+  const body=settingsWindow?.querySelector('.win-body');
+  if(body)body.innerHTML=buildSettings();
 }
 
 function getParticleColor(theme){
@@ -2772,6 +2843,8 @@ function buildSettings(){
     <div class="settings-section">Account</div>
     <div class="settings-item${settingsTab==='profile'?' active':''}" onclick="switchSettingsTab('profile')"><span class="s-icon">👤</span>Profile</div>
     <div class="settings-item${settingsTab==='security'?' active':''}" onclick="switchSettingsTab('security')"><span class="s-icon">🔐</span>Sign-in options</div>
+     ${canMakeGlobalAnnouncements()?`<div class="settings-section">Admin</div>
+     <div class="settings-item${settingsTab==='announcements'?' active':''}" onclick="switchSettingsTab('announcements')"><span class="s-icon">📣</span>Announcements</div>`:''}
     <div class="settings-section">Info</div>
     <div class="settings-item" onclick="openWindow('about')"><span class="s-icon">ℹ️</span>About</div>
   </div>
@@ -2780,12 +2853,15 @@ function buildSettings(){
 }
 
 function switchSettingsTab(tab){
+  if(tab==='announcements'&&!canMakeGlobalAnnouncements()){
+    tab='appearance';
+  }
   settingsTab=tab;
   const c=document.getElementById('settings-content');
   if(c)c.innerHTML=buildSettingsTab(tab);
   document.querySelectorAll('.settings-item').forEach(el=>{
     el.classList.toggle('active',el.textContent.includes(
-       tab==='appearance'?'Appearance':tab==='wallpaper'?'Wallpaper':tab==='dock'?'Dock':tab==='accent'?'Accent':tab==='profile'?'Profile':tab==='security'?'Sign-in options':'__'
+       tab==='appearance'?'Appearance':tab==='wallpaper'?'Wallpaper':tab==='dock'?'Dock':tab==='accent'?'Accent':tab==='profile'?'Profile':tab==='security'?'Sign-in options':tab==='announcements'?'Announcements':'__'
     ));
   });
 }
@@ -2793,6 +2869,7 @@ function switchSettingsTab(tab){
 function buildSettingsTab(tab){
   if(tab==='security') return buildSecuritySettings();
   if(tab==='dock') return buildDockSettings();
+  if(tab==='announcements') return buildAnnouncementsSettings();
   if(tab==='appearance') return`
 <div class="setting-row-title">Appearance</div>
 <div class="os-style-grid">${OS_STYLES.map(style=>`
@@ -2945,6 +3022,139 @@ function buildDockSettings(){
   <div class="setting-group">${appRows}</div>`;
 }
 
+function announcementDate(value){
+  try{return new Date(value).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});}
+  catch(e){return '';}
+}
+function parseAnnouncementEmails(raw){
+  const tokens=String(raw||'').split(/[\s,;]+/).map(email=>email.trim().toLowerCase()).filter(Boolean);
+  const emails=[],invalid=[];
+  tokens.forEach(email=>{
+    if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){if(!emails.includes(email))emails.push(email);}
+    else if(!invalid.includes(email))invalid.push(email);
+  });
+  return {emails,invalid};
+}
+function syncAnnouncementRecipients(){
+  const input=document.getElementById('announcement-recipients');
+  const status=document.getElementById('announcement-recipient-status');
+  const chips=document.getElementById('announcement-recipient-chips');
+  if(!input||!status)return;
+  const parsed=parseAnnouncementEmails(input.value);
+  status.className='announcement-recipient-status '+(parsed.invalid.length?'invalid':parsed.emails.length?'valid':'');
+  status.textContent=parsed.invalid.length
+    ? `${parsed.emails.length} valid recipient${parsed.emails.length===1?'':'s'} · ${parsed.invalid.length} item${parsed.invalid.length===1?'':'s'} needs attention`
+    : parsed.emails.length?`${parsed.emails.length} recipient${parsed.emails.length===1?'':'s'} ready`:'No email recipients yet';
+  if(chips)chips.innerHTML=parsed.emails.slice(0,24).map(email=>`<span class="announcement-chip">${dockHtmlEscape(email)}</span>`).join('')+(parsed.emails.length>24?`<span class="announcement-chip">+${parsed.emails.length-24} more</span>`:'');
+}
+function readAnnouncementForm(){
+  const subject=(document.getElementById('announcement-subject')?.value||'').trim();
+  const message=(document.getElementById('announcement-message')?.value||'').trim();
+  const recipientText=document.getElementById('announcement-recipients')?.value||'';
+  const parsed=parseAnnouncementEmails(recipientText);
+  return {subject,message,recipientText,emails:parsed.emails,invalid:parsed.invalid};
+}
+function validateAnnouncement(form,needsRecipients=false){
+  if(!canMakeGlobalAnnouncements()){showNotif('🔒','Announcements restricted','Your profile email is not on the authorized announcer list.');return false;}
+  if(!form.subject){showNotif('⚠️','Announcement needs a title','Add a subject before publishing.');return false;}
+  if(!form.message){showNotif('⚠️','Announcement needs a message','Write the announcement message before publishing.');return false;}
+  if(form.invalid.length){showNotif('⚠️','Check recipient emails','Remove or correct the invalid email entries before continuing.');return false;}
+  if(needsRecipients&&!form.emails.length){showNotif('⚠️','Add recipients','Paste at least one email address for an email draft.');return false;}
+  return true;
+}
+function buildAnnouncementsSettings(){
+  const recent=state.announcements.slice(0,8);
+  return`<div class="setting-row-title">Global Announcements</div>
+  <div class="announcement-hero">
+    <div class="announcement-hero-icon">📣</div>
+    <div><strong>Reach everyone at once</strong><p>Publish a notice across this AstralSync desktop, then open a ready-to-send email draft for multiple recipients. Paste addresses separated by commas, spaces, semicolons, or new lines.</p></div>
+  </div>
+  <div class="theme-section"><span>✍️ Create announcement</span><div class="theme-section-line"></div></div>
+  <div class="setting-group announcement-compose">
+    <div class="announcement-field">
+      <label for="announcement-subject">Announcement title</label>
+      <input class="os-input" id="announcement-subject" maxlength="120" placeholder="e.g. New games are live">
+    </div>
+    <div class="announcement-field">
+      <label for="announcement-recipients">Email recipients <span style="font-weight:400;color:var(--text-secondary);">(optional for desktop-only notices)</span></label>
+      <textarea class="os-input announcement-textarea" id="announcement-recipients" style="min-height:78px;" placeholder="Paste emails here…&#10;alex@example.com, sam@example.com&#10;or one address per line" oninput="syncAnnouncementRecipients()"></textarea>
+      <div id="announcement-recipient-status" class="announcement-recipient-status">No email recipients yet</div>
+      <div id="announcement-recipient-chips" class="announcement-chips"></div>
+      <small>Addresses are kept in this browser and placed in the BCC field so recipients do not see one another.</small>
+    </div>
+    <div class="announcement-field">
+      <label for="announcement-message">Message</label>
+      <textarea class="os-input announcement-textarea" id="announcement-message" placeholder="Write the announcement everyone should see…"></textarea>
+    </div>
+    <div class="announcement-actions">
+      <button class="os-btn primary" onclick="publishAnnouncement()">📣 Publish to AstralSync</button>
+      <button class="os-btn" onclick="openAnnouncementEmail()">✉️ Open email draft</button>
+      <button class="os-btn" onclick="copyAnnouncementBCC()">⧉ Copy BCC list</button>
+    </div>
+    <div class="security-note">Publishing updates the desktop banner immediately. “Open email draft” uses your device’s default mail app; this standalone HTML cannot send email from a server by itself.</div>
+  </div>
+  <div class="theme-section"><span>🗂️ Recent announcements</span><div class="theme-section-line"></div></div>
+  ${recent.length?`<div class="announcement-history">${recent.map(item=>`
+    <div class="announcement-history-item">
+      <div class="announcement-history-head"><div class="announcement-history-title">${dockHtmlEscape(item.subject)}</div><div class="announcement-history-time">${announcementDate(item.createdAt)}</div></div>
+      <div class="announcement-history-body">${dockHtmlEscape(item.message)}</div>
+      <div class="announcement-history-recipients">${item.recipients?.length?`✉️ ${item.recipients.length} recipient${item.recipients.length===1?'':'s'}`:'🖥️ Desktop-only notice'}${state.activeAnnouncement?.id===item.id?' · <span class="tag">Live</span>':''}</div>
+    </div>`).join('')}</div>`:
+    `<div class="security-note" style="padding:14px 16px;background:var(--hover);border-radius:8px;">No announcements yet. Your published notices will appear here.</div>`}`;
+}
+function announcementRecord(form){
+  return {id:'announcement_'+Date.now().toString(36),subject:form.subject,message:form.message,recipients:form.emails,createdAt:new Date().toISOString()};
+}
+function publishAnnouncement(){
+  if(!canMakeGlobalAnnouncements()){showNotif('🔒','Announcements restricted','Your profile email is not on the authorized announcer list.');return;}
+  const form=readAnnouncementForm();
+  if(!validateAnnouncement(form))return;
+  const record=announcementRecord(form);
+  state.announcements=[record,...state.announcements].slice(0,25);
+  state.activeAnnouncement=record;
+  state.announcementDismissed='';
+  saveState();renderGlobalAnnouncement();switchSettingsTab('announcements');
+  showNotif('📣','Announcement published',form.emails.length?`Live on this desktop and ready for ${form.emails.length} email recipient${form.emails.length===1?'':'s'}.`:'Live on this AstralSync desktop.');
+}
+function copyText(value,successTitle,successMessage){
+  const done=()=>showNotif('⧉',successTitle,successMessage);
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(value).then(done).catch(()=>{fallbackCopy(value);done();});
+  else{fallbackCopy(value);done();}
+}
+function fallbackCopy(value){
+  const area=document.createElement('textarea');area.value=value;area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();document.execCommand('copy');area.remove();
+}
+function copyAnnouncementBCC(){
+  const form=readAnnouncementForm();
+  if(!validateAnnouncement(form,true))return;
+  copyText(form.emails.join('; '),'BCC list copied',`${form.emails.length} recipient${form.emails.length===1?'':'s'} copied in email-ready format.`);
+}
+function openAnnouncementEmail(){
+  const form=readAnnouncementForm();
+  if(!validateAnnouncement(form,true))return;
+  const bcc=form.emails.join(',');
+  const mailto=`mailto:?bcc=${encodeURIComponent(bcc)}&subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(form.message)}`;
+  if(mailto.length>6000){
+    copyText(form.emails.join('; '),'Recipient list copied','The list is large for a mailto link, so the BCC addresses were copied instead.');
+    showNotif('✉️','Email draft not opened','Paste the copied addresses into BCC in your mail app.');
+    return;
+  }
+  const anchor=document.createElement('a');anchor.href=mailto;anchor.style.display='none';document.body.appendChild(anchor);anchor.click();anchor.remove();
+  showNotif('✉️','Email draft opened',`Prepared a BCC draft for ${form.emails.length} recipient${form.emails.length===1?'':'s'}.`);
+}
+function renderGlobalAnnouncement(){
+  const el=document.getElementById('global-announcement');
+  const item=state.activeAnnouncement;
+  if(!el||!item||state.announcementDismissed===item.id){if(el)el.classList.remove('visible');return;}
+  el.innerHTML=`<div class="announcement-badge">📣</div><div class="announcement-copy"><div class="announcement-title">${dockHtmlEscape(item.subject)}</div><div class="announcement-message">${dockHtmlEscape(item.message)}</div><div class="announcement-meta">Global announcement · ${announcementDate(item.createdAt)}</div></div><button class="announcement-dismiss" onclick="dismissGlobalAnnouncement(event)" aria-label="Dismiss announcement">×</button>`;
+  el.classList.add('visible');
+}
+function dismissGlobalAnnouncement(event){
+  event?.stopPropagation();
+  if(state.activeAnnouncement)state.announcementDismissed=state.activeAnnouncement.id;
+  saveState();renderGlobalAnnouncement();
+}
+
 function buildSecuritySettings(){
   const p=state.profiles[state.activeProfile];
   return `<div class="setting-row-title">Sign-in options</div>
@@ -2996,7 +3206,7 @@ function buildProfileSettings(){
 <div class="theme-section"><span>⚙️ Profile Details</span><div class="theme-section-line"></div></div>
 <div class="setting-group">
   <div class="setting-row"><label>Display Name</label><span style="font-weight:600;color:var(--text)">${p.name}</span></div>
-  <div class="setting-row"><label>Email (optional)</label><input class="os-input" style="max-width:200px;" placeholder="your@email.com" value="${p.email||''}" oninput="updateProfileField('email',this.value)" onchange="saveState()"></div>
+  <div class="setting-row"><label>Email (optional)</label><input class="os-input" style="max-width:200px;" placeholder="your@email.com" value="${p.email||''}" oninput="updateProfileField('email',this.value)" onchange="saveState();refreshSettingsAccess()"></div>
 <div class="setting-row"><label>Password</label><input class="os-input" type="password" style="max-width:200px;" placeholder="Set a password" value="${p.password||''}" oninput="updateProfileField('password',this.value)" onchange="saveState()" autocomplete="new-password"></div>
 <div class="setting-row"><label>PIN</label><input class="os-input" type="password" inputmode="numeric" maxlength="6" style="max-width:200px;" placeholder="4–6 digit PIN" value="${p.pin||''}" oninput="updateProfileField('pin',this.value.replace(/\\D/g,''))" onchange="saveState()" autocomplete="new-password"></div>
 <div class="security-note">Passwords and PINs are stored locally in this browser for this demo. They do not protect an online account.</div>
@@ -3202,6 +3412,7 @@ function switchProfile(i){
   state.activeProfile=i;saveState();
   switchSettingsTab('profile');
   updateDockAvatar();
+  syncAnnouncementAccess();
   showNotif('👤','Profile','Switched to '+state.profiles[i].name);
 }
 function deleteProfile(i){
