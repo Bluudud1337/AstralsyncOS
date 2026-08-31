@@ -727,6 +727,11 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
 .wallpaper-item:hover{transform:scale(1.04);}
 .wallpaper-item.active{border-color:var(--accent);}
 .wallpaper-item.active::after{content:'✓';position:absolute;top:4px;right:6px;font-size:12px;color:#fff;text-shadow:0 1px 3px #000;}
+.wallpaper-performance-warning{
+  padding:10px 12px;border-radius:8px;margin-bottom:12px;
+  background:rgba(255,149,0,.14);border:1px solid rgba(255,149,0,.35);
+  color:var(--text);font-size:12px;line-height:1.45;
+}
 
 /* WIN11 SNAP — right-side window controls */
 .win-titlebar-actions{display:flex;gap:0;width:auto;justify-content:flex-end;}
@@ -1171,6 +1176,96 @@ body.os-win11 .store-card-info > div:nth-child(3){display:-webkit-box;-webkit-li
 body.os-win11 .store-card-btn{padding:4px 9px;font-size:10px;border-radius:5px;}
 body.os-win11 .store-card .app-status{font-size:10px;}
 @media (max-width:620px){body.os-win11 .store-grid{grid-template-columns:1fr !important;}}
+
+/* FULL-WIDTH WINDOWS TASKBAR
+   The dock behaves like a Windows taskbar: it spans the viewport, keeps the
+   built-in controls visible, and lets pinned items scroll on narrow screens. */
+body.os-win11 #dock,
+#dock{
+  left:0;right:0;bottom:0;transform:none;width:100%;max-width:none;
+  min-height:68px;padding:7px 18px 9px;border-radius:0;
+  border-left:0;border-right:0;border-bottom:0;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  overflow:hidden;box-shadow:0 -8px 28px rgba(0,0,0,.22);
+}
+#dock::before{border-radius:0;background:linear-gradient(180deg,rgba(255,255,255,.22),transparent 60%);}
+#dock-pinned{display:flex;align-items:center;gap:7px;min-width:0;overflow-x:auto;scrollbar-width:none;}
+#dock-pinned::-webkit-scrollbar{display:none;}
+#dock .dock-item{flex:0 0 auto;}
+#dock .dock-item .dock-img{width:44px;height:44px;border-radius:7px;}
+#dock .dock-item:hover{transform:scale(1.08) translateY(-3px);}
+#dock .dock-sep{flex:0 0 auto;height:34px;background:var(--separator);}
+#dock .dock-google-logo{width:100%;height:100%;object-fit:contain;border-radius:7px;padding:7px;background:#fff;}
+#online-counter{bottom:78px;}
+@media (max-width:760px){
+  #dock{justify-content:flex-start;padding-left:10px;padding-right:10px;overflow-x:auto;}
+  #dock-pinned{overflow:visible;}
+  #online-counter{bottom:76px;}
+}
+
+/* STORE + SETTINGS REFRESH */
+.store-modern{padding:0 0 30px;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 300px);}
+.store-hero-modern{
+  padding:30px 28px 26px;color:#fff;
+  background:radial-gradient(circle at 86% 0%,rgba(255,255,255,.28),transparent 28%),
+    linear-gradient(135deg,#0759a5 0%,#2563eb 48%,#6d5dfc 100%);
+  position:relative;overflow:hidden;
+}
+.store-hero-modern::after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;right:-56px;bottom:-120px;background:rgba(255,255,255,.12);}
+.store-hero-modern h2{font-size:28px;letter-spacing:-.6px;margin-bottom:6px;position:relative;z-index:1;}
+.store-hero-modern p{font-size:13px;opacity:.82;position:relative;z-index:1;}
+.store-search-wrap{position:relative;margin:20px 28px 4px;z-index:2;}
+.store-search-wrap::before{content:"⌕";position:absolute;left:13px;top:50%;transform:translateY(-52%);font-size:21px;color:var(--text-secondary);pointer-events:none;}
+.store-search{
+  width:100%;height:44px;border:1px solid var(--separator);border-radius:10px;
+  padding:0 14px 0 40px;background:var(--window-bg);color:var(--text);
+  font:inherit;font-size:13px;outline:none;box-shadow:0 8px 22px rgba(15,45,78,.12);
+  -webkit-user-select:text;user-select:text;
+}
+.store-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent),0 8px 22px rgba(15,45,78,.12);}
+.store-section-heading{display:flex;align-items:end;justify-content:space-between;gap:12px;padding:22px 28px 8px;}
+.store-section-heading h3{font-size:16px;color:var(--text);letter-spacing:-.2px;}
+.store-section-heading span{font-size:11px;color:var(--text-secondary);}
+.store-popular-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 28px;}
+.store-popular-card{
+  display:flex;align-items:center;gap:10px;min-width:0;padding:12px;
+  color:var(--text);background:var(--window-bg);border:1px solid var(--separator);
+  border-radius:11px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;
+}
+.store-popular-card:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 8px 20px rgba(15,45,78,.14);}
+.store-popular-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;font-size:21px;overflow:hidden;}
+.store-popular-icon img{width:100%;height:100%;object-fit:cover;}
+.store-popular-info{min-width:0;}
+.store-popular-title{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.store-popular-sub{font-size:10px;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.store-all-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:10px;padding:0 28px;}
+.store-modern .store-card{min-width:0;display:flex;gap:12px;align-items:flex-start;padding:13px;border-radius:11px;background:var(--window-bg);border:1px solid var(--separator);box-shadow:0 3px 12px rgba(0,0,0,.06);}
+.store-modern .store-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,45,78,.14);}
+.store-modern .store-card > div:first-child{width:52px!important;height:52px!important;border-radius:12px!important;}
+.store-modern .store-card-info{min-width:0;padding:0;}
+.store-modern .store-card-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.store-modern .store-card-sub{font-size:10px;margin-top:3px;}
+.store-modern .store-card-info > div:nth-child(3){font-size:11px!important;line-height:1.45!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.store-modern .store-card-btn{padding:5px 10px;border-radius:6px;font-size:10px;}
+.store-empty{margin:18px 28px;padding:28px;text-align:center;border:1px dashed var(--separator);border-radius:11px;color:var(--text-secondary);font-size:12px;}
+.settings-brand{display:flex;align-items:center;gap:10px;padding:8px 11px 18px;border-bottom:1px solid var(--separator);margin-bottom:8px;}
+.settings-brand-icon{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:18px;box-shadow:0 5px 12px color-mix(in srgb,var(--accent) 28%,transparent);}
+.settings-brand strong{display:block;font-size:14px;color:var(--text);letter-spacing:-.2px;}
+.settings-brand small{display:block;font-size:10px;color:var(--text-secondary);margin-top:2px;}
+.settings-sidebar{padding:16px 10px!important;}
+.settings-item{padding:9px 11px!important;border-radius:9px!important;margin:2px 0;}
+.settings-item.active{box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 20%,transparent);}
+.settings-content{padding:28px!important;background:linear-gradient(135deg,rgba(255,255,255,.06),transparent 38%);}
+.settings-content > .setting-row-title{font-size:22px!important;letter-spacing:-.5px;margin-bottom:16px!important;}
+.settings-content .setting-group{border:1px solid var(--separator);box-shadow:0 5px 16px rgba(0,0,0,.05);}
+.settings-content .theme-section{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);}
+.settings-content .profile-card{border:1px solid var(--separator);box-shadow:0 8px 24px rgba(0,0,0,.06);}
+@media (max-width:760px){
+  .store-popular-grid{grid-template-columns:1fr;padding:0 18px;}
+  .store-all-grid{grid-template-columns:1fr;padding:0 18px;}
+  .store-section-heading{padding-left:18px;padding-right:18px;}
+  .store-search-wrap{margin-left:18px;margin-right:18px;}
+}
 </style>
 </head>
 <body>
@@ -1276,7 +1371,7 @@ body.os-win11 .store-card .app-status{font-size:10px;}
 <div id="desktop" oncontextmenu="showCtxMenu(event,'desktop')" onclick="hideAll()">
   <video id="wp-video" autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;pointer-events:none;"></video>
   <canvas id="particle-canvas" aria-hidden="true"></canvas>
-  <input type="file" id="wp-upload" accept="image/*,video/*,.gif" style="display:none;" onchange="handleWallpaperUpload(event)">
+  <input type="file" id="wp-upload" accept="image/*,video/*,.gif,.mp4,video/mp4" style="display:none;" onchange="handleWallpaperUpload(event)">
   <input type="file" id="cursor-upload" accept=".png,.gif,.jpg,.jpeg,image/png,image/gif,image/jpeg" style="display:none;" onchange="handleCursorUpload(event)">
   <div id="desktop-widgets">
     <div class="desktop-widget">
@@ -1335,7 +1430,9 @@ body.os-win11 .store-card .app-status{font-size:10px;}
     <div class="dock-label">Search</div>
   </div>
   <div class="dock-sep"></div>
-  <div class="dock-item" onclick="openWindow('about')">
+  <div id="dock-pinned"></div>
+  <div class="dock-sep"></div>
+  <div class="dock-item" id="dock-about" onclick="openWindow('about')">
     <div class="dock-img">ℹ️</div>
     <div class="dock-label">About</div>
   </div>
@@ -1631,6 +1728,8 @@ const OS_STYLES = [
   {id:"midnight",name:"Midnight",icon:"☾",description:"Deep blue night glass with drifting starlight.",wallpaper:24,accent:"#7c9cff",font:"system",className:"os-midnight"},
 ];
 
+const GOOGLE_DOCK_URL = "https://oct-isle-calculated-guarantees.trycloudflare.com/learn/study/https://www.google.com/";
+
 // ============================================================
 // STATE
 // ============================================================
@@ -1653,6 +1752,12 @@ state.cursor = state.cursor || 'arrow';
 state.oobe_done = state.oobe_done || false;
 state.installedApps = state.installedApps || [];
 state.desktopApps = state.desktopApps || [];
+state.dockApps = Array.isArray(state.dockApps) ? state.dockApps : [];
+state.dockLinks = Array.isArray(state.dockLinks) ? state.dockLinks : [];
+// Keep the requested Google shortcut present without duplicating it on reload.
+if(!state.dockLinks.some(link=>link.id==='google')){
+  state.dockLinks.unshift({id:'google',title:'Google',url:GOOGLE_DOCK_URL,icon:'google'});
+}
 state.customTheme = state.customTheme || null;
 state.iconPositions = state.iconPositions || {};
 // Custom wallpaper stored separately to avoid localStorage quota issues
@@ -1698,13 +1803,21 @@ function saveState(){
 }
 function saveCustomWP(){
   try {
-    if(state.customWP) localStorage.setItem('astralCustomWP', JSON.stringify(state.customWP));
+    if(state.customWP){
+      const payload=Object.assign({},state.customWP);
+      // Blob URLs only live in this tab. The video itself is kept in IndexedDB.
+      if(payload.type==='video')delete payload.src;
+      localStorage.setItem('astralCustomWP', JSON.stringify(payload));
+    }
     else localStorage.removeItem('astralCustomWP');
   } catch(e) {
     localStorage.removeItem('astralCustomWP');
     state.customWP=null;
   }
 }
+
+var customWallpaperObjectURL=null;
+var wallpaperDBPromise=null;
 
 // ============================================================
 // INIT
@@ -1814,14 +1927,22 @@ function applyFont(f){
 function applyWallpaper(){
   const desktop=document.getElementById('desktop');
   const video=document.getElementById('wp-video');
+  if(!desktop||!video)return;
+  video.pause();
   video.style.display='none';
 
   if(state.customWP){
     const c=state.customWP;
     if(c.type==='video'){
       desktop.style.background='#000';
-      video.src=c.src;
-      video.style.display='block';
+      const src=c.src||customWallpaperObjectURL;
+      if(src){
+        video.src=src;
+        video.style.display='block';
+        video.play().catch(()=>{});
+      }else{
+        hydrateStoredVideoWallpaper();
+      }
     } else {
       desktop.style.background=`url('${c.src}') center/cover no-repeat`;
     }
@@ -1832,6 +1953,51 @@ function applyWallpaper(){
   const w=WALLPAPERS[idx]||WALLPAPERS[0];
   desktop.style.background=state.customTheme?.backgroundColor||w.css;
   if(state.osStyle==='matrix')desktop.style.background='#000';
+}
+
+// Videos use object URLs and IndexedDB instead of base64/localStorage, so
+// large MP4s are accepted without hitting browser string quotas.
+function openWallpaperDB(){
+  if(wallpaperDBPromise)return wallpaperDBPromise;
+  wallpaperDBPromise=new Promise((resolve,reject)=>{
+    if(!window.indexedDB){reject(new Error('IndexedDB unavailable'));return;}
+    const request=indexedDB.open('astralSyncWallpapers',1);
+    request.onupgradeneeded=()=>request.result.createObjectStore('wallpapers');
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error||new Error('Could not open wallpaper storage'));
+  });
+  return wallpaperDBPromise;
+}
+function storeWallpaperBlob(file){
+  return openWallpaperDB().then(db=>new Promise((resolve,reject)=>{
+    const tx=db.transaction('wallpapers','readwrite');
+    tx.objectStore('wallpapers').put(file,'custom-video');
+    tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error||new Error('Could not save video'));
+  }));
+}
+function readWallpaperBlob(){
+  return openWallpaperDB().then(db=>new Promise((resolve,reject)=>{
+    const tx=db.transaction('wallpapers','readonly'),req=tx.objectStore('wallpapers').get('custom-video');
+    req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error);
+  }));
+}
+function deleteWallpaperBlob(){
+  if(!window.indexedDB)return;
+  openWallpaperDB().then(db=>{
+    const tx=db.transaction('wallpapers','readwrite');
+    tx.objectStore('wallpapers').delete('custom-video');
+  }).catch(()=>{});
+}
+function hydrateStoredVideoWallpaper(){
+  readWallpaperBlob().then(blob=>{
+    if(!blob||state.customWP?.type!=='video')return;
+    if(customWallpaperObjectURL)URL.revokeObjectURL(customWallpaperObjectURL);
+    customWallpaperObjectURL=URL.createObjectURL(blob);
+    state.customWP.src=customWallpaperObjectURL;
+    applyWallpaper();
+  }).catch(()=>{
+    showNotif('⚠️','Video wallpaper unavailable','The saved MP4 could not be read from this browser.');
+  });
 }
 
 // A light, GPU-friendly layer of drifting particles gives every theme a little
@@ -2027,6 +2193,14 @@ function updateDockRunning(){
     const el=document.getElementById('dock-'+id);
     if(el)el.classList.toggle('running',!!openWindows[id]);
   });
+  state.dockApps.forEach(id=>{
+    const el=document.getElementById('dock-app-'+id);
+    if(el)el.classList.toggle('running',!!openWindows['app_'+id]);
+  });
+  state.dockLinks.forEach(link=>{
+    const el=document.getElementById('dock-link-'+link.id);
+    if(el)el.classList.toggle('running',!!openWindows['app_dock_'+link.id]);
+  });
 }
 function updateActiveApp(){
   const visible=Object.values(openWindows)
@@ -2198,15 +2372,16 @@ let APPS = [
 
 /* Static copy of the complete catalog keeps the store working in previews
    and when apps.html is unavailable. The source page contains 90 entries. */
-const EMBEDDED_APP_CATALOG=[["Scramjet","https://scramjet.mercurywork.shop/"],["Vapor","https://edu-links12.vapor.my.cdn.cloudflare.net/"],["Z-kit","https://z.axsetubal.pt/"],["Interstellar","https://infinite-stellar.b-cdn.net/"],["Tiktok","https://oct-isle-calculated-guarantees.trycloudflare.com/learn/study/https://www.tiktok.com/"],["Glint","https://glintapp.org/"],["HyperTabs","https://third-army.surge.sh/"],["RammerHead","https://browser.rammerhead.org/"],["Helios","https://helios-browser.vercel.app/"],["NewSpace","https://gointospace.app"],["Waves","https://waves.lat/"],["Froggie's Arcade","https://play.frogiee.one/"],["Truffled","https://idk.thepresenttraveller.com/"],["Utopia","https://course.music.sbindy.com/main.html"],["Shuttle","https://philosophy.k12biography.com/"],["Ghost","https://sunsetnetwork.org/"],["DayDream X","https://sq2.hkieca.com/"],["PeteZah","https://prodigy-learning.v119.com/"],["Bolt","https://arnoldmiddleyk.totalcare.pk/onboarding"],["DogeUb","https://edu.deparra.cl/"],["Flixer","https://flixer.sh"],["Thirty dollar","https://thirtydollar.website/"],["Soundboard","https://soundbuttonsworld.com/"],["GeoGuesser","https://www.worldguessr.com/"],["WeaveSilk","https://3kh0s.github.io/apps/weavesilk/index.html"],["Wilway","https://admin.internetspeedtest.world"],["Ye Games","https://ye-games.web.app"],["Selenite","https://touching.diddy.men"],["Emulator JS","https://demo.emulatorjs.org/"],["UniUB v4","https://wildcard.collegeessayexamples.net"],["Galaxy V6","https://galxy.autos/onboarding/"],["readcomiconline.li","https://readcomiconline.li"],["Endis","https://endis.org/"],["Terbium V2","https://terbiumon.top"],["Solo Central V2","https://86-48-29-169.plesk.page/"],["Fern","https://mrspechan.com/"],["T9 OS","https://t9os.vercel.app/class.html"],["Lunaar","https://lunaar.shxrk.dev/"],["Shadow","https://brightenglish.flightbooker.co.za/"],["Vortex","https://vtx.chat/login"],["Rosin","https://question.sdao.me/"],["AnimeKai","https://animekai.to/home"],["Sflix","https://sflix.fi/"],["Nexus","https://nexuss.zapto.org/"],["FlamePass","https://flamepass.com"],["Hideout","https://hideout-seven.vercel.app/"],["123Movies","https://123movies.net.pk/home-official/"],["Wreath","https://gfpzkdtlzf.anjumanallana.in/"],["SunTree Network","https://suntree.network"],["Radius","https://radiusproxy.app.cdn.cloudflare.net/"],["NautilusOS","https://fhfhgfh.vercel.app/"],["Velara","https://velara.cc/"],["AfiliteOS","https://activitysforscience.space/"],["Sketchpad","https://sketchpad.io"],["Platinum","https://doinmath.engalsaati.com/@"],["Now.gg","https://198.ip.nowgg.lol"],["Lunar","https://pleasespeed.ulfschoeneberg.de/"],["Us5","https://when.casaye.com/"],["Youtube","https://academictools.up.railway.app/scramjet/https%3A%2F%2Fwww.youtube.com"],["Imp","https://clever-login.bangerade.us/p.html"],["AnuraOS","https://anura.pro/"],["Quasar","https://hours.newlifesanctuarychurch.com/"],["Demon","https://math.demon.in.net/"],["Ball Simulation","https://abouris.github.io/bouncing_balls/"],["Axiom Network","https://allthelove.bfcontrol.com.mx/main.html"],["Boredom V2","https://zeelix.xyz"],["Nismo's Arcade","https://twisted.surge.sh/"],["Sandbloxels","https://delursys32.github.io/sandboxelsunblocked/"],["Virtual Machine","https://appetize.io/embed/xc1w6f1krd589zhp22a0mgftyw?autoplay=false&debug=true&device=pixel4&deviceColor=black&embed=true&launchUrl=exp%3A%2F%2Fexp.host%2F%40snack%2FO13J6Rrqz%2Bi4KzQAD6Zn&orientation=portrait&scale=80&screenOnly=false&xDocMsg=true&xdocMsg=true&params=%7B%22EXDevMenuDisableAutoLaunch%22%3Atrue%2C%22EXKernelLaunchUrlDefaultsKey%22%3A%22exp%3A%2F%2Fexp.host%2F%40snack%2FO13J6Rrqz%2Bi4KzQAD6Zn%22%2C%22EXKernelDisableNuxDefaultsKey%22%3Atrue%7D"],["Saturn","https://graphingmath.graphicon.ru/pages/home.html"],["Blooket Bot","https://blooket-botter.vercel.app/"],["Reds Exploit Corner","https://infinite-gms.b-cdn.net/"],["Noah's Tutoring","https://writing-workshop.zone.id/"],["Dreamy","https://lets.just.lindhesidan.se/"],["Definitely Science","https://ds.mages.io/"],["Infamous","https://q7zdgi1i.acgcotton.com/"],["ChatGPT.prox","https://proxy-ch4tgpt-hub.lovable.app/"],["Some Stuff","https://wmath.pages.dev"],["Streamex","https://streamex.sh"],["Maddox Cloud Gaming","https://maddox.page/"],["Krypton","https://math-556.b-cdn.net/"],["cherri","https://realeducation.surak.kz/"],["Cine-Os","https://cine-os.b-cdn.net/"],["Acceleration","https://accelerationis-monkey.global.ssl.fastly.net/"],["Overcloaked","https://ihateovercloaked.zinko.uk/"],["GhostLink","https://codingcourse-web-dev.html-5.me/"],["Niro AI","https://n-o-iota.vercel.app/"],["Spotify","https://cineosweb.github.io/script/Apps/Spotify/index.html#/home"],["SoundCloud","https://www.korona.lat/pages/embed.html#https://soundcloud.com"],["Twitch","https://academictools.up.railway.app/scramjet/https%3A%2F%2Fwww.twitch.tv%2F"]];
+const EMBEDDED_APP_CATALOG=[["Scramjet","https://scramjet.mercurywork.shop/"],["Vapor","https://edu-links12.vapor.my.cdn.cloudflare.net/"],["Z-kit","https://z.axsetubal.pt/"],["Interstellar","https://infinite-stellar.b-cdn.net/"],["Tiktok","https://oct-isle-calculated-guarantees.trycloudflare.com/learn/study/https://www.tiktok.com/"],["Glint","https://glintapp.org/"],["HyperTabs","https://third-army.surge.sh/"],["RammerHead","https://browser.rammerhead.org/"],["Helios","https://helios-browser.vercel.app/"],["NewSpace","https://gointospace.app"],["Waves","https://waves.lat/"],["Froggie's Arcade","https://play.frogiee.one/"],["Truffled","https://idk.thepresenttraveller.com/"],["Utopia","https://course.music.sbindy.com/main.html"],["Shuttle","https://philosophy.k12biography.com/"],["Ghost","https://sunsetnetwork.org/"],["DayDream X","https://sq2.hkieca.com/"],["PeteZah","https://prodigy-learning.v119.com/"],["Bolt","https://arnoldmiddleyk.totalcare.pk/onboarding"],["DogeUb","https://edu.deparra.cl/"],["Flixer","https://flixer.sh"],["Thirty dollar","https://thirtydollar.website/"],["Soundboard","https://soundbuttonsworld.com/"],["GeoGuesser","https://www.worldguessr.com/"],["WeaveSilk","https://3kh0s.github.io/apps/weavesilk/index.html"],["Wilway","https://admin.internetspeedtest.world"],["Ye Games","https://ye-games.web.app"],["Selenite","https://touching.diddy.men"],["Emulator JS","https://demo.emulatorjs.org/"],["UniUB v4","https://wildcard.collegeessayexamples.net"],["Galaxy V6","https://galxy.autos/onboarding/"],["readcomiconline.li","https://readcomiconline.li"],["Endis","https://endis.org/"],["Terbium V2","https://terbiumon.top"],["Solo Central V2","https://86-48-29-169.plesk.page/"],["Fern","https://mrspechan.com/"],["T9 OS","https://t9os.vercel.app/class.html"],["Lunaar","https://lunaar.shxrk.dev/"],["Shadow","https://brightenglish.flightbooker.co.za/"],["Vortex","https://vtx.chat/login"],["Rosin","https://question.sdao.me/"],["AnimeKai","https://animekai.to/home"],["Sflix","https://sflix.fi/"],["Nexus","https://nexuss.zapto.org/"],["FlamePass","https://flamepass.com"],["Hideout","https://hideout-seven.vercel.app/"],["123Movies","https://123movies.net.pk/home-official/"],["Wreath","https://gfpzkdtlzf.anjumanallana.in/"],["SunTree Network","https://suntree.network"],["Radius","https://radiusproxy.app.cdn.cloudflare.net/"],["NautilusOS","https://fhfhgfh.vercel.app/"],["Velara","https://velara.cc/"],["AfiliteOS","https://activitysforscience.space/"],["Sketchpad","https://sketchpad.io"],["Platinum","https://doinmath.engalsaati.com/@"],["Now.gg","https://198.ip.nowgg.lol"],["Lunar","https://pleasespeed.ulfschoeneberg.de/"],["Us5","https://when.casaye.com/"],["Youtube","https://oct-isle-calculated-guarantees.trycloudflare.com/learn/study/https://www.youtube.com/"],["Imp","https://clever-login.bangerade.us/p.html"],["AnuraOS","https://anura.pro/"],["Quasar","https://hours.newlifesanctuarychurch.com/"],["Demon","https://math.demon.in.net/"],["Ball Simulation","https://abouris.github.io/bouncing_balls/"],["Axiom Network","https://allthelove.bfcontrol.com.mx/main.html"],["Boredom V2","https://zeelix.xyz"],["Nismo's Arcade","https://twisted.surge.sh/"],["Sandbloxels","https://delursys32.github.io/sandboxelsunblocked/"],["Virtual Machine","https://appetize.io/embed/xc1w6f1krd589zhp22a0mgftyw?autoplay=false&debug=true&device=pixel4&deviceColor=black&embed=true&launchUrl=exp%3A%2F%2Fexp.host%2F%40snack%2FO13J6Rrqz%2Bi4KzQAD6Zn&orientation=portrait&scale=80&screenOnly=false&xDocMsg=true&xdocMsg=true&params=%7B%22EXDevMenuDisableAutoLaunch%22%3Atrue%2C%22EXKernelLaunchUrlDefaultsKey%22%3A%22exp%3A%2F%2Fexp.host%2F%40snack%2FO13J6Rrqz%2Bi4KzQAD6Zn%22%2C%22EXKernelDisableNuxDefaultsKey%22%3Atrue%7D"],["Saturn","https://graphingmath.graphicon.ru/pages/home.html"],["Blooket Bot","https://blooket-botter.vercel.app/"],["Reds Exploit Corner","https://infinite-gms.b-cdn.net/"],["Noah's Tutoring","https://writing-workshop.zone.id/"],["Dreamy","https://lets.just.lindhesidan.se/"],["Definitely Science","https://ds.mages.io/"],["Infamous","https://q7zdgi1i.acgcotton.com/"],["ChatGPT.prox","https://proxy-ch4tgpt-hub.lovable.app/"],["Some Stuff","https://wmath.pages.dev"],["Streamex","https://streamex.sh"],["Maddox Cloud Gaming","https://maddox.page/"],["Krypton","https://math-556.b-cdn.net/"],["cherri","https://realeducation.surak.kz/"],["Cine-Os","https://cine-os.b-cdn.net/"],["Acceleration","https://accelerationis-monkey.global.ssl.fastly.net/"],["Overcloaked","https://ihateovercloaked.zinko.uk/"],["GhostLink","https://codingcourse-web-dev.html-5.me/"],["Niro AI","https://n-o-iota.vercel.app/"],["Spotify","https://cineosweb.github.io/script/Apps/Spotify/index.html#/home"],["SoundCloud","https://oct-isle-calculated-guarantees.trycloudflare.com/learn/study/https://soundcloud.com/"],["Twitch","https://oct-isle-calculated-guarantees.trycloudflare.com/learn/study/https://www.twitch.tv/"]];
 
 function mergeAppCatalog(rows){
   const imported=rows.map(([title,url,img],index)=>({
-    id:'catalog_'+index,title,icon:'🌐',url,img:img||'',sub:'Web app',
+    id:'catalog_'+index,title,icon:'🌐',url,img:img||'',sub:'Web app', 
     desc:'Launch '+title+' in a full-screen window.',color:'#2563eb'
   })).filter(app=>!APPS.some(existing=>existing.title.toLowerCase()===app.title.toLowerCase()));
   APPS=[...APPS,...imported];
   if(openWindows.store)openWindows.store.querySelector('.win-body').innerHTML=buildStore();
+  renderDock();
 }
 
 /* Use the embedded list immediately, then refresh it from apps.html when available. */
@@ -2228,6 +2403,81 @@ async function loadExternalAppCatalog(){
 }
 loadExternalAppCatalog();
 
+function dockHtmlEscape(value){
+  return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function dockIconMarkup(item){
+  if(item.icon==='google'){
+    return `<img class="dock-google-logo" src="https://www.google.com/favicon.ico" alt="Google" onerror="this.style.display='none';this.parentElement.textContent='G';">`;
+  }
+  if(item.img){
+    return `<img src="${dockHtmlEscape(item.img)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" onerror="this.style.display='none';this.parentElement.textContent='${dockHtmlEscape(item.icon||'🌐')}';">`;
+  }
+  return dockHtmlEscape(item.icon||'🌐');
+}
+function renderDock(){
+  const host=document.getElementById('dock-pinned');
+  if(!host)return;
+  const pinnedApps=state.dockApps
+    .map(id=>APPS.find(app=>app.id===id))
+    .filter(app=>app&&isAppInstalled(app.id));
+  const pinnedLinks=state.dockLinks.filter(link=>link&&link.id&&link.url);
+  host.innerHTML=[...pinnedApps.map(app=>`
+    <div class="dock-item" id="dock-app-${dockHtmlEscape(app.id)}" onclick="launchApp('${esc(app.id)}','${esc(app.title)}','${esc(app.icon)}','${esc(app.url)}')" title="${dockHtmlEscape(app.title)}">
+      <div class="dock-img" style="background:${dockHtmlEscape(app.color||'#2563eb')};">${dockIconMarkup(app)}</div>
+      <div class="dock-label">${dockHtmlEscape(app.title)}</div>
+      <div class="dock-dot" id="dot-app-${dockHtmlEscape(app.id)}" style="display:none"></div>
+    </div>`),
+    ...pinnedLinks.map(link=>`
+    <div class="dock-item" id="dock-link-${dockHtmlEscape(link.id)}" onclick="launchDockLink('${esc(link.id)}')" title="${dockHtmlEscape(link.title)}">
+      <div class="dock-img" style="background:${link.icon==='google'?'#fff':'linear-gradient(135deg,#2563eb,#7c3aed)'};">${dockIconMarkup(link)}</div>
+      <div class="dock-label">${dockHtmlEscape(link.title)}</div>
+      <div class="dock-dot" id="dot-link-${dockHtmlEscape(link.id)}" style="display:none"></div>
+    </div>`)].join('');
+  updateDockRunning();
+}
+function launchDockLink(id){
+  const link=state.dockLinks.find(item=>item.id===id);
+  if(!link)return;
+  openWindow('app_dock_'+id,{title:link.title,icon:link.icon==='google'?'🌐':(link.icon||'🌐'),url:link.url});
+}
+function pinAppToDock(id){
+  const app=APPS.find(item=>item.id===id);
+  if(!app||!isAppInstalled(id))return;
+  if(!state.dockApps.includes(id)){
+    state.dockApps.push(id);saveState();renderDock();
+    showNotif('📌','Pinned to Dock',app.title+' is now on the Dock.');
+  }
+  closeAppMenus();
+  renderStartMenu(document.getElementById('start-search')?.value||'');
+}
+function unpinAppFromDock(id){
+  state.dockApps=state.dockApps.filter(appId=>appId!==id);
+  saveState();renderDock();closeAppMenus();
+  renderStartMenu(document.getElementById('start-search')?.value||'');
+}
+function addDockLink(){
+  const title=(document.getElementById('dock-link-title')?.value||'').trim()||'Web app';
+  const rawUrl=(document.getElementById('dock-link-url')?.value||'').trim();
+  const icon=(document.getElementById('dock-link-icon')?.value||'🌐').trim()||'🌐';
+  let url;
+  try{
+    url=new URL(rawUrl);
+    if(!/^https?:$/.test(url.protocol))throw new Error('Only web links are supported');
+  }catch(e){
+    showNotif('⚠️','Invalid link','Enter a full http:// or https:// URL.');
+    return;
+  }
+  state.dockLinks.push({id:'link_'+Date.now().toString(36),title,url:url.href,icon});
+  saveState();renderDock();switchSettingsTab('dock');
+  showNotif('📌','Dock item added',title+' is ready on the Dock.');
+}
+function removeDockLink(id){
+  if(id==='google')return;
+  state.dockLinks=state.dockLinks.filter(link=>link.id!==id);
+  saveState();renderDock();switchSettingsTab('dock');
+}
+
 function isAppInstalled(id){return state.installedApps.includes(id);}
 function installApp(id){
   if(!APPS.some(app=>app.id===id))return;
@@ -2235,16 +2485,14 @@ function installApp(id){
     state.installedApps.push(id);saveState();
     showNotif('⬇️','App installed','Added '+APPS.find(app=>app.id===id).title+' to your OS.');
   }
-  const store=openWindows.store;
-  if(store)store.querySelector('.win-body').innerHTML=buildStore();
+  refreshStoreView();
 }
 function uninstallApp(id){
   state.installedApps=state.installedApps.filter(appId=>appId!==id);
   state.desktopApps=state.desktopApps.filter(appId=>appId!==id);
   closeWindow('app_'+id);saveState();renderStartMenu();
   renderDesktopApps();
-  const store=openWindows.store;
-  if(store)store.querySelector('.win-body').innerHTML=buildStore();
+  refreshStoreView();
   showNotif('🗑️','App removed','The app was removed from this OS.');
 }
 
@@ -2300,31 +2548,71 @@ function renderDesktopApps(){
   }).join('');
 }
 
+let storeSearch='';
+const POPULAR_APP_NAMES=['Tiktok','Youtube','Spotify','Froggie\'s Arcade','Scramjet','Vapor','Google Snake','Minecraft'];
+function getPopularApps(){
+  const preferred=POPULAR_APP_NAMES.map(name=>APPS.find(app=>app.title.toLowerCase()===name.toLowerCase())).filter(Boolean);
+  const installed=APPS.filter(app=>isAppInstalled(app.id));
+  return [...new Map([...preferred,...installed,...APPS].map(app=>[app.id,app])).values()].slice(0,6);
+}
+function buildStoreCard(app){
+  return`<div class="store-card">
+    <div style="width:60px;height:60px;border-radius:14px;background:${dockHtmlEscape(app.color||'#2563eb')};display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">
+      ${app.img?`<img src="${dockHtmlEscape(app.img)}" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='${dockHtmlEscape(app.icon||'🌐')}'">`:dockHtmlEscape(app.icon||'🌐')}
+    </div>
+    <div class="store-card-info">
+      <div class="store-card-title">${dockHtmlEscape(app.title)}</div>
+      <div class="store-card-sub">${dockHtmlEscape(app.sub||'Web app')}</div>
+      <div style="font-size:11px;color:var(--text-secondary);margin:4px 0 6px;line-height:1.4;">${dockHtmlEscape(app.desc||'Launch this app from AstralSync OS.')}</div>
+      <span class="app-status">${isAppInstalled(app.id)?'Installed':'Not installed'}</span>
+      ${isAppInstalled(app.id)
+        ? `<button class="store-card-btn" onclick="uninstallApp('${esc(app.id)}')">Uninstall</button>`
+        : `<button class="store-card-btn" onclick="installApp('${esc(app.id)}')">Download &amp; install</button>`}
+    </div>
+  </div>`;
+}
+function buildPopularCard(app){
+  const action=isAppInstalled(app.id)
+    ? `launchApp('${esc(app.id)}','${esc(app.title)}','${esc(app.icon)}','${esc(app.url)}')`
+    : `installApp('${esc(app.id)}')`;
+  return`<button class="store-popular-card" onclick="${action}" title="${dockHtmlEscape(isAppInstalled(app.id)?'Open '+app.title:'Install '+app.title)}">
+    <span class="store-popular-icon" style="background:${dockHtmlEscape(app.color||'#2563eb')};">
+      ${app.img?`<img src="${dockHtmlEscape(app.img)}" alt="" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='${dockHtmlEscape(app.icon||'🌐')}'">`:dockHtmlEscape(app.icon||'🌐')}
+    </span>
+    <span class="store-popular-info"><span class="store-popular-title">${dockHtmlEscape(app.title)}</span><span class="store-popular-sub">${isAppInstalled(app.id)?'Open now':'Click to install'}</span></span>
+  </button>`;
+}
+function buildStoreSections(){
+  const q=storeSearch.trim().toLowerCase();
+  const filtered=APPS.filter(app=>!q||[app.title,app.sub,app.desc].join(' ').toLowerCase().includes(q));
+  if(q){
+    return`<div class="store-section-heading"><h3>Search results</h3><span>${filtered.length} match${filtered.length===1?'':'es'}</span></div>
+      ${filtered.length?`<div class="store-all-grid">${filtered.map(buildStoreCard).join('')}</div>`:'<div class="store-empty">No apps match that search. Try a different name or category.</div>'}`;
+  }
+  const popular=getPopularApps();
+  return`<div class="store-section-heading"><h3>Popular right now</h3><span>Quick picks for your desktop</span></div>
+    <div class="store-popular-grid">${popular.map(buildPopularCard).join('')}</div>
+    <div class="store-section-heading"><h3>All apps</h3><span>${APPS.length} available</span></div>
+    <div class="store-all-grid">${APPS.map(buildStoreCard).join('')}</div>`;
+}
 function buildStore(){
-  const cards = APPS.map(app=>`
-<div class="store-card" style="cursor:default;">
-  <div style="width:60px;height:60px;border-radius:14px;background:${app.color};display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">${app.img?`<img src="${app.img}" alt="" loading="lazy" onerror="this.style.display='none'">`:app.icon}</div>
-  <div class="store-card-info">
-    <div class="store-card-title">${app.title}</div>
-    <div class="store-card-sub">${app.sub}</div>
-    <div style="font-size:11px;color:var(--text-secondary);margin:4px 0 6px;line-height:1.4;">${app.desc}</div>
-    <span class="app-status">${isAppInstalled(app.id)?'Installed':'Not installed'}</span>
-    ${isAppInstalled(app.id)
-      ? `<button class="store-card-btn" onclick="uninstallApp('${app.id}')">Uninstall</button>`
-      : `<button class="store-card-btn" onclick="installApp('${app.id}')">Download &amp; install</button>`}
-  </div>
-</div>`).join('');
-
-  return`<div class="win-content">
-  <div class="store-hero">
-    <div style="font-size:32px;margin-bottom:8px;">🛍️</div>
-    <h2>AstralSync Game Store</h2>
-    <p>${APPS.length} apps • Free • Always available</p>
-  </div>
-  <div class="store-category">📦 All Apps</div>
-  <div class="store-grid" style="grid-template-columns:1fr;">${cards}</div>
-  <div style="height:24px;"></div>
-</div>`;
+  return`<div class="win-content store-modern">
+    <div class="store-hero-modern"><h2>App Store</h2><p>Discover useful apps, games, and web experiences for AstralSync OS.</p></div>
+    <div class="store-search-wrap"><input class="store-search" id="store-search" type="search" value="${dockHtmlEscape(storeSearch)}" placeholder="Search apps by name, category, or description…" oninput="filterStore(this.value)" autocomplete="off"></div>
+    <div id="store-sections">${buildStoreSections()}</div>
+  </div>`;
+}
+function filterStore(value){
+  storeSearch=value||'';
+  const area=document.getElementById('store-sections');
+  if(area)area.innerHTML=buildStoreSections();
+}
+function refreshStoreView(){
+  const store=openWindows.store;
+  if(!store)return;
+  const area=store.querySelector('#store-sections');
+  if(area)area.innerHTML=buildStoreSections();
+  else store.querySelector('.win-body').innerHTML=buildStore();
 }
 
 function launchApp(id, title, icon, url){
@@ -2367,6 +2655,7 @@ function renderStartMenu(filter=''){
     <button class="start-app" onclick="${item.action}"><span class="start-app-icon">${item.icon}</span>${item.title}<span class="app-status">Installed</span></button>
     <button class="app-more" aria-label="More options for ${item.title}" onclick="toggleAppMenu('${item.id}',event)">⋯</button>
     <div class="app-menu" id="app-menu-${item.id}" style="display:none;">
+       <button onclick="${state.dockApps.includes(item.id)?`unpinAppFromDock('${item.id}')`:`pinAppToDock('${item.id}')`}">${state.dockApps.includes(item.id)?'Unpin from Dock':'Pin to Dock'}</button>
       <button onclick="${state.desktopApps.includes(item.id)?`removeAppFromDesktop('${item.id}')`:`addAppToDesktop('${item.id}')`}">${state.desktopApps.includes(item.id)?'Remove from desktop':'Add to desktop'}</button>
       <button class="danger" onclick="uninstallApp('${item.id}')">Delete</button>
     </div>
@@ -2474,9 +2763,11 @@ let settingsTab='appearance';
 function buildSettings(){
   return`<div class="settings-layout" style="height:100%;overflow:hidden;">
   <div class="settings-sidebar">
+    <div class="settings-brand"><span class="settings-brand-icon">⚙</span><div><strong>System Settings</strong><small>Personalize your desktop</small></div></div>
     <div class="settings-section">General</div>
     <div class="settings-item${settingsTab==='appearance'?' active':''}" onclick="switchSettingsTab('appearance')"><span class="s-icon">🎨</span>Appearance</div>
     <div class="settings-item${settingsTab==='wallpaper'?' active':''}" onclick="switchSettingsTab('wallpaper')"><span class="s-icon">🖼️</span>Wallpaper</div>
+     <div class="settings-item${settingsTab==='dock'?' active':''}" onclick="switchSettingsTab('dock')"><span class="s-icon">📌</span>Dock</div>
     <div class="settings-item${settingsTab==='accent'?' active':''}" onclick="switchSettingsTab('accent')"><span class="s-icon">🎡</span>Accent Color</div>
     <div class="settings-section">Account</div>
     <div class="settings-item${settingsTab==='profile'?' active':''}" onclick="switchSettingsTab('profile')"><span class="s-icon">👤</span>Profile</div>
@@ -2494,13 +2785,14 @@ function switchSettingsTab(tab){
   if(c)c.innerHTML=buildSettingsTab(tab);
   document.querySelectorAll('.settings-item').forEach(el=>{
     el.classList.toggle('active',el.textContent.includes(
-      tab==='appearance'?'Appearance':tab==='wallpaper'?'Wallpaper':tab==='accent'?'Accent':tab==='profile'?'Profile':tab==='security'?'Sign-in options':'__'
+       tab==='appearance'?'Appearance':tab==='wallpaper'?'Wallpaper':tab==='dock'?'Dock':tab==='accent'?'Accent':tab==='profile'?'Profile':tab==='security'?'Sign-in options':'__'
     ));
   });
 }
 
 function buildSettingsTab(tab){
   if(tab==='security') return buildSecuritySettings();
+  if(tab==='dock') return buildDockSettings();
   if(tab==='appearance') return`
 <div class="setting-row-title">Appearance</div>
 <div class="os-style-grid">${OS_STYLES.map(style=>`
@@ -2593,7 +2885,8 @@ function buildSettingsTab(tab){
   <button class="os-btn primary" onclick="document.getElementById('wp-upload').click()">📁 Upload Image / GIF / Video</button>
   <button class="os-btn danger" id="custom-wp-remove" style="${state.customWP?'':'display:none'}" onclick="clearCustomWallpaper()">✕ Remove Custom</button>
 </div>
-${state.customWP?`<div style="font-size:11px;color:var(--accent);margin-bottom:12px;padding:8px 12px;background:rgba(0,122,255,0.1);border-radius:8px;">✓ Custom wallpaper active — ${state.customWP.type}</div>`:''}
+ ${state.customWP?`<div style="font-size:11px;color:var(--accent);margin-bottom:12px;padding:8px 12px;background:rgba(0,122,255,0.1);border-radius:8px;">✓ Custom wallpaper active — ${state.customWP.type}${state.customWP.name?' · '+dockHtmlEscape(state.customWP.name):''}</div>`:''}
+ <div class="wallpaper-performance-warning"><strong>MP4 support:</strong> Videos of any file size can be used. Very large or high-resolution videos may use more CPU/GPU and could make the desktop feel less responsive; AstralSync will warn you but still apply the wallpaper.</div>
 <div class="theme-section"><span>🖼️ Wallpaper Themes</span><div class="theme-section-line"></div></div>
 <div class="wallpaper-grid">${WALLPAPERS.map((w,ri)=>{
   const isActive=!state.customWP&&ri===state.wallpaper;
@@ -2614,6 +2907,42 @@ ${state.customWP?`<div style="font-size:11px;color:var(--accent);margin-bottom:1
   if(tab==='profile') return buildProfileSettings();
 
   return'<div class="empty-state"><div class="es-icon">🔧</div><p>Coming soon</p></div>';
+}
+
+function buildDockSettings(){
+  const installed=APPS.filter(app=>isAppInstalled(app.id));
+  const appRows=installed.length?installed.map(app=>`
+    <div class="setting-row">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+        <span style="width:30px;height:30px;border-radius:7px;background:${dockHtmlEscape(app.color||'#2563eb')};display:grid;place-items:center;flex-shrink:0;">${dockIconMarkup(app)}</span>
+        <span style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${dockHtmlEscape(app.title)}</span>
+      </div>
+      <button class="os-btn${state.dockApps.includes(app.id)?' primary':''}" onclick="${state.dockApps.includes(app.id)?`unpinAppFromDock('${esc(app.id)}')`:`pinAppToDock('${esc(app.id)}')`};switchSettingsTab('dock')">${state.dockApps.includes(app.id)?'Unpin':'Pin to Dock'}</button>
+    </div>`).join('') :
+    `<div class="security-note" style="padding:14px 16px;">Install an app from the Game Store, then pin it here or from the Start menu.</div>`;
+  const linkRows=state.dockLinks.map(link=>`
+    <div class="setting-row">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+        <span style="width:30px;height:30px;border-radius:7px;background:${link.icon==='google'?'#fff':'linear-gradient(135deg,#2563eb,#7c3aed)'};display:grid;place-items:center;flex-shrink:0;overflow:hidden;">${dockIconMarkup(link)}</span>
+        <div style="min-width:0;"><div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${dockHtmlEscape(link.title)}</div><div class="security-note" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:320px;">${dockHtmlEscape(link.url)}</div></div>
+      </div>
+      ${link.id==='google'?'<span class="tag">Built in</span>':`<button class="os-btn danger" onclick="removeDockLink('${esc(link.id)}')">Remove</button>`}
+    </div>`).join('');
+  return`<div class="setting-row-title">Dock</div>
+  <p class="security-note" style="margin-bottom:16px;">Pin installed apps or add any web link. Pinned items stay on the full-width Windows-style taskbar and are saved in this browser.</p>
+  <div class="theme-section"><span>📌 Add a web link</span><div class="theme-section-line"></div></div>
+  <div class="setting-group" style="padding:14px 16px;">
+    <div style="display:grid;grid-template-columns:1fr 1.5fr 90px;gap:8px;">
+      <input class="os-input" id="dock-link-title" placeholder="Name (e.g. Google)" maxlength="32">
+      <input class="os-input" id="dock-link-url" placeholder="https://example.com" type="url">
+      <input class="os-input" id="dock-link-icon" placeholder="🌐" maxlength="4" aria-label="Icon">
+    </div>
+    <button class="os-btn primary" style="margin-top:10px;" onclick="addDockLink()">＋ Add to Dock</button>
+  </div>
+  <div class="theme-section"><span>🌐 Web links</span><div class="theme-section-line"></div></div>
+  <div class="setting-group">${linkRows}</div>
+  <div class="theme-section"><span>📦 Installed apps</span><div class="theme-section-line"></div></div>
+  <div class="setting-group">${appRows}</div>`;
 }
 
 function buildSecuritySettings(){
@@ -2710,16 +3039,47 @@ function setFont(f){
   state.font=f;saveState();applyFont(f);
 }
 function clearCustomWallpaper(){
+  if(customWallpaperObjectURL){URL.revokeObjectURL(customWallpaperObjectURL);customWallpaperObjectURL=null;}
   state.customWP=null;saveState();saveCustomWP();applyWallpaper();
+  deleteWallpaperBlob();
   switchSettingsTab('wallpaper');
 }
 function handleWallpaperUpload(e){
   const file=e.target.files[0];
   if(!file)return;
-  const isVideo=file.type.startsWith('video/');
+  const isVideo=file.type.startsWith('video/')||/\.mp4$/i.test(file.name);
+  if(isVideo){
+    if(customWallpaperObjectURL)URL.revokeObjectURL(customWallpaperObjectURL);
+    customWallpaperObjectURL=URL.createObjectURL(file);
+    state.customWP={type:'video',src:customWallpaperObjectURL,name:file.name,size:file.size,mime:file.type||'video/mp4',storedInDB:false};
+    saveCustomWP();applyWallpaper();switchSettingsTab('wallpaper');
+    const probe=document.createElement('video');
+    probe.preload='metadata';
+    probe.onloadedmetadata=()=>{
+      const mb=file.size/1048576, pixels=(probe.videoWidth||0)*(probe.videoHeight||0);
+      const mayLag=mb>50||pixels>2073600||((navigator.hardwareConcurrency||4)<=4&&mb>25);
+      if(mayLag){
+        showNotif('⚠️','Large video wallpaper','Applied '+file.name+'. Its size or resolution may cause lag on this device.');
+      }else{
+        showNotif('🎬','Wallpaper','MP4 wallpaper applied.');
+      }
+      probe.removeAttribute('src');probe.load();
+    };
+    probe.onerror=()=>showNotif('⚠️','Wallpaper','Applied, but the browser could not read the video metadata.');
+    probe.src=customWallpaperObjectURL;
+    // IndexedDB stores the Blob itself, not a base64 copy, so size is not
+    // limited by localStorage. The current object URL remains usable if it fails.
+    storeWallpaperBlob(file).then(()=>{
+      if(state.customWP?.src===customWallpaperObjectURL){
+        state.customWP.storedInDB=true;saveCustomWP();
+      }
+    }).catch(()=>showNotif('⚠️','Wallpaper storage','The MP4 works now but could not be persisted after refresh.'));
+    e.target.value='';
+    return;
+  }
   const reader=new FileReader();
   reader.onload=function(ev){
-    state.customWP={type:isVideo?'video':(file.type==='image/gif'?'gif':'image'),src:ev.target.result};
+    state.customWP={type:file.type==='image/gif'?'gif':'image',src:ev.target.result};
     saveCustomWP();applyWallpaper();
     switchSettingsTab('wallpaper');
     showNotif('🖼️','Wallpaper','Custom wallpaper applied!');
