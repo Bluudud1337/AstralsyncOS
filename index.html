@@ -341,7 +341,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
   box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.08),inset 0 1px 0 rgba(255,255,255,0.06);
 }
 .window.minimized{display:none;}
-.window.focused{z-index:2000;box-shadow:0 28px 80px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.4),inset 0 1px 0 rgba(255,255,255,0.7);}
+.window.focused{z-index:9000;box-shadow:0 28px 80px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.4),inset 0 1px 0 rgba(255,255,255,0.7);}
 .dark-mode .window.focused{box-shadow:0 28px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.12),inset 0 1px 0 rgba(255,255,255,0.08);}
 
 .win-titlebar{
@@ -2189,6 +2189,7 @@ const GAMES = [
   {title:"Antidisestablishmentarianism Baldi",img:"https://i.ytimg.com/vi/dFtsHd4nax0/maxresdefault.jpg",url:"https://academic-mathwork.vercel.app/Antidisestablishmentarianism.html",cat:"Horror"},
   {title:"Super Mario 64",img:"https://www.giantbomb.com/a/uploads/scale_medium/1/12541/3312461-sq_n64_supermario64.jpg",url:"https://studysync.co.uk/storage/sm64/",cat:"Adventure"},
   {title:"BowMasters",img:"https://o.qoo-img.com/ggpht/LVOIa6Hey8FijLCNoBRpZEKDI37bGtOh20UN2umov4XPEXUIjYlmQ2vH1TQ0FOxY5v5X",url:"https://studysync.co.uk/storage/bowmasters.html",cat:"Shooter"},
+  {title:"Sonic Back In Time",img:"https://i.ytimg.com/vi/1A5KFnvZMyg/maxresdefault.jpg",url:"https://f.kbhgames.com/emujs/play.php?c=segaMD&f=SonicBIT.gen",cat:"Sonic"},
 ];
 
 const CATEGORIES = [...new Set(GAMES.map(g=>g.cat))].sort();
@@ -2803,8 +2804,10 @@ function ensureSnapPreview(){
 }
 
 function snapArea(kind){
-  const top=28, bottom=Math.max(top+80,window.innerHeight-(document.getElementById('dock')?.offsetHeight||68));
-  const W=window.innerWidth,H=bottom-top;
+  const top = 0;
+const bottom = window.innerHeight;
+const W = window.innerWidth;
+const H = bottom - top;
   const half=Math.round(W/2), third=Math.round(W/3), twoThird=Math.round(W*2/3);
   const qW=Math.round(W/2), qH=Math.round(H/2);
   const areas={
@@ -2919,14 +2922,15 @@ function makeDraggable(el,id){
     }
 
     sx=e.clientX;sy=e.clientY;
-    ex=parseInt(el.style.left)||0;ey=parseInt(el.style.top)||28;
+   ex = el.offsetLeft;
+ey = el.offsetTop;
     drag=true;snapDrag={id,el};
     tb.classList.add('dragging');
-    el.setPointerCapture?.(e.pointerId);
+   
     e.preventDefault();
   });
 
-  tb.addEventListener('pointermove',e=>{
+  document.addEventListener('pointermove',e=>{
     if(!drag)return;
     const dx=e.clientX-sx,dy=e.clientY-sy;
     el.style.left=(ex+dx)+'px';
@@ -2949,7 +2953,7 @@ function makeDraggable(el,id){
     }
     snapDrag=null;
   };
-  tb.addEventListener('pointerup',endDrag);
+  document.addEventListener('pointerup',endDrag);
   tb.addEventListener('pointercancel',endDrag);
   el.addEventListener('pointerdown',()=>focusWindow(id));
 }
