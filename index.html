@@ -1827,6 +1827,9 @@ body.os-win11 #start-menu { bottom:54px !important; }
     <div class="login-avatar" id="login-avatar">👤</div>
     <div class="login-name" id="login-name">Player 1</div>
     <div class="login-sub" id="login-sub">Sign in to AstralSync</div>
+    <button onclick="linkCurrentProfileToCloud()">
+  ☁️ Link To Cloud
+</button>
     <button onclick="showCloudLogin()">
   ☁️ Sign In
 </button>
@@ -2437,6 +2440,99 @@ async function saveCloudState(){
 
   }
 }
+async function linkCurrentProfileToCloud(){
+
+  const profile =
+    state.profiles[state.activeProfile];
+
+  if(!profile.email){
+    alert("This profile needs an email first.");
+    return;
+  }
+
+  if(!profile.password){
+    alert("This profile needs a password first.");
+    return;
+  }
+
+  try{
+
+    // Create Firebase account
+    const credential =
+      await auth.createUserWithEmailAndPassword(
+        profile.email,
+        profile.password
+      );
+
+    firebaseUser = credential.user;
+
+    profile.firebaseUID =
+      credential.user.uid;
+
+    profile.cloudEnabled = true;
+
+    saveState();
+
+    await saveCloudState();
+
+    alert(
+      "Cloud account linked successfully!"
+    );
+
+  }catch(err){
+
+    // If account already exists,
+    // try signing in instead.
+
+    if(err.code === "auth/email-already-in-use"){
+
+      try{
+
+        const credential =
+          await auth.signInWithEmailAndPassword(
+            profile.email,
+            profile.password
+          );
+
+        firebaseUser =
+          credential.user;
+
+        profile.firebaseUID =
+          credential.user.uid;
+
+        profile.cloudEnabled = true;
+
+        saveState();
+
+        await saveCloudState();
+
+        alert(
+          "Existing cloud account linked!"
+        );
+
+      }catch(e){
+
+        alert(
+          e.code + "\n" +
+          e.message
+        );
+
+      }
+
+    }else{
+
+      alert(
+        err.code + "\n" +
+        err.message
+      );
+
+    }
+
+  }
+
+}
+window.linkCurrentProfileToCloud =
+  linkCurrentProfileToCloud;
 async function signInCloud(email,password){
 
   try{
@@ -4786,6 +4882,7 @@ window.showCloudLogin = async ()=>{
   );
 
 };
+
 </script>
 </body>
 </html>
