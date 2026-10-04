@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700&family=Playfair+Display:wght@400;700&family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore-compat.js"></script>
 <style>
 /* BOOT SCREEN */
 #boot-screen{
@@ -1824,6 +1827,13 @@ body.os-win11 #start-menu { bottom:54px !important; }
     <div class="login-avatar" id="login-avatar">👤</div>
     <div class="login-name" id="login-name">Player 1</div>
     <div class="login-sub" id="login-sub">Sign in to AstralSync</div>
+    <button onclick="showCloudLogin()">
+  ☁️ Sign In
+</button>
+
+<button onclick="signOutCloud()">
+  🚪 Sign Out
+</button>
     <div class="login-methods">
       <button class="login-method active" id="login-password-method" onclick="setLoginMethod('password')">🔑 Password</button>
       <button class="login-method" id="login-pin-method" onclick="setLoginMethod('pin')">🔢 PIN</button>
@@ -2029,6 +2039,24 @@ body.os-win11 #start-menu { bottom:54px !important; }
 </div>
 
 <script>
+// FIREBASE
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCxZcCuZU7s73Jg78ZmP9O10GV6wTUnnbI",
+    authDomain: "astrallogin-264ca.firebaseapp.com",
+    projectId: "astrallogin-264ca",
+    storageBucket: "astrallogin-264ca.firebasestorage.app",
+    messagingSenderId: "535760531180",
+    appId: "1:535760531180:web:04a2a06da1af371cd87fc9",
+    measurementId: "G-ZEMB73CC9D"
+  };
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let firebaseUser = null;    
 // ============================================================
 // DATA
 // ============================================================
@@ -2096,7 +2124,7 @@ const GAMES = [
   {title:"BitLife",img:"https://www.gamenora.com/upload/games/thumbnails/BitLife%20Real%20Life%20Simulator.webp",url:"https://gameinclassroom.github.io/bitlife/",cat:"Casual"},
   {title:"Poly Track",img:"https://poki.us.org/wp-content/uploads/2025/07/Poly-Track.jpg",url:"https://www.kodub.com/apps/polytrack",cat:"Racing"},
   {title:"Minecraft",img:"https://assets2.ignimgs.com/2014/06/18/minecraft-buttonjpg-b689ca.jpg",url:"about:blank",cat:"Adventure",blank:"https://eaglercraft-minecraft.com/eaglercraft-unblocked.embed"},
-  {title:"Roblox",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Roblox_Corporation_2025_logo.svg/250px-Roblox_Corporation_2025_logo.svg.png",url:"https://academictools.up.railway.app/learn/study/https%3A%2F%2Fnowgg.fun%2Fapps%2Faptoide%2F5874%2Faptoide.html%3Fdeep_link%3Daptoidesearch%3A%2F%2Fcom.roblox.client",cat:"Adventure"},
+  {title:"Roblox",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Roblox_Corporation_2025_logo.svg/250px-Roblox_Corporation_2025_logo.svg.png",url:"https://71.ip.nowgg.fun/apps/a/19900/b.html",cat:"Adventure"},
   {title:"People Playground",img:"https://images.gog-statics.com/5ffaf8774afa96332c101594d9046271d002b90bc1e2ba1fd1ed3d4da2f8d8df.jpg",url:"https://bplus-math.github.io/iframe/194-a.html",cat:"Sandbox"},
   {title:"Solar Smash",img:"https://gogamego.io/wp-content/uploads/2025/08/solar-smash.webp",url:"https://solarsmashonline.com/play/solar-smash/",cat:"Sandbox"},
   {title:"Pixel Speedrun",img:"https://tse2.mm.bing.net/th/id/OIP.gP6ysHWWmM74-Y4FwqqfwQHaEP?rs=1&pid=ImgDetMain&o=7&rm=3",url:"https://files.rocketgames.io/uploads/games/p/pixel-speedrun/files/85bc97/index.html",cat:"Arcade"},
@@ -2279,7 +2307,21 @@ try {
 } catch(e) { state = {}; }
 state.profiles = state.profiles || [{id:1,name:"Player 1",color:"#007AFF",emoji:"👾",email:"",password:"",pin:""}];
 // Ensure existing profiles have new fields
-state.profiles.forEach(p=>{ if(!p.email) p.email=''; if(!p.password) p.password=''; if(!p.pin) p.pin=''; if(!p.frame) p.frame='none'; });
+state.profiles.forEach(p=>{
+
+  if(!p.email) p.email='';
+  if(!p.password) p.password='';
+  if(!p.pin) p.pin='';
+  if(!p.frame) p.frame='none';
+
+  // Firebase migration
+  if(!('firebaseUID' in p))
+    p.firebaseUID = null;
+
+  if(!('cloudEnabled' in p))
+    p.cloudEnabled = false;
+
+});
 state.activeProfile = state.activeProfile || 0;
 state.wallpaper = (typeof state.wallpaper === 'number' && state.wallpaper >= 0) ? state.wallpaper : 4;
 state.accent = state.accent || "#3b82f6";
@@ -2345,10 +2387,94 @@ function updateDockAvatar(){
 }
 
 function saveState(){
+
   try {
-    const s = Object.assign({},state, {customWP:null});
-    localStorage.setItem('astralOS', JSON.stringify(s));
-  } catch(e) {}
+
+    const s = Object.assign({},state,{
+      customWP:null
+    });
+
+    localStorage.setItem(
+      'astralOS',
+      JSON.stringify(s)
+    );
+
+    localStorage.setItem(
+      'astralOS_backup',
+      JSON.stringify(s)
+    );
+
+  } catch(e){}
+
+  saveCloudState?.();
+
+}
+async function saveCloudState(){
+
+  if(!firebaseUser) return;
+
+  try{
+
+    await db
+      .collection("users")
+      .doc(firebaseUser.uid)
+      .set(
+        {
+          state,
+          updatedAt:Date.now()
+        },
+        {
+          merge:true
+        }
+      );
+
+  }catch(err){
+
+    console.error(
+      "Cloud save failed",
+      err
+    );
+
+  }
+}
+async function signInCloud(email,password){
+
+  try{
+
+    const credential =
+      await auth.signInWithEmailAndPassword(
+        email,
+        password
+      );
+
+    firebaseUser = credential.user;
+
+    await loadCloudState();
+
+    alert("Signed in!");
+
+  }catch(err){
+
+    alert(err.message);
+
+  }
+}
+
+async function signOutCloud(){
+
+  try{
+
+    await auth.signOut();
+
+    firebaseUser = null;
+
+    alert("Signed out");
+
+  }catch(err){
+
+    console.error(err);
+
+  }
 }
 function saveCustomWP(){
   try {
@@ -4620,6 +4746,46 @@ function oobeSkip(){
     if(bs)bs.style.display='none';
   }
 })();
+auth.onAuthStateChanged(async user=>{
+
+  firebaseUser = user;
+
+  if(user){
+
+    console.log(
+      "Logged in:",
+      user.uid
+    );
+
+    await loadCloudState();
+
+  }else{
+
+    console.log(
+      "Logged out"
+    );
+
+  }
+
+});
+window.showCloudLogin = async ()=>{
+
+  const email =
+    prompt("Email");
+
+  if(!email) return;
+
+  const password =
+    prompt("Password");
+
+  if(!password) return;
+
+  await signInCloud(
+    email,
+    password
+  );
+
+};
 </script>
 </body>
 </html>
