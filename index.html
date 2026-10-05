@@ -2544,7 +2544,7 @@ async function signInCloud(email,password){
 
     firebaseUser = credential.user;
 
-    //await loadCloudState();
+    await loadCloudState();
 
     alert("Signed in!");
 
@@ -4881,7 +4881,6 @@ window.showCloudLogin = async ()=>{
   );
 
 };
-
 </script>
 </body>
 </html>
