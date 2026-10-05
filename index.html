@@ -2412,44 +2412,6 @@ function saveState(){
   saveCloudState?.();
 
 }
-async function loadCloudState(){
-
-  if(!firebaseUser) return;
-
-  try{
-
-    const snap =
-      await db
-        .collection("users")
-        .doc(firebaseUser.uid)
-        .get();
-
-    if(!snap.exists){
-      console.log("No cloud save found");
-      return;
-    }
-
-    const data = snap.data();
-
-    if(!data.state) return;
-
-    Object.assign(
-      state,
-      data.state
-    );
-
-    saveState();
-
-    console.log(
-      "Cloud save loaded"
-    );
-
-  }catch(err){
-
-    console.error(err);
-
-  }
-}  
 async function saveCloudState(){
 
   if(!firebaseUser) return;
@@ -2543,7 +2505,6 @@ async function linkCurrentProfileToCloud(){
         saveState();
 
         await saveCloudState();
-
         alert(
           "Existing cloud account linked!"
         );
@@ -2583,7 +2544,7 @@ async function signInCloud(email,password){
 
     firebaseUser = credential.user;
 
-    await loadCloudState();
+    //await loadCloudState();
 
     alert("Signed in!");
 
@@ -4891,7 +4852,7 @@ auth.onAuthStateChanged(async user=>{
       user.uid
     );
 
-    await loadCloudState();
+    //await loadCloudState();
 
   }else{
 
