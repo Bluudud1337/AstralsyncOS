@@ -159,6 +159,86 @@ footer{padding:26px clamp(16px,4vw,56px) 40px;color:#666673;font-size:.78rem;bor
  .hero{min-height:560px;padding-bottom:4rem}.hero-poster{display:none}
  .grid{gap:16px 8px}
 }
+/* Video player wrapper */
+.player-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 390 / 270;
+  background: #000;
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+}
+
+.player-wrap .player {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+/* Fullscreen button: bottom-left */
+#fullscreenBtn {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  z-index: 20;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  font-size: 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#fullscreenBtn:hover {
+  background: var(--accent);
+}
+
+/* Fill the screen when fullscreen is activated */
+#mPlayer:fullscreen {
+  padding: 0;
+  background: #000;
+  display: block;
+  overflow: hidden;
+}
+
+#mPlayer:fullscreen .modal {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  max-width: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  overflow: hidden;
+}
+
+#mPlayer:fullscreen .player-wrap {
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+#mPlayer:fullscreen .player {
+  height: 100%;
+}
+
+#mPlayer:fullscreen .pad {
+  display: none;
+}
+
+#mPlayer:fullscreen .circ.x {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+}
 </style>
 </head>
 <body data-layout="pc" data-card="m">
@@ -217,7 +297,13 @@ footer{padding:26px clamp(16px,4vw,56px) 40px;color:#666673;font-size:.78rem;bor
 <div id="mPlayer" class="back hidden" role="dialog" aria-modal="true" aria-label="Player">
   <div class="modal">
     <button class="circ x" data-close aria-label="Close">✕</button>
-    <div class="player" id="playerBox"></div>
+<div class="player-wrap">
+  <div class="player" id="playerBox"></div>
+
+  <button id="fullscreenBtn" type="button" aria-label="Fullscreen">
+    ⛶
+  </button>
+</div>
     <div class="pad"><h2 id="pTitle"></h2><div class="meta" id="pMeta"></div><p id="pDesc"></p></div>
   </div>
 </div>
@@ -343,6 +429,51 @@ const movies = [
     embed:"https://shuttletv.pk/watch/62211?s=1&e=1",watched:0,likes:0,
     seasons:[
       ["https://shuttletv.pk/watch/62211?s=1&e=1"]
+    ]},
+           {id:"TES",title:"The Elusive Samurai",type:"show",year:"2015",runtime:"25 episodes",rating:"92%",badge:"New",description:"",poster:"https://www.manga-news.com/public/images/vols/Elusive_Samurai_4_kana.jpg",
+    embed:"https://shuttletv.su/watch/222623?s=1&e=1",watched:0,likes:0,
+    seasons:[
+      ["https://shuttletv.su/watch/222623?s=1&e=1"]
+    ]},
+           {id:"SIN",title:"Sinners",type:"movie",year:"2025",runtime:"2hrs",rating:"92%",badge:"New",description:"Cool Movie.",poster:"https://mlpnk72yciwc.i.optimole.com/cqhiHLc.IIZS~2ef73/w:auto/h:auto/q:75/https://bleedingcool.com/wp-content/uploads/2024/09/GYNIkbCakAA2XMn.jpg",
+    embed:"https://shuttletv.su/watch/1233413",watched:0,likes:0,
+    seasons:[
+      ["https://shuttletv.su/watch/1233413"]
+    ]},
+           {id:"MHA",title:"My Hero Academia",type:"show",year:"",runtime:"",rating:"",badge:"New",description:"Imagine if my hero had some like, next gen or smth",poster:"https://static.tvtropes.org/pmwiki/pub/images/my_hero_academia_poster.png",
+    embed:"https://shuttletv.pk/watch/65930?s=1&e=1",watched:0,likes:0,
+    seasons:[
+      ["https://shuttletv.pk/watch/65930?s=1&e=1"]
+    ]},
+            {id:"BL",title:"Blue Lock",type:"show",year:"",runtime:"",rating:"",badge:"New",description:"Soccer is NOT this serious bro",poster:"https://static0.gamerantimages.com/wordpress/wp-content/uploads/sharedimages/2024/04/blue-lock-tv-series-poster.jpg",
+    embed:"https://shuttletv.pk/watch/131041?s=1&e=1",watched:0,likes:0,
+    seasons:[
+      ["https://shuttletv.pk/watch/131041?s=1&e=1"]
+    ]},
+            {id:"TB",title:"The Boys",type:"show",year:"",runtime:"",rating:"",badge:"New",description:"Vai toma toma",poster:"https://m.media-amazon.com/images/M/MV5BZjU4OWNiYzQtMzc1NS00NjZlLTgyYTctZWY4ZmEzMTkxYjA4XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    embed:"https://shuttletv.pk/watch/76479?s=1&e=1",watched:0,likes:0,
+    seasons:[
+      ["https://shuttletv.pk/watch/76479?s=1&e=1"]
+    ]},
+               {id:"INV",title:"Invincible",type:"show",year:"",runtime:"",rating:"",badge:"New",description:"protein tubes",poster:"https://static1.srcdn.com/wordpress/wp-content/uploads/2023/07/invincible-franchise-poster.jpg",
+    embed:"https://shuttletv.pk/watch/95557?s=1&e=1",watched:0,likes:0,
+    seasons:[
+      ["https://shuttletv.pk/watch/95557?s=1&e=1"]
+    ]},
+              {id:"IT",title:"IT:Welcome To Derry",type:"show",year:"",runtime:"",rating:"",badge:"New",description:"Yoo the guy from verbalase",poster:"https://image.tmdb.org/t/p/original/pQiI6RtUJAnM5zvcGW61lRFI7zE.jpg",
+    embed:"https://shuttletv.pk/watch/200875?s=1&e=1",watched:0,likes:0,
+    seasons:[
+      ["https://shuttletv.pk/watch/200875?s=1&e=1"]
+    ]},
+              {id:"OPM",title:"One Punch Man",type:"show",year:"",runtime:"",rating:"",badge:"New",description:"Beats goku btw",poster:"https://static1.srcdn.com/wordpress/wp-content/uploads/2024/02/one-punch-man-franchise-poster.jpg",
+    embed:"https://shuttletv.pk/watch/63926?s=1&e=1",watched:0,likes:0,
+    seasons:[
+      ["https://shuttletv.pk/watch/63926?s=1&e=1"]
+    ]},
+              {id:"CBE",title:"CyberPunk Edgerunners",type:"show",year:"",runtime:"",rating:"",badge:"New",description:"the guy from jjs",poster:"https://images.wallpapersden.com/image/download/netflix-cyberpunk-edgerunners-2022_bWtpbGWUmZqaraWkpJRobWllrWdma2U.jpg",
+    embed:"https://shuttletv.pk/watch/105248?s=1&e=1",watched:0,likes:0,
+    seasons:[
+      ["https://shuttletv.pk/watch/105248?s=1&e=1"]
     ]},
     
     
@@ -551,7 +682,21 @@ document.addEventListener("keydown",e=>{
     const off=Math.abs(dx*dir[1])+Math.abs(dy*dir[0]);const sc=along+off*2.5;if(sc<bs){bs=sc;best=x}}
   if(best){e.preventDefault();best.focus();best.scrollIntoView({block:"center",inline:"nearest",behavior:S.calm?"auto":"smooth"})}
 });
+const fullscreenBtn = document.querySelector("#fullscreenBtn");
+const playerModal = document.querySelector("#mPlayer");
 
+fullscreenBtn.addEventListener("click", async () => {
+  try {
+    if (document.fullscreenElement === playerModal) {
+      await document.exitFullscreen();
+    } else {
+      await playerModal.requestFullscreen();
+    }
+  } catch (error) {
+    console.error("Fullscreen error:", error);
+    toast("Fullscreen is not available here.");
+  }
+});
 /* ---------- init ---------- */
 applySettings();renderProfiles();
 if(me&&profiles.some(p=>p.id===me))chooseProfile(me);else localStorage.removeItem("coralflix-profile");
