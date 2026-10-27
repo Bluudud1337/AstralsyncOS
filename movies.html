@@ -538,7 +538,7 @@ function toast(t){const e=document.createElement("div");e.className="toast";e.te
 
 /* ---------- profiles ---------- */
 const COLS=["#ff6b4a","#6d28d9","#2563eb","#b45309","#059669"];
-const pm=p=>`<button class="pchoice" data-p="${esc(p.id)}"><div class="av" style="background:${p.color}">${esc(p.initials)}</div>${esc(p.name)}</button>`;
+const pm=p=>`<button class="pchoice" data-p="${esc(p.id)}"><div class="av" style="background:${esc(p.color)}">${esc(p.initials)}</div>${esc(p.name)}${p.subtitle?`<small style="display:block;margin-top:4px;font-weight:500;color:var(--mute)">${esc(p.subtitle)}</small>`:""}</button>`;
 function renderProfiles(){
   const h=profiles.length?profiles.map(pm).join(""):`<div class="empty">No profiles yet. Add one to start.</div>`;
   $("#gateProfiles").innerHTML=h;$("#modalProfiles").innerHTML=h;
