@@ -506,7 +506,7 @@ const jset=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const COLORS=["#ff6b4a","#e50914","#8b5cf6","#3b82f6","#10b981","#f5b301"];
 const DEFAULTS={block:true,layout:"pc",accent:COLORS[0],card:"m",calm:false};
 let S={...DEFAULTS,...jget("cf-settings",{})};
-let profiles=jget("coralflix-saved-profiles",[]).filter(p=>p&&p.id&&p.name).map((p,i)=>({...p,email:typeof p.email==="string"?p.email:"",subtitle:typeof p.subtitle==="string"?p.subtitle:"",initials:typeof p.initials==="string"&&p.initials?p.initials:String(p.name).trim().split(/\\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"CF",color:typeof p.color==="string"&&/^#[0-9a-f]{6}$/i.test(p.color)?p.color:["#ff6b4a","#6d28d9","#2563eb","#b45309","#059669"][i%5]}));
+let profiles=jget("coralflix-saved-profiles",[]).filter(p=>p&&p.id&&p.name).map((p,i)=>({...p,email:typeof p.email==="string"?p.email:"",subtitle:typeof p.subtitle==="string"?p.subtitle:"",initials:typeof p.initials==="string"&&p.initials?p.initials:String(p.name).trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"CF",color:typeof p.color==="string"&&/^#[0-9a-f]{6}$/i.test(p.color)?p.color:["#ff6b4a","#6d28d9","#2563eb","#b45309","#059669"][i%5]}));
 let me=localStorage.getItem("coralflix-profile")||"";
 let view="home",cur=null,epCtx=null,hero=null;
 const touchy=matchMedia("(pointer:coarse)").matches;
