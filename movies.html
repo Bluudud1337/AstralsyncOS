@@ -250,7 +250,7 @@ footer{padding:26px clamp(16px,4vw,56px) 40px;color:#666673;font-size:.78rem;bor
     <p>Pick a profile to continue. Profiles and lists stay on this device.</p>
     <div id="gateProfiles" class="profiles"></div>
     <div style="margin-top:26px"><button id="gateNew" class="btn btn-w">Add profile</button></div>
-    <p class="note">The email is only a local label. Nothing is sent anywhere.</p>
+    <p class="note">Profiles and preferences are saved in this browser on this device.</p>
   </div>
 </section>
 
@@ -359,7 +359,8 @@ footer{padding:26px clamp(16px,4vw,56px) 40px;color:#666673;font-size:.78rem;bor
     <h2 style="padding:24px 26px 0">Add profile</h2>
     <div class="form">
       <label>Name<input id="nName" maxlength="24" placeholder="Jordan" required /></label>
-      <label>Email (saved on this device only)<input id="nEmail" type="email" placeholder="you@example.com" required /></label>
+      <label>Subtitle (optional)<input id="nSubtitle" maxlength="40" placeholder="Movie fan" /></label>
+      <label>Profile color<select id="nColor"><option value="#ff6b4a">Coral</option><option value="#6d28d9">Violet</option><option value="#2563eb">Blue</option><option value="#b45309">Amber</option><option value="#059669">Green</option><option value="#db2777">Pink</option><option value="#64748b">Slate</option></select></label>
       <p class="err hidden" id="nErr" role="alert"></p>
       <button class="btn btn-a" type="submit">Save profile</button>
     </div>
@@ -371,8 +372,25 @@ footer{padding:26px clamp(16px,4vw,56px) 40px;color:#666673;font-size:.78rem;bor
     <button class="circ x" data-close aria-label="Close">✕</button>
     <h2 style="padding:0 0 20px">Switch profile</h2>
     <div id="modalProfiles" class="profiles"></div>
-    <div style="margin-top:22px;text-align:center"><button id="modalNew" class="btn btn-g">Add profile</button></div>
+    <div style="margin-top:22px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button id="editProfileBtn" class="btn btn-g">Customize current profile</button><button id="modalNew" class="btn btn-g">Add profile</button></div>
   </div>
+</div>
+
+
+<div id="mEditProfile" class="back hidden" role="dialog" aria-modal="true" aria-label="Customize profile">
+  <form class="modal set" id="editProfileForm">
+    <button class="circ x" type="button" data-close aria-label="Close">✕</button>
+    <h2 style="padding:24px 26px 0">Customize profile</h2>
+    <div class="form">
+      <label>Display name<input id="editName" maxlength="24" required /></label>
+      <label>Subtitle<input id="editSubtitle" maxlength="40" placeholder="Movie fan" /></label>
+      <label>Avatar initials<input id="editInitials" maxlength="3" placeholder="CF" /></label>
+      <label>Profile color<select id="editColor"><option value="#ff6b4a">Coral</option><option value="#6d28d9">Violet</option><option value="#2563eb">Blue</option><option value="#b45309">Amber</option><option value="#059669">Green</option><option value="#db2777">Pink</option><option value="#64748b">Slate</option></select></label>
+      <p class="err hidden" id="editErr" role="alert"></p>
+      <button class="btn btn-a" type="submit">Save changes</button>
+      <button class="btn btn-g" type="button" id="deleteProfileBtn">Delete this profile</button>
+    </div>
+  </form>
 </div>
 
 <script>
@@ -488,7 +506,7 @@ const jset=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const COLORS=["#ff6b4a","#e50914","#8b5cf6","#3b82f6","#10b981","#f5b301"];
 const DEFAULTS={block:true,layout:"pc",accent:COLORS[0],card:"m",calm:false};
 let S={...DEFAULTS,...jget("cf-settings",{})};
-let profiles=jget("coralflix-saved-profiles",[]).filter(p=>p&&p.id&&p.email);
+let profiles=jget("coralflix-saved-profiles",[]).filter(p=>p&&p.id&&p.name).map((p,i)=>({...p,email:typeof p.email==="string"?p.email:"",subtitle:typeof p.subtitle==="string"?p.subtitle:"",initials:typeof p.initials==="string"&&p.initials?p.initials:String(p.name).trim().split(/\\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"CF",color:typeof p.color==="string"&&/^#[0-9a-f]{6}$/i.test(p.color)?p.color:["#ff6b4a","#6d28d9","#2563eb","#b45309","#059669"][i%5]}));
 let me=localStorage.getItem("coralflix-profile")||"";
 let view="home",cur=null,epCtx=null,hero=null;
 const touchy=matchMedia("(pointer:coarse)").matches;
