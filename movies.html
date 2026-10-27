@@ -556,10 +556,39 @@ function openCreate(){closeAll();$("#createForm").reset();$("#nErr").classList.a
 $("#gateNew").onclick=openCreate;$("#modalNew").onclick=openCreate;
 $("#createForm").onsubmit=e=>{
   e.preventDefault();
-  const name=$("#nName").value.trim(),email=$("#nEmail").value.trim().toLowerCase();
-  if(profiles.some(p=>p.email.toLowerCase()===email)){const r=$("#nErr");r.textContent="That email already has a profile on this device.";r.classList.remove("hidden");return}
-  const p={id:"custom-"+Date.now(),name,email,subtitle:"",initials:name.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"CF",color:COLS[profiles.length%COLS.length]};
+  const name=$("#nName").value.trim(),subtitle=$("#nSubtitle").value.trim(),color=$("#nColor").value;
+  if(!name){const r=$("#nErr");r.textContent="Enter a profile name.";r.classList.remove("hidden");return}
+  const p={id:"custom-"+Date.now(),name,subtitle,initials:name.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"CF",color};
   profiles.push(p);jset("coralflix-saved-profiles",profiles);renderProfiles();chooseProfile(p.id);
+};
+function openEditProfile(){
+  const p=profiles.find(x=>x.id===me);
+  if(!p){toast("Choose a profile first.");return}
+  closeAll();$("#editErr").classList.add("hidden");
+  $("#editName").value=p.name||"";$("#editSubtitle").value=p.subtitle||"";$("#editInitials").value=p.initials||"";$("#editColor").value=p.color||"#ff6b4a";
+  open("#mEditProfile");$("#editName").focus();
+}
+$("#editProfileBtn").onclick=openEditProfile;
+$("#editProfileForm").onsubmit=e=>{
+  e.preventDefault();
+  const p=profiles.find(x=>x.id===me);if(!p)return;
+  const name=$("#editName").value.trim();
+  if(!name){$("#editErr").textContent="Display name cannot be empty.";$("#editErr").classList.remove("hidden");return}
+  p.name=name;p.subtitle=$("#editSubtitle").value.trim();
+  p.initials=($("#editInitials").value.trim()||name.split(/\s+/).slice(0,2).map(w=>w[0]).join("")).slice(0,3).toUpperCase();
+  p.color=$("#editColor").value;
+  jset("coralflix-saved-profiles",profiles);renderProfiles();closeAll();toast("Profile updated");
+};
+$("#deleteProfileBtn").onclick=()=>{
+  if(!me)return;
+  const p=profiles.find(x=>x.id===me);
+  if(!p||!confirm("Delete profile "+p.name+"? This removes its saved profile and My List from this browser."))return;
+  profiles=profiles.filter(x=>x.id!==me);
+  localStorage.removeItem("coralflix-likes-"+me);
+  jset("coralflix-saved-profiles",profiles);
+  me="";
+  localStorage.removeItem("coralflix-profile");
+  closeAll();$("#app").classList.add("hidden");$("#gate").classList.remove("hidden");renderProfiles();
 };
 
 /* ---------- data helpers ---------- */
