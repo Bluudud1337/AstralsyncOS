@@ -1013,6 +1013,22 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);}
 .login-avatar img{width:100%;height:100%;object-fit:cover;}
 .login-name{font-size:22px;font-weight:600;margin-bottom:3px;}
 .login-sub{font-size:13px;color:rgba(255,255,255,.72);margin-bottom:20px;}
+.cloud-actions{display:grid;grid-template-columns:1fr;gap:9px;margin:0 0 20px;}
+.cloud-action{width:100%;min-height:40px;padding:10px 14px;border-radius:8px;
+  font:600 13px/1.2 inherit;letter-spacing:.01em;cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease;
+  -webkit-tap-highlight-color:transparent;}
+.cloud-action:hover{transform:translateY(-1px);}
+.cloud-action:active{transform:translateY(0) scale(.985);}
+.cloud-action:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+.cloud-link{background:var(--accent,#3978d4);border:1px solid transparent;color:#fff;
+  box-shadow:0 5px 16px rgba(30,100,210,.22);}
+.cloud-link:hover{filter:brightness(1.1);box-shadow:0 7px 20px rgba(30,100,210,.3);}
+.cloud-signin{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.24);color:#fff;}
+.cloud-signin:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4);}
+.cloud-signout{background:rgba(255,90,90,.07);border:1px solid rgba(255,120,120,.38);color:#ffc1c1;}
+.cloud-signout:hover{background:rgba(220,55,55,.2);border-color:rgba(255,120,120,.65);color:#fff;}
+@media(max-width:420px){.cloud-actions{gap:8px}.cloud-action{min-height:42px;font-size:14px}}
 .login-methods{display:flex;gap:8px;justify-content:center;margin-bottom:14px;}
 .login-method{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;
   border-radius:6px;padding:7px 12px;cursor:pointer;font-size:12px;}
@@ -1827,16 +1843,11 @@ body.os-win11 #start-menu { bottom:54px !important; }
     <div class="login-avatar" id="login-avatar">👤</div>
     <div class="login-name" id="login-name">Player 1</div>
     <div class="login-sub" id="login-sub">Sign in to AstralSync</div>
-    <button onclick="linkCurrentProfileToCloud()">
-  ☁️ Link To Cloud
-</button>
-    <button onclick="showCloudLogin()">
-  ☁️ Sign In
-</button>
-
-<button onclick="signOutCloud()">
-  🚪 Sign Out
-</button>
+    <div class="cloud-actions" aria-label="Cloud account actions">
+      <button class="cloud-action cloud-link" type="button" onclick="linkCurrentProfileToCloud()">Link to Cloud</button>
+      <button class="cloud-action cloud-signin" type="button" onclick="showCloudLogin()">Sign In</button>
+      <button class="cloud-action cloud-signout" type="button" onclick="signOutCloud()">Sign Out</button>
+    </div>
     <div class="login-methods">
       <button class="login-method active" id="login-password-method" onclick="setLoginMethod('password')">🔑 Password</button>
       <button class="login-method" id="login-pin-method" onclick="setLoginMethod('pin')">🔢 PIN</button>
