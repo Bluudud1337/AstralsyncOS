@@ -2476,8 +2476,12 @@ async function loadCloudState(){
       if(doc.exists && doc.data() && doc.data().state){
         const cloudData = doc.data();
         const oldProfiles = Array.isArray(state.profiles) ? state.profiles : [];
+        const localCustomWP = state.customWP;
         const cloudState = cloudData.state;
         state = Object.assign({}, state, cloudState);
+        // Wallpaper files/Blob URLs are stored locally; don't erase their local metadata
+        // just because the cloud snapshot intentionally excludes the binary asset.
+        state.customWP = localCustomWP || null;
 
         if(!Array.isArray(state.profiles) || !state.profiles.length){
           state.profiles = [{id:1,name:"Player 1",color:"#007AFF",emoji:"👾",email:"",password:"",pin:""}];
