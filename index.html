@@ -2377,6 +2377,7 @@ try {
 } catch(e) {}
 function saveProfileAvatars(){
   try { localStorage.setItem('astralAvatars', JSON.stringify(profileAvatars)); } catch(e) {}
+  scheduleCloudSave();
 }
 function getProfileAvatar(pid){ return profileAvatars[pid] || null; }
 function setProfileAvatar(pid, dataURL){
@@ -2398,57 +2399,136 @@ function updateDockAvatar(){
 }
 
 // CLOUD SYNC
-// Firebase Auth identifies the same user across different AstralSyncOS URLs,
-// domains, browsers, and devices. Each browser still needs to sign in once.
+// Cloud data belongs to the Firebase account, not a particular URL or browser.
+// Each new origin/device must authenticate once; browser storage alone cannot cross origins.
 let cloudSyncReady = false;
 let cloudSaveTimer = null;
+let cloudLoadPromise = null;
+let cloudSavePromise = null;
+let cloudLastSavedAt = 0;
+
+function scheduleCloudSave(){
+  if(!firebaseUser || !cloudSyncReady) return;
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(()=>saveCloudState(), 700);
+}
+
+function buildCloudState(){
+  const copy = JSON.parse(JSON.stringify(Object.assign({}, state, {customWP:null})));
+  // Never upload profile unlock passwords or PINs as readable Firestore fields.
+  if(Array.isArray(copy.profiles)){
+    copy.profiles = copy.profiles.map(p=>{
+      const safe = Object.assign({}, p);
+      delete safe.password;
+      delete safe.pin;
+      return safe;
+    });
+  }
+  return copy;
+}
+
+function compressAvatarForCloud(dataURL){
+  return new Promise(resolve=>{
+    if(typeof dataURL !== "string" || !dataURL.startsWith("data:image/")){
+      resolve(null); return;
+    }
+    const img = new Image();
+    img.onload = ()=>{
+      try{
+        const max = 160;
+        const scale = Math.min(1, max / Math.max(img.naturalWidth||img.width, img.naturalHeight||img.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round((img.naturalWidth||img.width)*scale));
+        canvas.height = Math.max(1, Math.round((img.naturalHeight||img.height)*scale));
+        const ctx = canvas.getContext("2d");
+        if(!ctx){ resolve(null); return; }
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL("image/jpeg",0.68));
+      }catch(e){ resolve(null); }
+    };
+    img.onerror = ()=>resolve(null);
+    img.src = dataURL;
+  });
+}
+
+async function buildCloudAvatars(){
+  const result = {};
+  const entries = Object.entries(profileAvatars || {});
+  for(const [id, data] of entries){
+    const compressed = await compressAvatarForCloud(data);
+    if(compressed) result[id] = compressed;
+  }
+  return result;
+}
 
 async function loadCloudState(){
   if(!firebaseUser) return false;
-  cloudSyncReady = false;
+  if(cloudLoadPromise) return cloudLoadPromise;
 
-  try{
-    const doc = await db.collection("users").doc(firebaseUser.uid).get();
-    if(doc.exists && doc.data() && doc.data().state){
-      const cloudData = doc.data();
-      // Restore the cloud copy while keeping newly introduced defaults.
-      state = Object.assign({}, state, cloudData.state);
-      if(!Array.isArray(state.profiles) || !state.profiles.length){
-        state.profiles = [{id:1,name:"Player 1",color:"#007AFF",emoji:"👾",email:"",password:"",pin:""}];
-      }
-      state.activeProfile = Math.max(0, Math.min(Number(state.activeProfile)||0, state.profiles.length-1));
-
-      if(cloudData.profileAvatars && typeof cloudData.profileAvatars === "object"){
-        profileAvatars = Object.assign({}, profileAvatars, cloudData.profileAvatars);
-        saveProfileAvatars();
-      }
-
-      try{
-        const serialized = JSON.stringify(Object.assign({}, state, {customWP:null}));
-        localStorage.setItem("astralOS", serialized);
-        localStorage.setItem("astralOS_backup", serialized);
-      }catch(e){}
-
-      cloudSyncReady = true;
-      try{ applyState(); }catch(e){ console.warn("Cloud state apply failed", e); }
-      try{ updateDockAvatar(); }catch(e){}
-      try{ renderDesktopApps(); }catch(e){}
-      try{ syncAnnouncementAccess(); }catch(e){}
-      showNotif("☁️","Cloud Sync","Your AstralSyncOS data has been restored.");
-      return true;
-    }
-
-    // First sign-in on this account: preserve and upload this browser's local data.
-    cloudSyncReady = true;
-    await saveCloudState(true);
-    showNotif("☁️","Cloud Sync","This device's AstralSyncOS data was saved to your account.");
-    return true;
-  }catch(err){
+  cloudLoadPromise = (async()=>{
     cloudSyncReady = false;
-    console.error("Cloud restore failed", err);
-    showNotif("☁️","Cloud Sync","Could not restore cloud data. Your local data is still available.");
-    return false;
-  }
+    try{
+      const uid = firebaseUser.uid;
+      const doc = await db.collection("users").doc(uid).get();
+      // If the user changed accounts while this request was running, discard the result.
+      if(!firebaseUser || firebaseUser.uid !== uid) return false;
+
+      if(doc.exists && doc.data() && doc.data().state){
+        const cloudData = doc.data();
+        const oldProfiles = Array.isArray(state.profiles) ? state.profiles : [];
+        const cloudState = cloudData.state;
+        state = Object.assign({}, state, cloudState);
+
+        if(!Array.isArray(state.profiles) || !state.profiles.length){
+          state.profiles = [{id:1,name:"Player 1",color:"#007AFF",emoji:"👾",email:"",password:"",pin:""}];
+        }
+
+        // Preserve this device's local profile unlock credentials where IDs match.
+        const localById = new Map(oldProfiles.map(p=>[String(p.id),p]));
+        state.profiles = state.profiles.map(p=>{
+          const local = localById.get(String(p.id)) || {};
+          return Object.assign({}, p, {
+            password: local.password || "",
+            pin: local.pin || ""
+          });
+        });
+        state.activeProfile = Math.max(0, Math.min(Number(state.activeProfile)||0, state.profiles.length-1));
+
+        if(cloudData.profileAvatars && typeof cloudData.profileAvatars === "object"){
+          profileAvatars = Object.assign({}, cloudData.profileAvatars);
+          saveProfileAvatars();
+        }
+
+        try{
+          const serialized = JSON.stringify(Object.assign({}, state, {customWP:null}));
+          localStorage.setItem("astralOS", serialized);
+          localStorage.setItem("astralOS_backup", serialized);
+        }catch(e){}
+
+        cloudSyncReady = true;
+        try{ applyState(); }catch(e){ console.warn("Cloud state apply failed", e); }
+        try{ updateDockAvatar(); }catch(e){}
+        try{ renderDesktopApps(); }catch(e){}
+        try{ syncAnnouncementAccess(); }catch(e){}
+        showNotif("☁️","Cloud Sync","Your saved AstralSyncOS data was restored.");
+        return true;
+      }
+
+      // A genuinely new cloud account: seed it from this device once.
+      cloudSyncReady = true;
+      const saved = await saveCloudState(true);
+      if(!saved) throw new Error("Initial cloud save did not complete.");
+      showNotif("☁️","Cloud Sync","This device's data was saved to your cloud account.");
+      return true;
+    }catch(err){
+      cloudSyncReady = false;
+      console.error("Cloud restore failed", err);
+      showNotif("☁️","Cloud Sync","Cloud restore failed. Your local data is still available.");
+      return false;
+    }
+  })().finally(()=>{ cloudLoadPromise = null; });
+
+  return cloudLoadPromise;
 }
 
 function saveState(){
@@ -2456,157 +2536,108 @@ function saveState(){
     const s = Object.assign({},state,{customWP:null});
     localStorage.setItem("astralOS", JSON.stringify(s));
     localStorage.setItem("astralOS_backup", JSON.stringify(s));
-  }catch(e){}
-
-  if(firebaseUser && cloudSyncReady){
-    clearTimeout(cloudSaveTimer);
-    cloudSaveTimer = setTimeout(()=>saveCloudState(), 500);
+  }catch(e){
+    console.warn("Local save failed",e);
   }
+  scheduleCloudSave();
 }
 
 async function saveCloudState(force){
   if(!firebaseUser || (!cloudSyncReady && !force)) return false;
-  try{
-    await db.collection("users").doc(firebaseUser.uid).set({
-      state: Object.assign({}, state, {customWP:null}),
-      profileAvatars: profileAvatars || {},
-      updatedAt: Date.now()
-    }, {merge:true});
-    return true;
-  }catch(err){
-    console.error("Cloud save failed", err);
-    return false;
+  if(cloudSavePromise){
+    try{ await cloudSavePromise; }catch(e){}
+    // If another write was already in progress, save the latest state after it.
+    if(!firebaseUser || (!cloudSyncReady && !force)) return false;
   }
+
+  const uid = firebaseUser.uid;
+  cloudSavePromise = (async()=>{
+    try{
+      const [safeState, safeAvatars] = [buildCloudState(), await buildCloudAvatars()];
+      if(!firebaseUser || firebaseUser.uid !== uid) return false;
+      await db.collection("users").doc(uid).set({
+        state: safeState,
+        profileAvatars: safeAvatars,
+        updatedAt: Date.now(),
+        schemaVersion: 2
+      }, {merge:true});
+      cloudLastSavedAt = Date.now();
+      return true;
+    }catch(err){
+      console.error("Cloud save failed", err);
+      showNotif("☁️","Cloud Sync","Save failed. Check your connection and Firebase rules.");
+      return false;
+    }finally{
+      cloudSavePromise = null;
+    }
+  })();
+  return cloudSavePromise;
 }
+
 async function linkCurrentProfileToCloud(){
-
-  const profile =
-    state.profiles[state.activeProfile];
-
-  if(!profile.email){
-    alert("This profile needs an email first.");
-    return;
-  }
-
-  if(!profile.password){
-    alert("This profile needs a password first.");
+  const profile = state.profiles[state.activeProfile];
+  if(!profile.email || !profile.password){
+    alert("Add an email and profile password first.");
     return;
   }
 
   try{
-
-    // Create Firebase account
-    const credential =
-      await auth.createUserWithEmailAndPassword(
-        profile.email,
-        profile.password
-      );
-
-    firebaseUser = credential.user;
-
-    profile.firebaseUID =
-      credential.user.uid;
-
-    profile.cloudEnabled = true;
-
-    saveState();
-
-    await saveCloudState();
-
-    alert(
-      "Cloud account linked successfully!"
-    );
-
-  }catch(err){
-
-    // If account already exists,
-    // try signing in instead.
-
-    if(err.code === "auth/email-already-in-use"){
-
-      try{
-
-        const credential =
-          await auth.signInWithEmailAndPassword(
-            profile.email,
-            profile.password
-          );
-
-        firebaseUser =
-          credential.user;
-
-        profile.firebaseUID =
-          credential.user.uid;
-
-        profile.cloudEnabled = true;
-
-        saveState();
-
-        await saveCloudState();
-        alert(
-          "Existing cloud account linked!"
-        );
-
-      }catch(e){
-
-        alert(
-          e.code + "\n" +
-          e.message
-        );
-
-      }
-
-    }else{
-
-      alert(
-        err.code + "\n" +
-        err.message
-      );
-
+    let credential;
+    let created = false;
+    try{
+      credential = await auth.createUserWithEmailAndPassword(profile.email, profile.password);
+      created = true;
+    }catch(err){
+      if(err.code !== "auth/email-already-in-use") throw err;
+      credential = await auth.signInWithEmailAndPassword(profile.email, profile.password);
     }
 
-  }
-
-}
-window.linkCurrentProfileToCloud =
-  linkCurrentProfileToCloud;
-async function signInCloud(email,password){
-
-  try{
-
-    const credential =
-      await auth.signInWithEmailAndPassword(
-        email,
-        password
-      );
-
     firebaseUser = credential.user;
+    profile.firebaseUID = credential.user.uid;
+    profile.cloudEnabled = true;
 
-    await loadCloudState();
-
-    alert("Signed in!");
-
+    if(created){
+      // A brand-new Firebase account has no cloud document yet: seed it with local data.
+      cloudSyncReady = true;
+      saveState();
+      const ok = await saveCloudState(true);
+      if(!ok) throw new Error("Account created, but the first cloud save failed. Try signing in again.");
+      alert("Cloud account linked and local data uploaded!");
+    }else{
+      // Existing accounts must restore cloud data instead of overwriting it with this device.
+      const ok = await loadCloudState();
+      if(!ok) throw new Error("Signed in, but cloud data could not be loaded. Local data was kept.");
+      alert("Existing cloud account linked and data restored!");
+    }
   }catch(err){
+    console.error("Cloud account linking failed",err);
+    alert((err.code ? err.code + "\n" : "") + err.message);
+  }
+}
+window.linkCurrentProfileToCloud = linkCurrentProfileToCloud;
 
-    alert(err.message);
-
+async function signInCloud(email,password){
+  try{
+    const credential = await auth.signInWithEmailAndPassword(email,password);
+    firebaseUser = credential.user;
+    const ok = await loadCloudState();
+    if(ok) alert("Signed in and cloud sync is ready.");
+    else alert("Signed in, but cloud data could not be loaded. Your local data is still available.");
+  }catch(err){
+    alert((err.code ? err.code + "\n" : "") + err.message);
   }
 }
 
 async function signOutCloud(){
-
   try{
-
+    clearTimeout(cloudSaveTimer);
     await auth.signOut();
-
     firebaseUser = null;
-
-    alert("Signed out");
-
+    cloudSyncReady = false;
+    alert("Signed out of cloud sync.");
   }catch(err){
-
     console.error(err);
-
+    alert("Could not sign out: " + err.message);
   }
 }
 function saveCustomWP(){
@@ -4879,7 +4910,7 @@ function oobeSkip(){
     if(bs)bs.style.display='none';
   }
 })();
-// Keep Firebase's signed-in session persistent on this origin.
+// Persist sign-in on this origin. Different origins still require their own sign-in.
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(err=>{
   console.warn("Could not set persistent Firebase auth:", err);
 });
@@ -4887,11 +4918,12 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(err=>{
 auth.onAuthStateChanged(async user=>{
   firebaseUser = user;
   if(user){
-    console.log("Logged in:", user.uid);
+    console.log("Cloud account authenticated:", user.uid);
     await loadCloudState();
   }else{
     cloudSyncReady = false;
-    console.log("Logged out");
+    clearTimeout(cloudSaveTimer);
+    console.log("Cloud account signed out");
   }
 });
 window.showCloudLogin = async ()=>{
